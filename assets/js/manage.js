@@ -82,7 +82,7 @@
     });
     if (!picked.length) {
       return '<p class="small muted" style="margin:0">' +
-        'No requests on this booking yet. Guests who confirm a request before arriving cancel far less often.</p>';
+        'No requests on this booking yet. Add one and we will confirm it in writing within two hours.</p>';
     }
     return '<div class="chip-row">' + picked.map(function (key) {
       var r = L.REQUESTS[key];

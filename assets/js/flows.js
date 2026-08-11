@@ -67,8 +67,8 @@
       reasonLabel: 'My dates changed',
       insight: 'Bookings that get changed are cancelled 14% of the time. Bookings that are never touched are cancelled 41% of the time. Offering a date change instead of a cancellation is the cheapest save available.',
       headline: 'Plans changed?',
-      message: 'You may not need to give up your stay. Move your dates instead and keep your booking.',
-      micro: 'No change fee, no new price.',
+      message: 'You may not need to give up your stay. Change your dates instead and keep your booking.',
+      micro: 'Free changes carry no fee, and any price difference is shown before you confirm.',
       primary: { label: 'Change my dates', action: 'dates' },
       secondary: { label: 'Keep my booking' },
       tertiary: { label: 'Continue cancellation' }
@@ -101,7 +101,7 @@
 
   /* Reasons offered in step 2, drawn from the same dataset findings. */
   var REASONS = [
-    { id: 'dates', label: 'My dates changed', offer: 'dates', offerCta: 'Move my dates', offerTitle: 'You can move these dates for free', offerBody: 'Keep the room and the rate. Pick new dates and we will re-price only the nights, with no change fee.' },
+    { id: 'dates', label: 'My dates changed', offer: 'dates', offerCta: 'Move my dates', offerTitle: 'You can move these dates with no change fee', offerBody: 'Pick new dates and we will re-price the nights. You keep your room type where it is available, and see any price difference before confirming.' },
     { id: 'price', label: 'I found a lower price', offer: 'price', offerCta: 'Send the price link', offerTitle: 'We will match a lower public price', offerBody: 'Send the link within 24 hours of booking. We match the rate and take another 10% off it.' },
     { id: 'requests', label: 'My requests are not confirmed', offer: 'requests', offerCta: 'Confirm my requests', offerTitle: 'We can confirm your requests now', offerBody: 'Add parking, early check-in, a cot, or a meal preference. You get written confirmation within two hours.' },
     { id: 'refund', label: 'I am not sure how the refund works', offer: 'refund', offerCta: 'See the refund detail', offerTitle: 'Here is exactly what comes back', offerBody: '' },
@@ -249,7 +249,7 @@
       closeLabel: 'Close without changing the dates',
       body: '' +
         '<h2 class="dialog__title" id="dlg-dates-title">Change your dates</h2>' +
-        '<p class="dialog__lede" id="dlg-dates-desc">Pick new dates. We keep your room and your nightly rate.</p>' +
+        '<p class="dialog__lede" id="dlg-dates-desc">Pick new dates. You keep your room type where it is available, and see any price difference before confirming.</p>' +
         '<div data-slot="alert" aria-live="polite"></div>' +
         '<form novalidate data-dates-form>' +
         '<div class="error-summary" data-error-summary hidden></div>' +
