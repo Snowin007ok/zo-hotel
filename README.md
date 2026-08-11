@@ -101,6 +101,14 @@ rate). The load-bearing finding is that bookings which get **changed** cancel 14
 time against 41% for bookings nobody touches — which is why the exit prompt offers a date
 change rather than arguing with the guest.
 
+These are **correlations, not causes**. The dataset holds structured booking signals, not
+reasons a guest wrote down, so the evidence copy says *the pattern suggests* and *was
+associated with* rather than claiming a change prevented a cancellation. Two distinctions the
+copy keeps deliberately: the data records that a booking *carried a special request*, never
+that anyone confirmed it — confirming in writing is the ZO policy response, not a measured
+variable; and the six guest concerns on `flexible-booking.html` are written *from* the
+patterns, not quoted from guests.
+
 The social proof in the home page trust section comes from nowhere: **4.8 / 5**, **92%
 would book again**, *Traveller Choice 2026*, *Flexible Stay Recognition* and the three guest
 reviews are invented for this prototype. They are labelled *demo award* and *student project

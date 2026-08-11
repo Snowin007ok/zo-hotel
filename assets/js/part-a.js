@@ -105,8 +105,8 @@
         note({
           tone: 'success',
           title: 'Requests added to the booking',
-          body: 'Written confirmation follows within two hours. In the dataset, one confirmed request ' +
-            'cut the cancellation rate from 48% to 22%.'
+          body: 'Written confirmation follows within two hours. In the dataset, bookings carrying one ' +
+            'special request were cancelled 22% of the time, against 48% with none.'
         });
       },
       applyCancel: function (result) {

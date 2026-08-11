@@ -874,6 +874,10 @@ table.data th[scope='row'] { font-weight: 600; color: var(--navy); }
    -------------------------------------------------------------------------- */
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.35rem; }
 .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+/* `display: flex` above outranks the UA rule for [hidden], so a hidden field
+   would otherwise stay on screen. Every other component that toggles `hidden`
+   declares this too. */
+.field[hidden] { display: none; }
 .field--full { grid-column: 1 / -1; }
 
 .label { font-weight: 600; font-size: 0.9375rem; color: var(--navy); display: flex; align-items: center; gap: 0.4rem; }

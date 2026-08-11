@@ -8,8 +8,8 @@
      2. Reason step      (collects the cancellation reason, offers a fix)
      3. Confirm step     (irreversible action, escalating friction)
      4. Change dates     (the alternative the exit prompt pushes toward)
-     5. Add requests     (unconfirmed requests are a cancellation driver)
-     6. Price match      (a lower price found elsewhere is another driver)
+     5. Add requests     (bookings with no request attached cancelled more often)
+     6. Price match      (third-party bookings cancelled more often than direct)
 
    Copy follows the Zoho UI Best Practices guide: sentence case, no exclamation
    points, the same action verb in header/description/CTA, no "Are you sure",
@@ -65,37 +65,31 @@
       id: 'dates',
       art: 'dates',
       reasonLabel: 'My dates changed',
-      insight: 'Bookings that get changed are cancelled 14% of the time. Bookings that are never touched are cancelled 41% of the time. Offering a date change instead of a cancellation is the cheapest save available.',
-      headline: 'Plans changed?',
-      message: 'You may not need to give up your stay. Change your dates instead and keep your booking.',
-      micro: 'Free changes carry no fee, and any price difference is shown before you confirm.',
-      primary: { label: 'Change my dates', action: 'dates' },
-      secondary: { label: 'Keep my booking' },
-      tertiary: { label: 'Continue cancellation' }
+      insight: 'Bookings changed once were cancelled 14% of the time, against 41% for bookings nobody touched. The pattern suggests offering a date change may help preserve the booking when plans move.',
+      /* Header, description and primary CTA all carry the verb "change". */
+      headline: 'Change your dates instead?',
+      message: 'Change your dates and keep your booking.',
+      primary: { label: 'Change my dates', action: 'dates' }
     },
     price: {
       id: 'price',
       art: 'price',
       reasonLabel: 'I found a lower price',
-      insight: 'Bookings made through third-party travel sites cancel 41% of the time, against 17% booked direct. Most of that gap is guests re-booking the same room somewhere cheaper.',
-      headline: 'Found it cheaper somewhere else?',
-      message: 'Send us the link and you may not need to cancel at all. If the same room and dates are publicly listed for less, we match that price and take another 10% off it.',
-      micro: 'Checked within one business day.',
-      primary: { label: 'Send the price link', action: 'price' },
-      secondary: { label: 'Keep my booking' },
-      tertiary: { label: 'Continue cancellation' }
+      insight: 'Bookings made through third-party travel sites were cancelled 41% of the time, against 17% booked direct. The data does not record why, so price matching answers the pattern rather than a proven cause.',
+      /* Verb: "send". */
+      headline: 'Send us the lower price instead?',
+      message: 'Send us the link and you may not need to cancel at all. If the same room and dates are publicly listed for less, we match that price and take another 10% off it, checked within one business day.',
+      primary: { label: 'Send the price link', action: 'price' }
     },
     requests: {
       id: 'requests',
       art: 'requests',
       reasonLabel: 'My requests are not confirmed',
-      insight: 'Bookings with no special request attached cancel 48% of the time. One confirmed request drops that to 22%, and every booking with confirmed parking in the dataset was honoured.',
-      headline: 'Waiting on something?',
-      message: 'You may not need to give up your stay. Tell us what you need — parking, early check-in, a cot, a Jain meal — and we confirm it in writing before you arrive.',
-      micro: 'Confirmed within two hours.',
-      primary: { label: 'Confirm my requests', action: 'requests' },
-      secondary: { label: 'Keep my booking' },
-      tertiary: { label: 'Continue cancellation' }
+      insight: 'Bookings with no special request attached were cancelled 48% of the time, against 22% for bookings carrying one special request. The data records the request, not whether anyone confirmed it, so confirming in writing is the ZO response to that pattern.',
+      /* Verb: "confirm". */
+      headline: 'Confirm your requests instead?',
+      message: 'Confirm what you need — parking, early check-in, a cot, a Jain meal — and we put it in writing within two hours.',
+      primary: { label: 'Confirm my requests', action: 'requests' }
     }
   };
 
@@ -167,13 +161,13 @@
       wide: true,
       closeLabel: 'Close and keep this booking',
       body: '' +
+        /* Two choices only: continue cancelling, or take the alternative.
+           Closing the dialog (X, Escape, backdrop) keeps the booking. */
         '<h2 class="dialog__title" id="dlg-exit-title" data-slot="headline"></h2>' +
         '<p class="dialog__lede" id="dlg-exit-desc" data-slot="message"></p>' +
-        '<ul class="keep-list" data-slot="keeps"></ul>' +
-        '<p class="small muted" data-slot="micro"></p>' +
+        '<p class="summary__policy" data-slot="consequence"></p>' +
         '<div class="dialog__actions dialog__actions--retention">' +
         '<button type="button" class="btn btn--quiet-danger" data-exit-cancel>Continue cancellation</button>' +
-        '<button type="button" class="btn btn--outline" data-dialog-close data-slot="secondary">Keep my booking</button>' +
         '<button type="button" class="btn btn--primary" data-exit-primary data-autofocus></button>' +
         '</div>'
     });
@@ -212,7 +206,7 @@
         '</div></div>' +
         '<div class="dialog__actions dialog__actions--retention">' +
         '<button type="button" class="btn btn--quiet-danger" data-reason-continue>Continue cancellation</button>' +
-        '<button type="button" class="btn btn--primary" data-dialog-close data-reason-keep>Keep my booking</button>' +
+        '<button type="button" class="btn btn--primary" data-dialog-close data-reason-keep>Keep booking</button>' +
         '<button type="submit" class="btn btn--primary" data-reason-offer hidden></button>' +
         '</div>' +
         '</form>'
@@ -224,9 +218,8 @@
       closeLabel: 'Close and keep this booking',
       body: '' +
         '<p class="dialog__steps"><span aria-current="step">Step 2 of 2</span></p>' +
-        '<h2 class="dialog__title" id="dlg-cancel-title">Cancel this booking?</h2>' +
+        '<h2 class="dialog__title" id="dlg-cancel-title" data-slot="title"></h2>' +
         '<p class="dialog__lede" id="dlg-cancel-desc" data-slot="desc"></p>' +
-        '<div class="summary__policy" data-slot="refund"></div>' +
         '<form novalidate data-confirm-form>' +
         '<div class="field mt-3" data-slot="forceField" hidden>' +
         '<label class="label" for="confirm-word">Type <strong>CANCEL</strong> to confirm</label>' +
@@ -234,10 +227,13 @@
         '<input class="input" id="confirm-word" name="confirmWord" type="text" autocomplete="off" ' +
         'aria-describedby="confirm-word-hint" style="max-width:220px">' +
         '<p class="error-text" data-error-for="confirmWord" hidden></p>' +
+        /* Says out loud why the destructive button is unavailable, and when
+           it becomes available. Read by AT on focus and on change. */
+        '<p class="hint" id="confirm-force-status" data-slot="forceStatus" aria-live="polite"></p>' +
         '</div>' +
         '<div class="dialog__actions dialog__actions--retention">' +
         '<button type="submit" class="btn btn--quiet-danger" data-confirm-cancel>Cancel booking</button>' +
-        '<button type="button" class="btn btn--primary" data-dialog-close data-autofocus>Keep my booking</button>' +
+        '<button type="button" class="btn btn--primary" data-dialog-close data-confirm-keep data-autofocus>Keep booking</button>' +
         '</div>' +
         '</form>' +
         '<p class="dialog__foot">Cancelling cannot be undone. You can always book these dates again at the price available then.</p>'
@@ -342,36 +338,37 @@
     return $('#' + rootId + ' [data-slot="' + name + '"]');
   }
 
-  function keepListItems(b) {
-    var r = room(b);
-    var p = property(b);
+  /** How the guest's remaining free changes read as one sentence. */
+  function changeSentence(b) {
     var pl = plan(b);
     var left = freeChangesLeft(b);
+    if (left === 1) return 'You have one free date change left on your ' + pl.name + ' rate.';
+    if (left > 1) return 'You have ' + left + ' free date changes left on your ' + pl.name + ' rate.';
+    if (pl.changeFee) return 'A date change on your ' + pl.name + ' rate costs ' + L.formatINR(pl.changeFee) + '.';
+    return '';
+  }
+
+  /* The description repeats the header's verb, then carries only the facts
+     that bear on this decision. Each fact appears once, here and nowhere
+     else in the dialog. */
+  function exitDescription(variant, b) {
+    var text = variant.message;
+    if (variant.id === 'dates' && b) {
+      var sentence = changeSentence(b);
+      if (sentence) text += ' ' + sentence;
+      text += ' Any price difference is shown before you confirm.';
+    }
+    return text;
+  }
+
+  /** The one consequence of not taking the alternative, in money. */
+  function exitConsequence(b) {
     var refund = L.refundQuote(b, new Date());
-    var items = [];
-
-    items.push('Your ' + r.name.toLowerCase() + ' at ' + p.name + ', held at ' +
-      L.formatINR(b.nightly) + ' a night');
-
-    if (left > 0) {
-      items.push(left === 1
-        ? 'One free date change left on your ' + pl.name + ' rate'
-        : left + ' free date changes left on your ' + pl.name + ' rate');
-    } else if (pl.changeFee) {
-      items.push('A date change on your ' + pl.name + ' rate costs ' + L.formatINR(pl.changeFee) + ' plus any rate difference');
+    if (refund.pct === 1) return 'Cancel today and the full ' + L.formatINR(b.total) + ' is refundable.';
+    if (refund.amount > 0) {
+      return 'Cancel today and ' + L.formatINR(refund.amount) + ' of ' + L.formatINR(b.total) + ' is refundable.';
     }
-
-    if (refund.tier === 'full' && refund.deadline) {
-      items.push('Free cancellation still open until ' + refund.deadline);
-    } else if (refund.tier === 'partial') {
-      items.push('Half of ' + L.formatINR(b.total) + ' is still refundable today, and none of it after check-in');
-    } else if (refund.tier === 'nonrefundable') {
-      items.push('Moving the dates keeps the money on the booking. Cancelling does not return it.');
-    }
-
-    return items.map(function (text) {
-      return '<li>' + icon('check', 16) + '<span>' + esc(text) + '</span></li>';
-    }).join('');
+    return 'Cancel today and none of ' + L.formatINR(b.total) + ' is refundable.';
   }
 
   function renderExitPrompt(variantId) {
@@ -379,68 +376,83 @@
     var b = booking();
     slot('dlg-exit', 'art').innerHTML = artMarkup(variant.art);
     slot('dlg-exit', 'headline').textContent = variant.headline;
-    slot('dlg-exit', 'message').textContent = variant.message;
-    slot('dlg-exit', 'keeps').innerHTML = b ? keepListItems(b) : '';
-    slot('dlg-exit', 'micro').textContent = variant.micro;
-    slot('dlg-exit', 'secondary').textContent = variant.secondary.label;
+    slot('dlg-exit', 'message').textContent = exitDescription(variant, b);
+
+    var consequence = slot('dlg-exit', 'consequence');
+    consequence.textContent = b ? exitConsequence(b) : '';
+    consequence.hidden = !b;
 
     var primary = $('#dlg-exit [data-exit-primary]');
     primary.textContent = variant.primary.label;
     primary.dataset.action = variant.primary.action;
-
-    var tertiary = $('#dlg-exit [data-exit-cancel]');
-    tertiary.textContent = variant.tertiary.label;
   }
 
-  function refundLines(b) {
+  /** True only when cancelling returns the guest nothing at all. */
+  function losesEverything(b) {
     var refund = L.refundQuote(b, new Date());
-    var rows = [
-      ['Paid', L.formatINR(b.total)],
-      ['Refund', refund.amount > 0 ? L.formatINR(refund.amount) + ' (' + Math.round(refund.pct * 100) + '%)' : L.formatINR(0)],
-      ['Reaches you', refund.amount > 0 ? refund.refundDays + ', to the card ending ' + L.cardTail(b) : 'Nothing to refund'],
-      ['Cancellation fee', L.formatINR(0)]
-    ];
-    return '<div class="stack">' + rows.map(function (row) {
-      return '<div class="summary__line" style="padding:.15rem 0"><span>' + esc(row[0]) +
-        '</span><strong>' + esc(row[1]) + '</strong></div>';
-    }).join('') + '</div>';
+    return refund.amount === 0 && b.total > 0;
+  }
+
+  /* Keeps the destructive button's availability, its ARIA state and the
+     spoken reason for it in one place. */
+  function syncForceState() {
+    var b = booking();
+    if (!b) return;
+    var cancelBtn = $('#dlg-cancel [data-confirm-cancel]');
+    var status = slot('dlg-cancel', 'forceStatus');
+    var input = $('#confirm-word');
+    if (!cancelBtn) return;
+
+    if (!losesEverything(b)) {
+      cancelBtn.removeAttribute('aria-disabled');
+      cancelBtn.removeAttribute('aria-describedby');
+      if (status) status.textContent = '';
+      return;
+    }
+
+    var matched = ((input && input.value) || '').trim().toUpperCase() === 'CANCEL';
+    cancelBtn.setAttribute('aria-disabled', matched ? 'false' : 'true');
+    cancelBtn.setAttribute('aria-describedby', 'confirm-force-status');
+    if (status) {
+      status.textContent = matched
+        ? 'CANCEL typed. Cancel booking is now available.'
+        : 'Cancel booking is unavailable until you type CANCEL above.';
+    }
   }
 
   function renderConfirm() {
     var b = booking();
     var refund = L.refundQuote(b, new Date());
-    var r = room(b);
+    var pl = plan(b);
     var p = property(b);
     var range = L.formatDateRange(b.checkIn, b.checkOut);
+    var needsForce = losesEverything(b);
 
-    /* Description repeats the verb from the header and the CTA ("cancel"), and
-       carries only the information the guest needs to decide. */
-    var desc = 'Cancelling releases your ' + r.name.toLowerCase() + ' at ' + p.name +
-      ' for ' + range + '. ';
-    if (refund.pct === 1) {
-      desc += 'You get the full ' + L.formatINR(refund.amount) + ' back, in ' + refund.refundDays + '.';
-    } else if (refund.pct > 0) {
-      desc += 'You get ' + L.formatINR(refund.amount) + ' back, which is ' +
-        Math.round(refund.pct * 100) + '% of ' + L.formatINR(b.total) + ', in ' + refund.refundDays + '.';
-    } else if (refund.tier === 'nonrefundable') {
-      desc += 'The Saver rate is not refundable, so the ' + L.formatINR(b.total) + ' you paid does not come back.';
+    /* Header, description and destructive CTA all carry the verb "cancel".
+       The description holds the refund and the room, and nothing else. */
+    var title = needsForce ? 'Cancel non-refundable booking?' : 'Cancel booking?';
+    var desc;
+    if (needsForce) {
+      desc = 'Cancel this ' + pl.name + ' booking? ' + L.formatINR(b.total) +
+        ' is non-refundable and the room will be released. Type CANCEL below to continue.';
     } else {
-      desc += 'Inside 24 hours of check-in the booking is no longer refundable, so the ' +
-        L.formatINR(b.total) + ' you paid does not come back.';
+      desc = 'Cancel your ' + p.name + ' booking for ' + range + '? ' +
+        L.formatINR(refund.amount) + ' will be refunded to your original payment method. ' +
+        'The room will be released after cancellation.';
     }
 
+    slot('dlg-cancel', 'title').textContent = title;
     slot('dlg-cancel', 'desc').textContent = desc;
-    slot('dlg-cancel', 'refund').innerHTML = refundLines(b);
 
-    /* Forcing function: only when the guest loses money outright. The guide
+    /* Forcing function: only when the guest loses the whole amount. The guide
        reserves this level of friction for actions that cannot be undone. */
     var forceField = slot('dlg-cancel', 'forceField');
     var input = $('#confirm-word');
-    var needsForce = refund.pct === 0 && b.total > 0;
     forceField.hidden = !needsForce;
     input.value = '';
     input.required = needsForce;
     ZO.Form.clearError($('#dlg-cancel'), 'confirmWord');
+    syncForceState();
   }
 
   function renderDatesDialog() {
@@ -635,16 +647,25 @@
 
     /* Step 3: confirm */
     var confirmForm = $('[data-confirm-form]');
+
+    /* Typing the word is what releases the destructive button, so the button's
+       state and its spoken reason follow every keystroke. */
+    ZO.on($('#confirm-word'), 'input', function () {
+      ZO.Form.clearError($('#dlg-cancel'), 'confirmWord');
+      syncForceState();
+    });
+
     ZO.on(confirmForm, 'submit', function (event) {
       event.preventDefault();
       var b = booking();
       var refund = L.refundQuote(b, new Date());
-      var needsForce = refund.pct === 0 && b.total > 0;
+      var needsForce = losesEverything(b);
 
       if (needsForce) {
         var typed = ($('#confirm-word').value || '').trim().toUpperCase();
         if (typed !== 'CANCEL') {
           ZO.Form.setError($('#dlg-cancel'), 'confirmWord', 'Please type CANCEL to confirm, in capitals or lower case');
+          syncForceState();
           $('#confirm-word').focus();
           return;
         }

@@ -112,20 +112,32 @@
     /* 2. opening the exit prompt */
     ZO.Flows.openExitPrompt('dates', trigger);
     check('exit prompt opens', !$('#dlg-exit').hidden);
-    check('headline reads "Plans changed?"',
-      $('#dlg-exit-title').textContent.trim() === 'Plans changed?',
+    check('headline reads "Change your dates instead?"',
+      $('#dlg-exit-title').textContent.trim() === 'Change your dates instead?',
       $('#dlg-exit-title').textContent.trim());
-    check('message offers the alternative before the exit',
-      /may not need to give up your stay/.test($('#dlg-exit-desc').textContent));
+    check('header, description and primary CTA share the verb "change"',
+      /\bChange\b/.test($('#dlg-exit-title').textContent) &&
+      /\bChange\b/.test($('#dlg-exit-desc').textContent) &&
+      /\bChange\b/.test($('#dlg-exit [data-exit-primary]').textContent));
+    check('the description states the free change left on this rate',
+      /free date change/.test($('#dlg-exit-desc').textContent),
+      $('#dlg-exit-desc').textContent);
     check('the primary button says "Change my dates"',
       $('#dlg-exit [data-exit-primary]').textContent.trim() === 'Change my dates',
       $('#dlg-exit [data-exit-primary]').textContent.trim());
     check('the destructive button says "Continue cancellation"',
       $('#dlg-exit [data-exit-cancel]').textContent.trim() === 'Continue cancellation');
+    check('the prompt offers exactly two choices',
+      document.querySelectorAll('#dlg-exit .dialog__actions .btn').length === 2,
+      document.querySelectorAll('#dlg-exit .dialog__actions .btn').length + ' buttons');
     check('the photograph rendered inside the dialog',
       !!$('#dlg-exit .dialog__art img'));
-    check('what the guest keeps is filled in from their booking',
-      /6,999/.test($('#dlg-exit [data-slot="keeps"]').textContent));
+    check('the consequence line states the refund against the amount paid',
+      /refundable/.test($('#dlg-exit [data-slot="consequence"]').textContent) &&
+      /₹/.test($('#dlg-exit [data-slot="consequence"]').textContent),
+      $('#dlg-exit [data-slot="consequence"]').textContent);
+    check('the room rate is no longer repeated inside the prompt',
+      !/6,999 a night/.test($('#dlg-exit .dialog__body').textContent));
     check('focus moved into the dialog, onto the primary action',
       document.activeElement === $('#dlg-exit [data-exit-primary]'),
       document.activeElement ? document.activeElement.className : 'none');
@@ -220,16 +232,31 @@
     // Continue to the confirmation.
     $('#dlg-reason [data-reason-continue]').click();
     check('the confirmation step opens', !$('#dlg-cancel').hidden);
+    check('the confirmation header reads "Cancel booking?"',
+      $('#dlg-cancel-title').textContent.trim() === 'Cancel booking?',
+      $('#dlg-cancel-title').textContent.trim());
     check('the confirmation header, description and button share the verb "cancel"',
-      /Cancel this booking\?/.test($('#dlg-cancel-title').textContent) &&
-      /Cancelling releases/.test($('#dlg-cancel [data-slot="desc"]').textContent) &&
+      /^Cancel booking\?$/.test($('#dlg-cancel-title').textContent.trim()) &&
+      /^Cancel your /.test($('#dlg-cancel [data-slot="desc"]').textContent) &&
       /Cancel booking/.test($('#dlg-cancel [data-confirm-cancel]').textContent));
     check('the confirmation states the refund in rupees',
       /₹/.test($('#dlg-cancel [data-slot="desc"]').textContent));
+    check('the confirmation says the room is released',
+      /room will be released/.test($('#dlg-cancel [data-slot="desc"]').textContent));
     check('the safe choice takes focus, not the destructive one',
-      document.activeElement && document.activeElement.textContent.trim() === 'Keep my booking');
+      document.activeElement && document.activeElement.textContent.trim() === 'Keep booking',
+      document.activeElement ? document.activeElement.textContent.trim() : 'none');
+    check('the safe choice is the emphasised button',
+      /btn--primary/.test($('#dlg-cancel [data-confirm-keep]').className) &&
+      /btn--quiet-danger/.test($('#dlg-cancel [data-confirm-cancel]').className));
     check('a refundable booking is not asked to type CANCEL',
       $('#dlg-cancel [data-slot="forceField"]').hidden);
+    // The property alone is not enough: a display rule can outrank [hidden].
+    check('and the forcing function is really off screen, not just flagged hidden',
+      getComputedStyle($('#dlg-cancel [data-slot="forceField"]')).display === 'none',
+      getComputedStyle($('#dlg-cancel [data-slot="forceField"]')).display);
+    check('a refundable booking leaves the cancel button enabled',
+      $('#dlg-cancel [data-confirm-cancel]').getAttribute('aria-disabled') === null);
 
     $('[data-confirm-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     check('confirming cancels the booking', applied.cancel !== null);
@@ -249,11 +276,32 @@
     $('#reason-trip').dispatchEvent(new Event('change', { bubbles: true }));
     $('#dlg-reason [data-reason-continue]').click();
     check('a non-refundable booking asks the guest to type CANCEL',
-      !$('#dlg-cancel [data-slot="forceField"]').hidden);
+      !$('#dlg-cancel [data-slot="forceField"]').hidden &&
+      getComputedStyle($('#dlg-cancel [data-slot="forceField"]')).display !== 'none');
+    check('the non-refundable header names the consequence',
+      $('#dlg-cancel-title').textContent.trim() === 'Cancel non-refundable booking?',
+      $('#dlg-cancel-title').textContent.trim());
+    check('the description says the amount is non-refundable and the room released',
+      /non-refundable/.test($('#dlg-cancel [data-slot="desc"]').textContent) &&
+      /room will be released/.test($('#dlg-cancel [data-slot="desc"]').textContent));
+    check('the cancel button starts unavailable',
+      $('#dlg-cancel [data-confirm-cancel]').getAttribute('aria-disabled') === 'true');
+    check('the reason it is unavailable is announced',
+      /type CANCEL/.test($('#dlg-cancel [data-slot="forceStatus"]').textContent) &&
+      $('#dlg-cancel [data-slot="forceStatus"]').getAttribute('aria-live') === 'polite',
+      $('#dlg-cancel [data-slot="forceStatus"]').textContent);
     $('[data-confirm-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     check('cancelling is blocked until the word is typed',
       applied.cancel === null && !$('[data-error-for="confirmWord"]').hidden);
     $('#confirm-word').value = 'cancel';
+    $('#confirm-word').dispatchEvent(new Event('input', { bubbles: true }));
+    check('typing CANCEL releases the cancel button',
+      $('#dlg-cancel [data-confirm-cancel]').getAttribute('aria-disabled') === 'false');
+    check('the release is announced too',
+      /now available/.test($('#dlg-cancel [data-slot="forceStatus"]').textContent));
+    check('"Keep booking" stayed available throughout',
+      !$('#dlg-cancel [data-confirm-keep]').hidden &&
+      $('#dlg-cancel [data-confirm-keep]').textContent.trim() === 'Keep booking');
     $('[data-confirm-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     check('the typed word is accepted in either case', applied.cancel !== null);
     check('no refund is promised on the Saver rate',

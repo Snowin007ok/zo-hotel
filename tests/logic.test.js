@@ -450,7 +450,7 @@ test('dialog markup in flows.js is accessible and free of exclamation points', (
 
   variants.forEach((key) => {
     const v = Flows.VARIANTS[key];
-    ['headline', 'message', 'micro'].forEach((field) => {
+    ['headline', 'message'].forEach((field) => {
       assert.ok(v[field] && v[field].length > 0, `${key}.${field} exists`);
       assert.doesNotMatch(v[field], /!/, `${key}.${field} has no exclamation point`);
       assert.doesNotMatch(v[field], /are you sure/i, `${key}.${field} avoids "are you sure"`);
@@ -460,11 +460,19 @@ test('dialog markup in flows.js is accessible and free of exclamation points', (
     assert.match(v.headline[0], /[A-Z]/, `${key} headline starts with a capital`);
     assert.doesNotMatch(v.headline, /\.$/, `${key} headline takes no trailing period`);
 
+    // The guide's first rule: one action verb across header, description, CTA.
+    const verb = v.primary.label.split(' ')[0];
+    const carriesVerb = new RegExp(`\\b${verb}\\b`, 'i');
+    assert.match(v.headline, carriesVerb, `${key} headline carries the verb "${verb}"`);
+    assert.match(v.message, carriesVerb, `${key} description carries the verb "${verb}"`);
+
     // The primary CTA names an action rather than saying OK or Continue.
     assert.doesNotMatch(v.primary.label, /^(ok|okay|continue|proceed|submit|yes|no)$/i);
     assert.ok(v.primary.action, `${key} primary CTA has an action`);
-    assert.equal(v.secondary.label, 'Keep my booking');
-    assert.equal(v.tertiary.label, 'Continue cancellation');
+
+    // Two choices only, so the prompt carries no third "keep" button.
+    assert.equal(v.secondary, undefined, `${key} has no third CTA`);
+    assert.equal(v.tertiary, undefined, `${key} has no third CTA`);
   });
 
   // Every reason that offers a fix names its button.
@@ -547,13 +555,28 @@ test('the customer-facing pages never say "why guests cancel"', () => {
 
 test('the exit prompt keeps the destructive route available but not default', () => {
   const src = fs.readFileSync(path.join(ROOT, 'assets/js/flows.js'), 'utf8');
-  // Cancelling is a quiet button; keeping and the offer are the filled ones.
+  // Cancelling is a quiet button; the alternative is the filled one.
   assert.match(src, /btn--quiet-danger" data-exit-cancel/);
   assert.match(src, /btn--primary" data-exit-primary/);
   // The confirmation step uses the same verb in header, description and button.
-  assert.match(src, /Cancel this booking\?/);
-  assert.match(src, /Cancelling releases your/);
+  assert.match(src, /'Cancel booking\?'/);
+  assert.match(src, /'Cancel non-refundable booking\?'/);
+  assert.match(src, /'Cancel your ' \+ p\.name/);
   assert.match(src, /data-confirm-cancel>Cancel booking</);
+  // On the consequential step the safe action is the emphasised one.
+  assert.match(src, /btn--primary"[^>]*data-confirm-keep[^>]*>Keep booking</);
+  assert.match(src, /btn--quiet-danger" data-confirm-cancel/);
+});
+
+test('the forcing function fires only when the guest loses the whole amount', () => {
+  const src = fs.readFileSync(path.join(ROOT, 'assets/js/flows.js'), 'utf8');
+  // One predicate decides it, so the friction cannot drift onto refundable rates.
+  assert.match(src, /function losesEverything\(b\) \{[\s\S]*?refund\.amount === 0 && b\.total > 0/);
+  assert.match(src, /forceField\.hidden = !needsForce/);
+  assert.match(src, /var needsForce = losesEverything\(b\)/);
+  // And it says out loud why the destructive button is unavailable.
+  assert.match(src, /Cancel booking is unavailable until you type CANCEL/);
+  assert.match(src, /aria-live="polite"/);
 });
 
 test('dialogs declare the ARIA a modal needs', () => {
