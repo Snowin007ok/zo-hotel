@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Part A: exit prompt — ZO Hotel</title>
+<meta name="description" content="The exit prompt ZO Hotel shows when a guest starts to cancel: headline, persuasive message, call to action, and image, with the data behind it.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%2306394a'/%3E%3Cpath d='M9 12h14l-9 8h9' stroke='%23c9a979' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body class="page--solid">
+
+<a class="skip-link" href="#main">Skip to the main content</a>
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a class="brand" href="index.html">
+      <span class="brand__wave" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9c3-3 5-3 8 0s5 3 8 0M2 15c3-3 5-3 8 0s5 3 8 0"/></svg>
+      </span>
+      <span>ZO Hotel<small>Mumbai · Goa</small></span>
+    </a>
+
+    <button class="nav__toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      Menu
+    </button>
+
+    <nav class="nav" id="site-nav" data-nav aria-label="Main">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="index.html#stays">Stays</a></li>
+        <li><a class="nav__link" href="index.html#mumbai">Mumbai</a></li>
+        <li><a class="nav__link" href="index.html#goa">Goa</a></li>
+        <li><a class="nav__link" href="index.html#rooms">Rooms</a></li>
+        <li><a class="nav__link" href="flexible-booking.html">Flexible booking</a></li>
+        <li><a class="nav__link" href="index.html#faq">FAQ</a></li>
+        <li aria-hidden="true"><span class="nav__divider"></span></li>
+        <li><a class="nav__link" href="manage.html">Manage booking</a></li>
+        <li class="nav__cta"><a class="btn btn--primary btn--sm" href="booking.html">Book a stay</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="section">
+  <div class="container doc">
+
+    <p class="eyebrow">Part A deliverable</p>
+    <h1>The exit prompt we show when a guest starts to cancel</h1>
+    <p class="mb-0 lede">
+      One cancellation reason, one prompt. Below: the reason I picked and why, the live component, the
+      four required pieces of copy, and the style-guide rule behind each decision.
+    </p>
+
+    <div class="chip-row mt-3">
+      <span class="chip chip--neutral">Reason: dates changed</span>
+      <span class="chip chip--neutral">Trigger: “Cancel booking”</span>
+      <span class="chip chip--neutral">Pattern: confirmation dialog</span>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="reason">The cancellation reason I picked</h2>
+    <p>
+      The dataset behind this assignment holds 119,390 bookings, 37% of which were cancelled. Splitting
+      those bookings by what happened to them before the cancellation gives a clear ranking of what to fix.
+    </p>
+
+    <div class="table-wrap">
+      <table class="data" data-stacked>
+        <caption>Cancellation rate within each group. Higher means the group cancelled more often.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Signal in the booking</th>
+            <th scope="col">Cancellation rate</th>
+            <th scope="col">What it suggests the guest felt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Booking never modified</th>
+            <td>41%</td>
+            <td>Nothing could be adjusted, so the only exit was cancelling</td>
+          </tr>
+          <tr>
+            <th scope="row">Booking changed once</th>
+            <td>14%</td>
+            <td>Something could be adjusted, so the trip survived</td>
+          </tr>
+          <tr>
+            <th scope="row">Non-refundable rate</th>
+            <td>99%</td>
+            <td>Locked in, and cancelled anyway</td>
+          </tr>
+          <tr>
+            <th scope="row">No special request attached</th>
+            <td>48%</td>
+            <td>Nothing confirmed, so nothing to lose</td>
+          </tr>
+          <tr>
+            <th scope="row">Booked more than six months ahead</th>
+            <td>56%</td>
+            <td>Plans moved in the months between booking and arrival</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rule-note">
+      <strong>The reason I chose: “my dates changed.”</strong>
+      It is the reason with the cheapest fix and the strongest evidence. A booking that gets changed once
+      is cancelled 14% of the time; a booking nobody touches is cancelled 41% of the time. Long lead times
+      make the same point from the other direction — 56% of bookings made more than six months ahead were
+      cancelled, because plans move. So the prompt does not argue with the guest. It offers the one thing
+      that keeps the booking alive: different dates.
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="live">The component, running</h2>
+    <p>
+      This is the real dialog from the site, not a screenshot. It reads a demo booking that checks in
+      twelve days from today, so the dates and refund figures inside it are live.
+    </p>
+
+    <div class="card card--ivory">
+      <p class="label" style="margin-bottom:.5rem">Demo booking</p>
+      <div id="demo-state"></div>
+
+      <div class="btn-row mt-3">
+        <button class="btn btn--primary" type="button" data-open-variant="dates">
+          Open the exit prompt
+        </button>
+        <button class="btn btn--outline" type="button" data-open-variant="price">
+          Variant: lower price found
+        </button>
+        <button class="btn btn--outline" type="button" data-open-variant="requests">
+          Variant: requests not confirmed
+        </button>
+        <button class="btn btn--ghost" type="button" data-reset-demo>Reset the demo</button>
+      </div>
+
+      <p class="tiny muted mt-2 mb-0">
+        Take any branch you like. Choosing <strong>Continue cancellation</strong> inside the prompt moves
+        on to the reason step and then the confirmation, exactly as it does on the
+        <a href="manage.html">manage booking page</a>.
+      </p>
+    </div>
+
+    <div id="demo-result" class="mt-3" aria-live="polite"></div>
+
+    <!-- ================================================================= -->
+    <h2 id="deliverables">The four required pieces</h2>
+
+    <div class="spec">
+      <div class="spec__row">
+        <p class="spec__key mb-0">Headline</p>
+        <div class="spec__val">
+          <p style="font-family:var(--serif);font-size:1.5rem;color:var(--navy);margin:0 0 .5rem">
+            Plans changed?
+          </p>
+          <p class="small muted mb-0">
+            Two words. It names the guest's situation without arguing with it, and opens the door to an
+            alternative instead of presenting an obstacle. Sentence case, no exclamation point, and no
+            “are you sure”.
+          </p>
+        </div>
+      </div>
+
+      <div class="spec__row">
+        <p class="spec__key mb-0">Persuasive message</p>
+        <div class="spec__val">
+          <p style="margin:0 0 .75rem">
+            You may not need to give up your stay. Move your dates instead and keep your booking.
+          </p>
+          <p class="small mb-1"><strong>Followed by what the guest keeps, filled in from their own booking:</strong></p>
+          <ul class="small" style="color:var(--ink-soft)">
+            <li>Your city comfort room at ZO Hotel Mumbai, held at ₹6,999 a night</li>
+            <li>2 free date changes left on your Flexible rate</li>
+            <li>Free cancellation still open until 21 Aug 2026, 2:00 pm</li>
+          </ul>
+          <p style="margin:.5rem 0"><em>No change fee, no new price.</em></p>
+          <p class="small muted mb-0">
+            “You may not need to” offers a way out without telling the guest they are wrong. The loss is
+            framed around the room and the rate, which are concrete, rather than around money they are
+            about to get back anyway. Every line beneath it is specific to their booking, so none of it
+            reads as a template. The closing line carries a period because the comma makes it complex.
+          </p>
+        </div>
+      </div>
+
+      <div class="spec__row">
+        <p class="spec__key mb-0">Call to action</p>
+        <div class="spec__val">
+          <div class="mock">
+            <div class="mock__actions" style="justify-content:space-between">
+              <span class="mock__btn" style="border-color:transparent;color:var(--danger);text-decoration:underline">Continue cancellation</span>
+              <span>
+                <span class="mock__btn">Keep my booking</span>
+                <span class="mock__btn mock__btn--primary">Change my dates</span>
+              </span>
+            </div>
+          </div>
+          <p class="small muted mt-2 mb-0">
+            <strong>Change my dates</strong> is the primary action and it names exactly what it does.
+            Nothing here says Yes, No, OK, or Proceed. The route the guest originally asked for stays
+            fully available and readable as <strong>Continue cancellation</strong>, but it is a quiet text
+            button on the far side of the dialog rather than the default.
+          </p>
+        </div>
+      </div>
+
+      <div class="spec__row">
+        <p class="spec__key mb-0">Image</p>
+        <div class="spec__val">
+          <div class="dialog__art" id="art-preview" style="border-radius:var(--radius-sm);height:170px"></div>
+          <p class="small muted mt-2 mb-0">
+            A photograph of the poolside the guest is about to give up, rather than an icon or an
+            illustration. It carries alternative text for screen readers, sits under a light gradient so
+            the close control stays visible, and is never displayed larger than its own pixel dimensions.
+          </p>
+        </div>
+      </div>
+
+      <div class="spec__row">
+        <p class="spec__key mb-0">Where it appears</p>
+        <div class="spec__val">
+          <p class="mb-0 small">
+            A modal dialog, shown the moment a guest chooses <strong>Cancel booking</strong> on the manage
+            page. Focus lands on <strong>Change my dates</strong>, <kbd>Esc</kbd> and the backdrop both
+            keep the booking, and focus returns to the button the guest came from. It appears once per
+            cancellation attempt, so it never becomes the noise the style guide warns about.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="rules">Why the copy is written this way</h2>
+    <p>Each row is a rule from the Zoho UI Best Practices manual and what it changed in this component.</p>
+
+    <div class="table-wrap">
+      <table class="data" data-stacked>
+        <thead>
+          <tr>
+            <th scope="col">Rule from the manual</th>
+            <th scope="col">What it changed here</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Default to sentence case</th>
+            <td>Every heading, label, and button on the site is sentence case. The only all-caps text is the small section eyebrow, which the manual allows for demarcating sections.</td>
+          </tr>
+          <tr>
+            <th scope="row">Periods only for complex or multi-sentence microcopy</th>
+            <td>The headline has none. “No change fee, no new price.” keeps one, because the comma makes it complex.</td>
+          </tr>
+          <tr>
+            <th scope="row">Use exclamation points sparingly, never in confirmations or CTAs</th>
+            <td>There is not one exclamation point anywhere in this project.</td>
+          </tr>
+          <tr>
+            <th scope="row">Avoid “Are you sure” language</th>
+            <td>The confirmation step asks “Cancel this booking?” and then states the consequence, instead of asking the guest to reassure us.</td>
+          </tr>
+          <tr>
+            <th scope="row">Use the same action verb in header, description, and CTA</th>
+            <td>The confirmation uses <em>cancel</em> in all three: “Cancel this booking?”, “Cancelling releases your city comfort room…”, and the button “Cancel booking”.</td>
+          </tr>
+          <tr>
+            <th scope="row">Never use generic CTAs</th>
+            <td>Buttons read Change my dates, Keep my booking, Continue cancellation, Add requests, Find my booking. No Yes, No, OK, or Proceed.</td>
+          </tr>
+          <tr>
+            <th scope="row">Put the affirmative CTA on the right, and add friction for critical actions</th>
+            <td>In the confirmation step the emphasised right-hand button is <strong>Keep my booking</strong> and cancelling is the quiet button on the left. That is the manual's “more friction” pattern, chosen deliberately because cancelling costs the guest money and cannot be undone.</td>
+          </tr>
+          <tr>
+            <th scope="row">Reserve a forcing function for the most extreme cases</th>
+            <td>On a non-refundable Saver booking, where the guest loses the whole amount, the confirmation asks them to type CANCEL. On refundable rates it does not, because that friction would be theatre.</td>
+          </tr>
+          <tr>
+            <th scope="row">Avoid “Click here” and “Learn more”</th>
+            <td>Links name their destination: “manage booking page”, “See the exit prompt built on this”, “See flexible booking options”.</td>
+          </tr>
+          <tr>
+            <th scope="row">Error messages state the issue and the fix, without blame</th>
+            <td>“Please pick a reason so we know what to fix.” “Check-out must be at least one night after check-in.” Never “You didn't…”.</td>
+          </tr>
+          <tr>
+            <th scope="row">Apologise only for system errors</th>
+            <td>Sold-out dates get “Sorry, we are fully booked over the new year period.” A mistyped booking reference does not get an apology, just the way forward.</td>
+          </tr>
+          <tr>
+            <th scope="row">Success alerts are short, with at most one action</th>
+            <td>“Dates changed”, with a single Undo. The pattern is {thing} {action done}.</td>
+          </tr>
+          <tr>
+            <th scope="row">Never put critical information in a temporary alert</th>
+            <td>The cancellation outcome, refund amount, and refund reference go in a persistent banner that stays until dismissed. Only reversible successes use a toast.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="compare">What I deliberately did not write</h2>
+    <p>
+      The version on the left is what this dialog looks like when nobody applies the manual. It is also
+      what most booking sites ship.
+    </p>
+
+    <div class="compare">
+      <div class="compare__col compare__col--bad">
+        <p class="compare__label mb-0">Don't</p>
+        <div class="compare__body">
+          <div class="mock">
+            <p class="mock__title">Warning</p>
+            <p class="small mb-0">Are you sure you want to cancel this booking?</p>
+            <div class="mock__actions">
+              <span class="mock__btn">Cancel</span>
+              <span class="mock__btn mock__btn--danger">OK</span>
+            </div>
+          </div>
+          <ul>
+            <li>Alarmist header on a message that is not an emergency</li>
+            <li>“Are you sure” adds words and no information</li>
+            <li>“Cancel” and “OK” are ambiguous: one cancels the dialog, the other cancels the holiday</li>
+            <li>No consequence stated: no refund figure, no deadline, no mention of the room</li>
+            <li>No alternative offered, so the only exit is the one that loses the booking</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="compare__col compare__col--good">
+        <p class="compare__label mb-0">Do</p>
+        <div class="compare__body">
+          <div class="mock">
+            <p class="mock__title">Plans changed?</p>
+            <p class="small mb-0">
+              You may not need to give up your stay. Move your dates instead and keep your booking.
+            </p>
+            <div class="mock__actions" style="justify-content:space-between">
+              <span class="mock__btn" style="border-color:transparent;color:var(--danger);text-decoration:underline">Continue cancellation</span>
+              <span>
+                <span class="mock__btn">Keep my booking</span>
+                <span class="mock__btn mock__btn--primary">Change my dates</span>
+              </span>
+            </div>
+          </div>
+          <ul>
+            <li>Names the guest's situation before offering anything</li>
+            <li>Every button says what it does to the booking</li>
+            <li>States what is kept, using their room, their rate, their deadline</li>
+            <li>Offers the alternative the data supports, and keeps cancelling one click away</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="variants">Two more variants, for the next two reasons</h2>
+    <p>
+      The same component answers the other high-cancellation signals in the data. Both are live in the
+      demo above.
+    </p>
+
+    <div class="grid grid--2">
+      <article class="card">
+        <span class="chip chip--neutral">Reason: found a lower price</span>
+        <h3 class="mt-2">Found it cheaper somewhere else?</h3>
+        <p class="small">
+          Send us the link and you may not need to cancel at all. If the same room and dates are publicly
+          listed for less, we match that price and take another 10% off it.
+        </p>
+        <p class="small muted mb-0">
+          <strong>CTA:</strong> Send the price link — which opens a one-field form with URL validation.
+          <br>
+          <strong>Evidence:</strong> third-party bookings cancelled 41% of the time, against 17% booked direct.
+        </p>
+      </article>
+
+      <article class="card">
+        <span class="chip chip--neutral">Reason: requests not confirmed</span>
+        <h3 class="mt-2">Waiting on something?</h3>
+        <p class="small">
+          You may not need to give up your stay. Tell us what you need — parking, early check-in, a cot, a
+          Jain meal — and we confirm it in writing before you arrive.
+        </p>
+        <p class="small muted mb-0">
+          <strong>CTA:</strong> Confirm my requests — which opens the requests dialog.
+          <br>
+          <strong>Evidence:</strong> 48% cancellation with no request attached, 22% with one confirmed.
+        </p>
+      </article>
+    </div>
+
+    <h2 id="next">Where this sits in the site</h2>
+    <ol>
+      <li><a href="index.html">The home page</a> sells the two hotels first, then presents flexible booking as reassurance rather than policy.</li>
+      <li><a href="flexible-booking.html">The flexible booking page</a> is Part B in full: the six cancellation reasons, the whole policy, and the trust section.</li>
+      <li><a href="booking.html">The booking page</a> puts the cancellation terms next to the price, while the guest is choosing a rate.</li>
+      <li><a href="manage.html">The manage page</a> is where this exit prompt fires, followed by the reason step and the confirmation.</li>
+      <li><a href="style-guide.html">The style guide</a> records the copy decisions this project committed to.</li>
+    </ol>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="margin-top:0;border-top:0">
+      <p class="mb-0">© <span data-year>2026</span> ZO Hotel. Fictional brand, built for a content-writing assignment.</p>
+      <p class="mb-0">
+        <a href="index.html">Home</a> ·
+        <a href="booking.html">Book a stay</a> ·
+        <a href="manage.html">Manage booking</a> ·
+        <a href="style-guide.html">Style guide</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/logic.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/dialog.js"></script>
+<script src="assets/js/forms.js"></script>
+<script src="assets/js/flows.js"></script>
+<script src="assets/js/part-a.js"></script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book a stay — ZO Hotel</title>
+<meta name="description" content="Book a room at ZO Hotel Mumbai or Goa. Pick a Flexible rate for free cancellation up to 24 hours before check-in.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%2306394a'/%3E%3Cpath d='M9 12h14l-9 8h9' stroke='%23c9a979' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body class="page--solid">
+
+<a class="skip-link" href="#main">Skip to the main content</a>
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a class="brand" href="index.html">
+      <span class="brand__wave" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9c3-3 5-3 8 0s5 3 8 0M2 15c3-3 5-3 8 0s5 3 8 0"/></svg>
+      </span>
+      <span>ZO Hotel<small>Mumbai · Goa</small></span>
+    </a>
+
+    <button class="nav__toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      Menu
+    </button>
+
+    <nav class="nav" id="site-nav" data-nav aria-label="Main">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="index.html#stays">Stays</a></li>
+        <li><a class="nav__link" href="index.html#mumbai">Mumbai</a></li>
+        <li><a class="nav__link" href="index.html#goa">Goa</a></li>
+        <li><a class="nav__link" href="index.html#rooms">Rooms</a></li>
+        <li><a class="nav__link" href="flexible-booking.html">Flexible booking</a></li>
+        <li><a class="nav__link" href="index.html#faq">FAQ</a></li>
+        <li aria-hidden="true"><span class="nav__divider"></span></li>
+        <li><a class="nav__link" href="manage.html">Manage booking</a></li>
+        <li class="nav__cta"><a class="btn btn--primary btn--sm" href="booking.html" aria-current="page">Book a stay</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="section">
+  <div class="container">
+
+    <div class="section__head">
+      <p class="eyebrow">Reserve your stay</p>
+      <h1>Book a room</h1>
+      <p>
+        Pick your dates and your rate. The Flexible rate is selected for you, because it is the one
+        you can cancel free up to 24 hours before check-in.
+      </p>
+    </div>
+
+    <noscript>
+      <div class="banner banner--warn">
+        <span class="banner__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l8.5 15H3.5L12 4z"/><path d="M12 10v4M12 17h.01"/></svg>
+        </span>
+        <div class="banner__body">
+          <p class="banner__title">This booking form needs JavaScript</p>
+          <p>Live pricing and validation run in your browser. Call +91 22 4000 1234 and we will book the room for you.</p>
+        </div>
+      </div>
+    </noscript>
+
+    <!-- Confirmation replaces the form once a booking succeeds -->
+    <div id="booking-confirmation" hidden></div>
+
+    <div class="booking-layout">
+
+      <div class="card" id="booking-form-card">
+        <form id="booking-form" novalidate>
+
+          <!-- Error summary: appears above the form, links to each field -->
+          <div class="error-summary" data-error-summary role="alert" hidden></div>
+
+          <h2 style="font-size:1.2rem">Your stay</h2>
+          <div class="form-grid">
+            <div class="field">
+              <label class="label" for="property">Property <span class="req" aria-hidden="true">*</span></label>
+              <select class="select" id="property" name="property">
+                <option value="mumbai">ZO Hotel Mumbai · Marine Lines</option>
+                <option value="goa">ZO Hotel Goa · Baga Beach</option>
+              </select>
+              <p class="error-text" data-error-for="property" id="err-property" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="roomId">Room type <span class="req" aria-hidden="true">*</span></label>
+              <select class="select" id="roomId" name="roomId">
+                <!-- Options are built from the rate card in booking.js -->
+              </select>
+              <p class="error-text" data-error-for="roomId" id="err-roomId" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="checkIn">Check-in <span class="req" aria-hidden="true">*</span></label>
+              <p class="hint" id="hint-checkIn">Rooms are ready from 2:00 pm</p>
+              <input class="input" type="date" id="checkIn" name="checkIn" aria-describedby="hint-checkIn">
+              <p class="error-text" data-error-for="checkIn" id="err-checkIn" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="checkOut">Check-out <span class="req" aria-hidden="true">*</span></label>
+              <p class="hint" id="hint-checkOut">Check-out by 11:00 am</p>
+              <input class="input" type="date" id="checkOut" name="checkOut" aria-describedby="hint-checkOut">
+              <p class="error-text" data-error-for="checkOut" id="err-checkOut" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="guests">Guests <span class="req" aria-hidden="true">*</span></label>
+              <p class="hint" id="hint-guests">Up to 8 in one booking</p>
+              <input class="input" type="number" id="guests" name="guests" value="2" min="1" max="8" step="1" inputmode="numeric" aria-describedby="hint-guests">
+              <p class="error-text" data-error-for="guests" id="err-guests" hidden></p>
+            </div>
+          </div>
+
+          <hr>
+
+          <fieldset id="plan-fieldset">
+            <legend style="display:flex;align-items:center;gap:.4rem">
+              Rate <span class="req" aria-hidden="true">*</span>
+              <span class="tip" data-tip>
+                <button class="tip__btn" type="button" aria-label="How the three rates differ" aria-describedby="tip-rates">?</button>
+                <span class="tip__bubble" id="tip-rates" role="tooltip" hidden>
+                  The cheaper the rate, the less you get back if you cancel. Flexible costs the most and
+                  refunds in full until 24 hours before check-in.
+                </span>
+              </span>
+            </legend>
+
+            <div class="option-list" id="plan-list">
+              <label class="option" for="plan-flexible" data-plan="flexible">
+                <input type="radio" id="plan-flexible" name="planId" value="flexible" checked>
+                <span class="option__text">
+                  <span class="option__title">
+                    Flexible
+                    <span class="chip chip--success">Recommended</span>
+                    <span class="option__price" data-plan-price></span>
+                  </span>
+                  <span class="option__note">
+                    Free cancellation until 24 hours before check-in. Two free date changes, then ₹750 each.
+                  </span>
+                </span>
+              </label>
+
+              <label class="option" for="plan-semiflex" data-plan="semiflex">
+                <input type="radio" id="plan-semiflex" name="planId" value="semiflex">
+                <span class="option__text">
+                  <span class="option__title">
+                    Semi-flex
+                    <span class="option__price" data-plan-price></span>
+                  </span>
+                  <span class="option__note">
+                    Free cancellation until 7 days before check-in, then half the amount back. One free date change.
+                  </span>
+                </span>
+              </label>
+
+              <label class="option" for="plan-saver" data-plan="saver">
+                <input type="radio" id="plan-saver" name="planId" value="saver">
+                <span class="option__text">
+                  <span class="option__title">
+                    Saver
+                    <span class="option__price" data-plan-price></span>
+                  </span>
+                  <span class="option__note">
+                    The lowest price, and nothing back if you cancel. Date changes cost ₹1,000 plus any rate difference.
+                  </span>
+                </span>
+              </label>
+            </div>
+            <p class="error-text" data-error-for="planId" id="err-planId" hidden></p>
+          </fieldset>
+
+          <hr>
+
+          <fieldset>
+            <legend>Requests <span class="muted" style="font-weight:400">(optional)</span></legend>
+            <p class="hint" style="margin-bottom:.75rem">
+              We confirm each one in writing within two hours. Guests who confirm a request before
+              arriving cancel far less often, so this is worth 20 seconds.
+            </p>
+
+            <div class="option-list">
+              <label class="option" for="req-parking">
+                <input type="checkbox" id="req-parking" name="requests" value="parking" data-group="true">
+                <span class="option__text">
+                  <span class="option__title">Car parking</span>
+                  <span class="option__note">Free, on site at both properties</span>
+                </span>
+              </label>
+
+              <label class="option" for="req-earlyCheckin">
+                <input type="checkbox" id="req-earlyCheckin" name="requests" value="earlyCheckin" data-group="true">
+                <span class="option__text">
+                  <span class="option__title">Early check-in</span>
+                  <span class="option__note">From 9:00 am, free when a room is ready</span>
+                </span>
+              </label>
+
+              <label class="option" for="req-view">
+                <input type="checkbox" id="req-view" name="requests" value="view" data-group="true">
+                <span class="option__text">
+                  <span class="option__title">Sea or city view</span>
+                  <span class="option__note">Confirmed at check-in</span>
+                </span>
+              </label>
+
+              <label class="option" for="req-extraBed">
+                <input type="checkbox" id="req-extraBed" name="requests" value="extraBed" data-group="true">
+                <span class="option__text">
+                  <span class="option__title">Extra bed or cot</span>
+                  <span class="option__note">₹900 a night, added to the total on the right</span>
+                </span>
+              </label>
+
+              <label class="option" for="req-meal-booking">
+                <input type="checkbox" id="req-meal-booking" name="requests" value="meal" data-group="true">
+                <span class="option__text">
+                  <span class="option__title">Meal preference</span>
+                  <span class="option__note">Vegetarian, non-vegetarian, or Jain</span>
+                </span>
+              </label>
+            </div>
+
+            <div class="field mt-2" id="meal-field" hidden>
+              <label class="label" for="meal">Which preference</label>
+              <select class="select" id="meal" name="meal" style="max-width:280px">
+                <option value="veg">Vegetarian</option>
+                <option value="nonveg">Non-vegetarian</option>
+                <option value="jain">Jain</option>
+              </select>
+            </div>
+          </fieldset>
+
+          <hr>
+
+          <h2 style="font-size:1.2rem">Lead guest</h2>
+          <div class="form-grid">
+            <div class="field field--full">
+              <label class="label" for="fullName">Full name <span class="req" aria-hidden="true">*</span></label>
+              <p class="hint" id="hint-fullName">As printed on the ID you will carry</p>
+              <input class="input" type="text" id="fullName" name="fullName" autocomplete="name" aria-describedby="hint-fullName">
+              <p class="error-text" data-error-for="fullName" id="err-fullName" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="email">Email <span class="req" aria-hidden="true">*</span></label>
+              <p class="hint" id="hint-email">Your confirmation and cancellation deadline go here</p>
+              <input class="input" type="email" id="email" name="email" autocomplete="email" aria-describedby="hint-email">
+              <p class="error-text" data-error-for="email" id="err-email" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="phone">
+                Mobile number <span class="req" aria-hidden="true">*</span>
+                <span class="tip" data-tip>
+                  <button class="tip__btn" type="button" aria-label="Why we ask for a mobile number" aria-describedby="tip-phone">?</button>
+                  <span class="tip__bubble" id="tip-phone" role="tooltip" hidden>
+                    If anything changes with your room on the day, we call this number before you travel.
+                  </span>
+                </span>
+              </label>
+              <p class="hint" id="hint-phone">10 digits, Indian number</p>
+              <input class="input" type="tel" id="phone" name="phone" autocomplete="tel" inputmode="numeric" aria-describedby="hint-phone">
+              <p class="error-text" data-error-for="phone" id="err-phone" hidden></p>
+            </div>
+          </div>
+
+          <div class="field mt-3">
+            <label class="checkline" for="consent">
+              <input type="checkbox" id="consent" name="consent">
+              <span>
+                I have read the cancellation terms for the rate I picked, shown in the summary.
+                <span class="req" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p class="error-text" data-error-for="consent" id="err-consent" hidden></p>
+          </div>
+
+          <div class="btn-row mt-3">
+            <button class="btn btn--primary" type="submit">Confirm booking</button>
+            <a class="btn btn--outline" href="index.html">Back to the home page</a>
+          </div>
+
+          <p class="tiny muted mt-2">
+            This is a coursework demo, so no payment is taken and no card details are collected.
+            Bookings are stored in this browser only.
+          </p>
+        </form>
+      </div>
+
+      <aside class="summary" id="summary-card" aria-labelledby="summary-title">
+        <h2 id="summary-title">Price summary</h2>
+        <div id="summary-body" aria-live="polite"></div>
+        <div class="summary__policy" id="summary-policy"></div>
+        <p class="tiny muted mt-2 mb-0">
+          Need to change something after booking? Everything is editable on the
+          <a href="manage.html">manage booking page</a>.
+        </p>
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="margin-top:0;border-top:0">
+      <p class="mb-0">© <span data-year>2026</span> ZO Hotel. Fictional brand, built for a content-writing assignment.</p>
+      <p class="mb-0">
+        <a href="index.html">Home</a> ·
+        <a href="manage.html">Manage booking</a> ·
+        <a href="part-a-exit-prompt.html">Part A: exit prompt</a> ·
+        <a href="style-guide.html">Style guide</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/logic.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/forms.js"></script>
+<script src="assets/js/booking.js"></script>
+</body>
+</html>

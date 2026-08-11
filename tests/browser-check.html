@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZO Hotel — browser behaviour check</title>
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+  body { padding: 24px; font-family: var(--sans); background: var(--soft-white); }
+  h1 { font-size: 1.5rem; }
+  #results { list-style: none; padding: 0; margin: 1rem 0 0; font-size: 14px; }
+  #results li { padding: 4px 0; border-bottom: 1px solid var(--line-soft); display: flex; gap: 8px; }
+  .ok { color: #1c6b52; font-weight: 700; }
+  .no { color: #a33224; font-weight: 700; }
+  #tally { font-size: 20px; font-weight: 700; margin-top: 12px; font-family: var(--mono); }
+</style>
+</head>
+<body>
+
+<h1>Browser behaviour check</h1>
+<p class="small muted">
+  Drives the real dialogs from <code>flows.js</code> in a real browser: focus handling, Escape,
+  the cancellation path, the date-change path, and validation. Open this file directly.
+</p>
+
+<div id="host"></div>
+<p id="tally">running…</p>
+<ol id="results"></ol>
+
+<script>
+  /* Test shim: dialog.js focuses inside requestAnimationFrame. Running rAF
+     callbacks immediately lets this whole suite run synchronously, so a
+     headless screenshot always captures the finished result. */
+  window.requestAnimationFrame = function (cb) { cb(performance.now()); return 0; };
+</script>
+<script src="../assets/js/logic.js"></script>
+<script src="../assets/js/core.js"></script>
+<script src="../assets/js/dialog.js"></script>
+<script src="../assets/js/forms.js"></script>
+<script src="../assets/js/flows.js"></script>
+<script>
+(function () {
+  'use strict';
+  var L = window.ZOLogic;
+  var ZO = window.ZO;
+  var out = document.getElementById('results');
+  var pass = 0;
+  var fail = 0;
+  var errors = [];
+
+  window.addEventListener('error', function (e) {
+    errors.push(e.message);
+  });
+
+  function check(name, condition, detail) {
+    var li = document.createElement('li');
+    var mark = document.createElement('span');
+    mark.className = condition ? 'ok' : 'no';
+    mark.textContent = condition ? 'PASS' : 'FAIL';
+    var text = document.createElement('span');
+    text.textContent = name + (condition || !detail ? '' : ' — ' + detail);
+    li.appendChild(mark);
+    li.appendChild(text);
+    out.appendChild(li);
+    condition ? pass++ : fail++;
+  }
+
+  function press(key) {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: key, bubbles: true, cancelable: true }));
+  }
+
+  /* --- a booking to operate on ------------------------------------------ */
+  var checkIn = L.addDays(L.todayISO(), 12);
+  var q = L.quote({ roomId: 'city', planId: 'flexible', checkIn: checkIn, checkOut: L.addDays(checkIn, 3) });
+  var booking = {
+    reference: 'ZO-1234-MUM', email: 'guest@example.com', property: 'mumbai',
+    roomId: 'city', planId: 'flexible', checkIn: checkIn, checkOut: L.addDays(checkIn, 3),
+    guests: 2, requests: {}, nights: q.nights, nightly: q.nightly, total: q.total,
+    changesUsed: 0, status: 'confirmed', cardTail: '4291'
+  };
+
+  var applied = { change: null, requests: null, cancel: null };
+
+  var trigger = document.createElement('button');
+  trigger.textContent = 'Cancel booking';
+  trigger.type = 'button';
+  document.getElementById('host').appendChild(trigger);
+
+  ZO.Flows.mount({
+    getBooking: function () { return booking; },
+    applyChange: function (c) { applied.change = c; },
+    applyRequests: function (r) { applied.requests = r; },
+    applyCancel: function (r) { applied.cancel = r; }
+  });
+
+  function $(s) { return document.querySelector(s); }
+
+  (function run() {
+    /* 1. mounting */
+    check('six dialogs are injected into the page',
+      document.querySelectorAll('.dialog-backdrop').length === 6,
+      document.querySelectorAll('.dialog-backdrop').length + ' found');
+    check('every dialog declares role, aria-modal and a label',
+      Array.prototype.every.call(document.querySelectorAll('.dialog'), function (d) {
+        return d.getAttribute('role') === 'dialog' &&
+          d.getAttribute('aria-modal') === 'true' &&
+          document.getElementById(d.getAttribute('aria-labelledby'));
+      }));
+    check('the exit prompt photograph is a real file, not an illustration',
+      /\.(jpg|jpeg|avif)$/.test(ZO.Flows.ART.dates.src));
+
+    /* 2. opening the exit prompt */
+    ZO.Flows.openExitPrompt('dates', trigger);
+    check('exit prompt opens', !$('#dlg-exit').hidden);
+    check('headline reads "Plans changed?"',
+      $('#dlg-exit-title').textContent.trim() === 'Plans changed?',
+      $('#dlg-exit-title').textContent.trim());
+    check('message offers the alternative before the exit',
+      /may not need to give up your stay/.test($('#dlg-exit-desc').textContent));
+    check('the primary button says "Change my dates"',
+      $('#dlg-exit [data-exit-primary]').textContent.trim() === 'Change my dates',
+      $('#dlg-exit [data-exit-primary]').textContent.trim());
+    check('the destructive button says "Continue cancellation"',
+      $('#dlg-exit [data-exit-cancel]').textContent.trim() === 'Continue cancellation');
+    check('the photograph rendered inside the dialog',
+      !!$('#dlg-exit .dialog__art img'));
+    check('what the guest keeps is filled in from their booking',
+      /6,999/.test($('#dlg-exit [data-slot="keeps"]').textContent));
+    check('focus moved into the dialog, onto the primary action',
+      document.activeElement === $('#dlg-exit [data-exit-primary]'),
+      document.activeElement ? document.activeElement.className : 'none');
+    check('the page behind is hidden from assistive tech',
+      document.body.children[0].getAttribute('aria-hidden') === 'true');
+    check('background scrolling is locked', document.body.style.overflow === 'hidden');
+
+    /* 3. Escape keeps the booking and restores focus */
+    press('Escape');
+    check('Escape closes the exit prompt', $('#dlg-exit').hidden);
+    check('focus returns to the button that opened it', document.activeElement === trigger);
+    check('scroll lock is released', document.body.style.overflow !== 'hidden');
+    check('the page is exposed to assistive tech again',
+      !document.body.children[0].hasAttribute('aria-hidden'));
+
+    /* 4. the alternative path — primary CTA leads to the date change */
+    ZO.Flows.openExitPrompt('dates', trigger);
+    $('#dlg-exit [data-exit-primary]').click();
+    check('"Change my dates" opens the date-change dialog',
+      !$('#dlg-dates').hidden && $('#dlg-exit').hidden);
+    check('the current dates are prefilled', $('#new-checkin').value === booking.checkIn);
+    check('on opening, the panel says these are the current dates',
+      /current dates/.test($('#dlg-dates [data-slot="quote"]').textContent),
+      $('#dlg-dates [data-slot="quote"]').textContent.trim().slice(0, 60));
+
+    // Editing a date should reprice live, before anything is confirmed.
+    $('#new-checkout').value = L.addDays(booking.checkIn, 5);
+    $('#new-checkout').dispatchEvent(new Event('input', { bubbles: true }));
+    check('editing a date reprices the stay live',
+      /New total/.test($('#dlg-dates [data-slot="quote"]').textContent),
+      $('#dlg-dates [data-slot="quote"]').textContent.trim().slice(0, 60));
+    check('the live quote states the change fee',
+      /Change fee/.test($('#dlg-dates [data-slot="quote"]').textContent));
+
+    /* 5. validation: check-out before check-in */
+    $('#new-checkin').value = L.addDays(checkIn, 20);
+    $('#new-checkout').value = L.addDays(checkIn, 20);
+    $('[data-dates-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    check('a same-day check-out is refused inline',
+      !$('[data-error-for="checkOut"]').hidden &&
+      /at least one night/.test($('[data-error-for="checkOut"]').textContent));
+    check('the booking was not changed by an invalid submission', applied.change === null);
+
+    /* 6. sold-out dates produce a persistent, apologetic failure */
+    $('#new-checkin').value = '2026-12-24';
+    $('#new-checkout').value = '2026-12-27';
+    $('[data-dates-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    var alertBox = $('#dlg-dates [data-slot="alert"]');
+    check('sold-out dates raise a failure banner',
+      !!alertBox.querySelector('.banner--error'));
+    check('the failure apologises, because it is ours',
+      /Sorry/.test(alertBox.textContent));
+    check('the failure offers a way forward',
+      /dates on either side|4000 1234/.test(alertBox.textContent));
+    check('the booking still was not changed', applied.change === null);
+
+    /* 7. a valid date change */
+    var newIn = L.addDays(checkIn, 30);
+    $('#new-checkin').value = newIn;
+    $('#new-checkout').value = L.addDays(newIn, 3);
+    $('[data-dates-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    check('a valid change is applied', applied.change !== null &&
+      applied.change.checkIn === newIn);
+    check('the first change carries no fee', applied.change && applied.change.fee === 0);
+    check('the dialog closed itself afterwards', $('#dlg-dates').hidden);
+    check('all dialogs are closed, so the page is usable again',
+      ZO.Dialog.depth === 0);
+
+    /* 8. the cancellation path, end to end */
+    ZO.Flows.openExitPrompt('dates', trigger);
+    $('#dlg-exit [data-exit-cancel]').click();
+    check('"Continue cancellation" moves to the reason step', !$('#dlg-reason').hidden);
+    check('the reason step offers the dataset-derived reasons',
+      document.querySelectorAll('#dlg-reason input[name="reason"]').length === 6);
+
+    // Continuing without a reason is refused.
+    $('#dlg-reason [data-reason-continue]').click();
+    check('a reason is required before cancelling',
+      !$('[data-error-for="reason"]').hidden &&
+      /pick a reason/.test($('[data-error-for="reason"]').textContent));
+
+    // Picking a reason with a fix surfaces the offer.
+    var priceRadio = $('#reason-price');
+    priceRadio.checked = true;
+    priceRadio.dispatchEvent(new Event('change', { bubbles: true }));
+    check('choosing "found a lower price" surfaces a counter-offer',
+      !$('#dlg-reason [data-slot="offer"]').hidden &&
+      !$('#dlg-reason [data-reason-offer]').hidden);
+    check('the counter-offer button names the action',
+      $('#dlg-reason [data-reason-offer]').textContent.trim() === 'Send the price link');
+
+    // Continue to the confirmation.
+    $('#dlg-reason [data-reason-continue]').click();
+    check('the confirmation step opens', !$('#dlg-cancel').hidden);
+    check('the confirmation header, description and button share the verb "cancel"',
+      /Cancel this booking\?/.test($('#dlg-cancel-title').textContent) &&
+      /Cancelling releases/.test($('#dlg-cancel [data-slot="desc"]').textContent) &&
+      /Cancel booking/.test($('#dlg-cancel [data-confirm-cancel]').textContent));
+    check('the confirmation states the refund in rupees',
+      /₹/.test($('#dlg-cancel [data-slot="desc"]').textContent));
+    check('the safe choice takes focus, not the destructive one',
+      document.activeElement && document.activeElement.textContent.trim() === 'Keep my booking');
+    check('a refundable booking is not asked to type CANCEL',
+      $('#dlg-cancel [data-slot="forceField"]').hidden);
+
+    $('[data-confirm-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    check('confirming cancels the booking', applied.cancel !== null);
+    check('the refund is calculated in full for a flexible rate',
+      applied.cancel && applied.cancel.refund.amount === booking.total);
+    check('the reason is recorded with the cancellation',
+      applied.cancel && applied.cancel.reason === 'price');
+    check('every dialog closed after confirming', ZO.Dialog.depth === 0);
+
+    /* 9. the forcing function on a non-refundable booking */
+    booking.planId = 'saver';
+    booking.status = 'confirmed';
+    applied.cancel = null;
+    ZO.Flows.openExitPrompt('dates', trigger);
+    $('#dlg-exit [data-exit-cancel]').click();
+    $('#reason-trip').checked = true;
+    $('#reason-trip').dispatchEvent(new Event('change', { bubbles: true }));
+    $('#dlg-reason [data-reason-continue]').click();
+    check('a non-refundable booking asks the guest to type CANCEL',
+      !$('#dlg-cancel [data-slot="forceField"]').hidden);
+    $('[data-confirm-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    check('cancelling is blocked until the word is typed',
+      applied.cancel === null && !$('[data-error-for="confirmWord"]').hidden);
+    $('#confirm-word').value = 'cancel';
+    $('[data-confirm-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    check('the typed word is accepted in either case', applied.cancel !== null);
+    check('no refund is promised on the Saver rate',
+      applied.cancel && applied.cancel.refund.amount === 0);
+    ZO.Dialog.closeAll();
+
+    /* 10. requests dialog validation */
+    booking.planId = 'flexible';
+    ZO.Flows.openRequests(trigger);
+    $('[data-requests-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    check('an empty requests form is refused, with a way out',
+      !$('[data-error-for="requests"]').hidden &&
+      /close this dialog/.test($('[data-error-for="requests"]').textContent));
+    $('#req-parking').checked = true;
+    $('[data-requests-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    check('picking a request saves it', applied.requests && applied.requests.parking === true);
+    ZO.Dialog.closeAll();
+
+    /* 11. price-match validation */
+    ZO.Flows.openPrice(trigger);
+    $('#price-link').value = 'not a link';
+    $('[data-price-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    check('a malformed price link is refused',
+      !$('[data-error-for="link"]').hidden && /https:\/\//.test($('[data-error-for="link"]').textContent));
+    $('#price-link').value = 'https://example.com/room/123';
+    $('[data-price-form]').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    check('a valid price link is accepted', $('#dlg-price').hidden);
+    ZO.Dialog.closeAll();
+
+    /* 12. no layout overflow, no runtime errors */
+    check('nothing overflows the page horizontally',
+      document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1,
+      document.documentElement.scrollWidth + ' vs ' + document.documentElement.clientWidth);
+    check('no uncaught JavaScript errors', errors.length === 0, errors.join(' | '));
+
+    var tally = document.getElementById('tally');
+    tally.textContent = pass + ' passed, ' + fail + ' failed';
+    tally.style.color = fail ? '#a33224' : '#1c6b52';
+    document.title = (fail ? 'FAIL' : 'PASS') + ' ' + pass + '/' + (pass + fail);
+  })();
+})();
+</script>
+</body>
+</html>

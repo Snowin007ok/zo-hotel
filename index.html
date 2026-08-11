@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZO Hotel — stays in Mumbai and Goa</title>
+<meta name="description" content="City energy in Mumbai, slow mornings by the sea in Goa. Two ZO hotels, with flexible booking options when plans change.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%2306394a'/%3E%3Cpath d='M9 12h14l-9 8h9' stroke='%23c9a979' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to the main content</a>
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a class="brand" href="index.html">
+      <span class="brand__wave" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9c3-3 5-3 8 0s5 3 8 0M2 15c3-3 5-3 8 0s5 3 8 0"/></svg>
+      </span>
+      <span>ZO Hotel<small>Mumbai · Goa</small></span>
+    </a>
+
+    <button class="nav__toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      Menu
+    </button>
+
+    <nav class="nav" id="site-nav" data-nav aria-label="Main">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="#stays">Stays</a></li>
+        <li><a class="nav__link" href="#mumbai">Mumbai</a></li>
+        <li><a class="nav__link" href="#goa">Goa</a></li>
+        <li><a class="nav__link" href="#rooms">Rooms</a></li>
+        <li><a class="nav__link" href="flexible-booking.html">Flexible booking</a></li>
+        <li><a class="nav__link" href="#faq">FAQ</a></li>
+        <li aria-hidden="true"><span class="nav__divider"></span></li>
+        <li><a class="nav__link" href="manage.html">Manage booking</a></li>
+        <li class="nav__cta"><a class="btn btn--primary btn--sm" href="booking.html">Book a stay</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ===================================================================
+       HERO
+       =================================================================== -->
+  <section class="hero">
+    <div class="hero__media">
+      <img src="assets/img/goa-resort.jpg"
+           alt="The ZO Hotel Goa resort on a headland above a curved beach, with cabanas, a pool, palms and the Arabian Sea beyond at golden hour."
+           width="1846" height="1230" fetchpriority="high" decoding="async">
+    </div>
+    <div class="hero__scrim" aria-hidden="true"></div>
+
+    <div class="container">
+      <div class="hero__body">
+        <p class="eyebrow eyebrow--light">Mumbai · Goa</p>
+        <h1>Book the stay.<br>Keep the freedom.</h1>
+        <p class="hero__lede">
+          Mumbai for the city days. Goa for the slow ones. Choose your stay with flexible
+          booking options when plans change.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="booking.html">Check availability</a>
+          <a class="btn btn--quiet-light" href="#stays">Explore stays</a>
+        </div>
+        <p class="hero__reassure">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3z"/><path d="M9 12.5l2 2 4-4.5"/></svg>
+          Flexible rates available on selected stays
+        </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <form class="searchbar" data-search-form action="booking.html" method="get" aria-label="Search for a stay">
+        <div class="searchbar__grid">
+          <div class="searchbar__field">
+            <label class="searchbar__label" for="s-property">Destination</label>
+            <select class="searchbar__input" id="s-property" name="property">
+              <option value="mumbai">Mumbai</option>
+              <option value="goa">Goa</option>
+            </select>
+          </div>
+          <div class="searchbar__field">
+            <label class="searchbar__label" for="s-checkin">Check-in</label>
+            <input class="searchbar__input" type="date" id="s-checkin" name="checkIn">
+          </div>
+          <div class="searchbar__field">
+            <label class="searchbar__label" for="s-checkout">Check-out</label>
+            <input class="searchbar__input" type="date" id="s-checkout" name="checkOut">
+          </div>
+          <div class="searchbar__field">
+            <label class="searchbar__label" for="s-guests">Guests</label>
+            <input class="searchbar__input" type="number" id="s-guests" name="guests" value="2" min="1" max="8" step="1" inputmode="numeric">
+          </div>
+          <div class="searchbar__submit">
+            <button class="btn btn--dark" type="submit">Search stays</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       DESTINATIONS
+       =================================================================== -->
+  <section class="section" id="stays">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">Two ways to ZO</p>
+        <h2>City lights or coastal mornings?</h2>
+        <p class="lede">Choose the pace that feels right for this trip.</p>
+      </div>
+
+      <div class="destinations">
+
+        <a class="place reveal" id="mumbai" href="booking.html?property=mumbai">
+          <div class="place__media">
+            <img src="assets/img/hero-goa..jpg"
+                 alt="ZO Hotel Mumbai lit warmly at dusk, its curved facade reflected in the long courtyard pool."
+                 width="1200" height="943" loading="lazy" decoding="async">
+          </div>
+          <div class="place__caption">
+            <p class="place__kicker">City stay</p>
+            <h3 class="place__name">ZO Hotel Mumbai</h3>
+            <p class="place__blurb">Stay close to work, shopping and the rhythm of South Mumbai.</p>
+            <div class="place__foot">
+              <p class="place__price">From <strong>₹6,999</strong> / night</p>
+              <span class="arrow-link arrow-link--light">Explore Mumbai</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="place reveal reveal--d1" id="goa" href="booking.html?property=goa">
+          <div class="place__media">
+            <img src="assets/img/mumbai-hotel.jpg"
+                 alt="The pool at ZO Hotel Goa after sunset, edged with loungers and lit garden villas."
+                 width="900" height="600" loading="lazy" decoding="async">
+          </div>
+          <div class="place__caption">
+            <p class="place__kicker">Coastal escape</p>
+            <h3 class="place__name">ZO Hotel Goa</h3>
+            <p class="place__blurb">Poolside afternoons, palm-lined views and the Arabian Sea nearby.</p>
+            <div class="place__foot">
+              <p class="place__price">From <strong>₹9,499</strong> / night</p>
+              <span class="arrow-link arrow-link--light">Explore Goa</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       EXPERIENCE
+       =================================================================== -->
+  <section class="section section--ivory" id="experience">
+    <div class="container">
+      <div class="editorial">
+
+        <div class="editorial__figures reveal">
+          <figure class="editorial__big" style="margin:0">
+            <img src="assets/img/pool.jpg"
+                 alt="Loungers and blue parasols beside the palm-lined pool at ZO, with the sea just beyond the trees."
+                 width="1900" height="750" loading="lazy" decoding="async">
+          </figure>
+          <figure class="editorial__small" style="margin-right:0">
+            <img src="assets/img/dining.avif"
+                 alt="Tables laid in the ZO restaurant, with tall teak-framed windows opening onto the pool and palms."
+                 width="500" height="250" loading="lazy" decoding="async">
+          </figure>
+        </div>
+
+        <div class="editorial__text reveal reveal--d1">
+          <p class="eyebrow">The ZO day</p>
+          <h2>More than a room.</h2>
+          <p class="editorial__lines">
+            <span>Slow mornings.</span>
+            <span>Long breakfasts.</span>
+            <span>A swim before sunset.</span>
+          </p>
+          <p class="lede">
+            Whether your day begins with meetings or nowhere to be, ZO gives you space to settle in.
+          </p>
+          <ul class="editorial__list">
+            <li><b>01</b><span>Two pools, open from 6:00 am to 9:00 pm, with towels and shade at no charge.</span></li>
+            <li><b>02</b><span>Breakfast until 11:00, because holidays keep their own hours.</span></li>
+            <li><b>03</b><span>Vegetarian, non-vegetarian and Jain kitchens, confirmed with your booking.</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       ROOMS
+       =================================================================== -->
+  <section id="rooms">
+    <div class="band">
+      <img src="assets/img/room-ocean.jpeg"
+           alt="A ZO resort wing at dusk, balconies lit above a turquoise pool framed by tall palms."
+           width="3413" height="2560" loading="lazy" decoding="async">
+      <div class="band__scrim" aria-hidden="true"></div>
+      <div class="band__caption">
+        <div class="container">
+          <p class="eyebrow eyebrow--light">Rooms and suites</p>
+          <h2 style="color:#fff;margin-bottom:.5rem;max-width:24ch">Sleep well.<br>Wake up somewhere worth staying.</h2>
+          <p>Four room types across the two hotels. Every one of them books on a flexible rate.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section section--tight">
+      <div class="container">
+        <div class="rates">
+
+          <article class="rate">
+            <h3 class="rate__name">City Comfort room</h3>
+            <p class="rate__meta">Mumbai · 2 guests · king bed, blackout curtains, desk</p>
+            <p class="rate__price">₹6,999 <span>/ night</span></p>
+            <p class="rate__action mb-0">
+              <a class="arrow-link" href="booking.html?property=mumbai&amp;room=city">View room</a>
+            </p>
+          </article>
+
+          <article class="rate">
+            <h3 class="rate__name">Business room</h3>
+            <p class="rate__meta">Mumbai · 2 guests · work desk, ergonomic chair, wired 200 Mbps</p>
+            <p class="rate__price">₹8,499 <span>/ night</span></p>
+            <p class="rate__action mb-0">
+              <a class="arrow-link" href="booking.html?property=mumbai&amp;room=business">View room</a>
+            </p>
+          </article>
+
+          <article class="rate">
+            <h3 class="rate__name">Family room</h3>
+            <p class="rate__meta">Mumbai and Goa · 4 guests · two queen beds, space for a cot</p>
+            <p class="rate__price">₹9,999 <span>/ night</span></p>
+            <p class="rate__action mb-0">
+              <a class="arrow-link" href="booking.html?room=family">View room</a>
+            </p>
+          </article>
+
+          <article class="rate">
+            <h3 class="rate__name">Resort view room</h3>
+            <p class="rate__meta">Goa · 3 guests · sea-facing balcony, pool access, 60 sq m</p>
+            <p class="rate__price">₹12,499 <span>/ night</span></p>
+            <p class="rate__action mb-0">
+              <a class="arrow-link" href="booking.html?property=goa&amp;room=resort">View room</a>
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       MEETINGS AND CELEBRATIONS
+       =================================================================== -->
+  <section class="split" id="meetings">
+    <div class="split__media">
+      <img src="assets/img/room-business.jpg"
+           alt="A long banquet table dressed in blue and white, set for a conference in the ZO event hall."
+           width="1000" height="1500" loading="lazy" decoding="async">
+    </div>
+    <div class="split__text">
+      <p class="eyebrow">Meetings and celebrations</p>
+      <h2>Room for the whole table.</h2>
+      <p class="lede">
+        Offsites, boardroom days and weddings, in halls that seat up to 240. We hold group rooms for
+        48 hours while your list settles, with no card details and no charge.
+      </p>
+      <p class="btn-row" style="margin-top:1.75rem">
+        <a class="btn btn--outline" href="booking.html">Enquire about a group stay</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       FLEXIBILITY — the cancellation story, as reassurance
+       =================================================================== -->
+  <section class="section section--ivory" id="flexible">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">Book with confidence</p>
+        <h2 class="display-2"><span>Plans change.</span><span>Your booking can too.</span></h2>
+        <p class="lede">
+          Travel is not always predictable. Choose a flexible rate and you will see your change and
+          cancellation options clearly before you pay.
+        </p>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit reveal">
+          <h3>Change your dates</h3>
+          <p>Move eligible stays when your schedule changes, keeping the room and the rate you booked.</p>
+        </div>
+        <div class="benefit reveal reveal--d1">
+          <h3>Clear conditions</h3>
+          <p>Know your cancellation deadline before checkout, printed on the confirmation you keep.</p>
+        </div>
+        <div class="benefit reveal reveal--d2">
+          <h3>Refund visibility</h3>
+          <p>If a refund applies, see what you will receive and where it is going before you confirm.</p>
+        </div>
+      </div>
+
+      <p class="btn-row mt-4">
+        <a class="btn btn--dark" href="flexible-booking.html">See flexible booking options</a>
+        <a class="arrow-link" href="manage.html">Manage an existing booking</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       TRUST — credibility, reliability and transparency, in one editorial
+       spread. It replaces the four-icon assurance grid that used to sit
+       here; the reassurance strip near the foot carries the same four
+       promises in a quieter form.
+
+       The rating, the reviews and the award are demo content for a student
+       project. Everything that states a figure or quotes a guest points at
+       the disclosure at the foot of the section with aria-describedby, so
+       the caveat travels with the claim rather than sitting apart from it.
+       =================================================================== -->
+  <section class="section section--white proof" id="trust" aria-labelledby="proof-title">
+    <div class="container">
+
+      <div class="proof__split">
+
+        <!-- Written first, shown on the right: the section reads heading →
+             pillars → featured review → recognition without any CSS. -->
+        <div class="proof__main">
+          <p class="eyebrow">Why book with ZO</p>
+          <h2 id="proof-title">Confidence from booking to <span class="nowrap">check-out.</span></h2>
+          <p class="lede">
+            From the room you choose to the terms you agree to, ZO is designed to make every part of
+            your stay easier to understand and manage.
+          </p>
+
+          <div class="pillars">
+            <article class="pillar reveal">
+              <p class="pillar__label">Credibility</p>
+              <div class="pillar__body">
+                <h3>What you see is what you book.</h3>
+                <p>
+                  Room details, rates, amenities and booking conditions are shown before payment, so
+                  guests know what to expect before they arrive.
+                </p>
+              </div>
+            </article>
+
+            <article class="pillar reveal reveal--d1">
+              <p class="pillar__label">Reliability</p>
+              <div class="pillar__body">
+                <h3>Your booking stays connected to you.</h3>
+                <p>
+                  Receive a written booking confirmation, manage your reservation online and reach
+                  booking support when your plans change.
+                </p>
+              </div>
+            </article>
+
+            <article class="pillar reveal reveal--d2">
+              <p class="pillar__label">Transparency</p>
+              <div class="pillar__body">
+                <h3>Know the terms before you pay.</h3>
+                <p>
+                  Cancellation deadlines, refund eligibility and rate conditions are shown clearly
+                  before checkout so you can choose the option that fits your trip.
+                </p>
+              </div>
+            </article>
+          </div>
+
+          <figure class="quote reveal" aria-describedby="proof-disclosure">
+            <p class="quote__stars">
+              <span aria-hidden="true">★★★★★</span>
+              <span class="visually-hidden">Rated 5 out of 5</span>
+            </p>
+            <blockquote class="quote__text">
+              <p>“Easy booking, clear cancellation terms, and a comfortable stay.”</p>
+            </blockquote>
+            <figcaption class="quote__by">
+              Aarav M.
+              <span>Mumbai stay</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- Recognition. The award photograph carries this column, so the
+             type around it stays short. -->
+        <aside class="proof__aside reveal" aria-labelledby="recognition-title">
+          <p class="eyebrow">Recognition</p>
+
+          <figure class="award">
+            <span class="award__frame">
+              <img src="assets/img/award.png"
+                   alt="A gold statuette on a round plinth, arms raised, holding five stars above its head — the trophy for the Traveller Choice 2026 demo award."
+                   width="1010" height="941" loading="lazy" decoding="async">
+            </span>
+          </figure>
+
+          <h3 class="proof__aside-title" id="recognition-title">A stay guests can trust.</h3>
+          <p class="proof__aside-copy">
+            Clear booking terms, reliable support and a stay experience designed to match what guests
+            expect.
+          </p>
+
+          <dl class="recognition" aria-describedby="proof-disclosure">
+            <div class="recognition__row">
+              <dt>Traveller Choice 2026</dt>
+              <dd>Demo award</dd>
+            </div>
+            <div class="recognition__row">
+              <dt>Flexible Stay Recognition</dt>
+              <dd>Student project concept</dd>
+            </div>
+          </dl>
+        </aside>
+
+      </div>
+
+      <!-- Aggregate proof. Three equal columns over the same container, so
+           the guest rating lands directly beneath the award. -->
+      <ul class="proof-strip" aria-describedby="proof-disclosure">
+        <li>
+          <span class="proof-strip__value">4.8 / 5</span>
+          <span class="proof-strip__label">Guest satisfaction</span>
+        </li>
+        <li>
+          <span class="proof-strip__value">92%</span>
+          <span class="proof-strip__label">Would book again</span>
+        </li>
+        <li>
+          <span class="proof-strip__value proof-strip__value--words">Traveller Choice 2026</span>
+          <span class="proof-strip__label">Demo award</span>
+        </li>
+      </ul>
+
+      <ul class="reviews" aria-describedby="proof-disclosure">
+        <li>
+          <figure class="review reveal">
+            <p class="review__stars">
+              <span aria-hidden="true">★★★★★</span>
+              <span class="visually-hidden">Rated 5 out of 5</span>
+            </p>
+            <blockquote><p>“We changed our Goa dates in minutes. No confusion, no chasing support.”</p></blockquote>
+            <figcaption class="review__by">
+              Riya S.
+              <span>Goa stay</span>
+            </figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure class="review reveal reveal--d1">
+            <p class="review__stars">
+              <span aria-hidden="true">★★★★☆</span>
+              <span class="visually-hidden">Rated 4 out of 5</span>
+            </p>
+            <blockquote><p>“The room matched the photos, the price was clear, and checkout was simple.”</p></blockquote>
+            <figcaption class="review__by">
+              Meera K.
+              <span>Mumbai stay</span>
+            </figcaption>
+          </figure>
+        </li>
+      </ul>
+
+      <ul class="reassure">
+        <li>Direct booking</li>
+        <li>Secure UPI &amp; card payments</li>
+        <li>Booking confirmation</li>
+        <li>Cancellation terms shown upfront</li>
+        <li>Support available</li>
+      </ul>
+
+      <p class="proof__disclosure" id="proof-disclosure">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6h.01"/></svg>
+        Reviews, ratings and awards shown in this prototype are fictional and created for educational
+        demonstration.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       FAQ
+       =================================================================== -->
+  <section class="section" id="faq">
+    <div class="container container--narrow">
+      <div class="section__head">
+        <p class="eyebrow">Good to know</p>
+        <h2>Questions guests ask us</h2>
+      </div>
+
+      <div class="accordion" data-accordion>
+        <div class="accordion__item">
+          <h3 style="margin:0">
+            <button class="accordion__btn" type="button" aria-expanded="true" aria-controls="faq-1" id="faq-1-btn">
+              Can I cancel my booking?
+              <span class="accordion__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-1" role="region" aria-labelledby="faq-1-btn">
+            <p>
+              Yes. On a Flexible rate you can cancel free until 24 hours before check-in and the whole
+              amount comes back. Semi-flex is free until 7 days before, then half comes back. The Saver
+              rate is not refundable, and we say so before you pay.
+            </p>
+            <p class="mb-0">
+              Cancel or change from the <a href="manage.html">manage booking page</a>, where you see the
+              exact refund before you confirm.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion__item">
+          <h3 style="margin:0">
+            <button class="accordion__btn" type="button" aria-expanded="false" aria-controls="faq-2" id="faq-2-btn">
+              Can I move my dates instead?
+              <span class="accordion__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-2" role="region" aria-labelledby="faq-2-btn">
+            <p class="mb-0">
+              Usually the better move. A Flexible booking includes two free date changes and keeps the
+              nightly rate you first booked, so you pay a difference only when the new nights cost more.
+              Semi-flex includes one free change.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion__item">
+          <h3 style="margin:0">
+            <button class="accordion__btn" type="button" aria-expanded="false" aria-controls="faq-3" id="faq-3-btn">
+              When does a refund reach me?
+              <span class="accordion__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-3" role="region" aria-labelledby="faq-3-btn">
+            <p class="mb-0">
+              We release it on the same business day you cancel and email you a reference number. UPI
+              lands in 3–5 business days and cards in 5–7, because the last step sits with your bank.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion__item">
+          <h3 style="margin:0">
+            <button class="accordion__btn" type="button" aria-expanded="false" aria-controls="faq-4" id="faq-4-btn">
+              What time is check-in?
+              <span class="accordion__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-4" role="region" aria-labelledby="faq-4-btn">
+            <p class="mb-0">
+              Rooms are ready from 2:00 pm and check-out is by 11:00 am. Early check-in from 9:00 am is
+              free whenever a room is ready, and we confirm it within two hours of your asking.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion__item">
+          <h3 style="margin:0">
+            <button class="accordion__btn" type="button" aria-expanded="false" aria-controls="faq-5" id="faq-5-btn">
+              Can I make special requests?
+              <span class="accordion__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-5" role="region" aria-labelledby="faq-5-btn">
+            <p class="mb-0">
+              Parking, a cot, a sea or city view, or a vegetarian, non-vegetarian or Jain kitchen. Add
+              them while booking or afterwards, and we confirm each one in writing within two hours.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion__item">
+          <h3 style="margin:0">
+            <button class="accordion__btn" type="button" aria-expanded="false" aria-controls="faq-6" id="faq-6-btn">
+              Which payment methods do you accept?
+              <span class="accordion__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </span>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-6" role="region" aria-labelledby="faq-6-btn">
+            <p class="mb-0">
+              UPI, credit and debit cards, and net banking. There is no card surcharge and no booking
+              fee, and GST is included in the total you see before you pay.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================== -->
+  <section class="section section--flush-top">
+    <div class="container">
+      <div class="cta-band">
+        <div>
+          <h2>Two hotels. One easier way to stay.</h2>
+          <p>Pick your dates, choose a flexible rate, and keep the room while your plans settle.</p>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="booking.html">Check availability</a>
+          <a class="btn btn--onDark" href="manage.html">Manage booking</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-brand">
+          <span aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#c9a979" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9c3-3 5-3 8 0s5 3 8 0M2 15c3-3 5-3 8 0s5 3 8 0"/></svg>
+          </span>
+          ZO Hotel
+        </p>
+        <p class="small">Stays in Mumbai and Goa, on terms you can change your mind about.</p>
+      </div>
+
+      <div>
+        <h2>Stays</h2>
+        <ul>
+          <li><a href="#mumbai">ZO Hotel Mumbai</a></li>
+          <li><a href="#goa">ZO Hotel Goa</a></li>
+          <li><a href="#rooms">Rooms and rates</a></li>
+          <li><a href="#meetings">Meetings and celebrations</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Booking</h2>
+        <ul>
+          <li><a href="booking.html">Book a stay</a></li>
+          <li><a href="manage.html">Manage booking</a></li>
+          <li><a href="flexible-booking.html">Flexible booking</a></li>
+          <li><a href="#faq">Questions</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Contact</h2>
+        <ul>
+          <li>Marine Lines, Mumbai</li>
+          <li>Baga Beach, Goa</li>
+          <li><a href="tel:+912240001234">+91 22 4000 1234</a></li>
+          <li><a href="mailto:reservations@zohotel.in">reservations@zohotel.in</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="mb-0">© <span data-year>2026</span> ZO Hotel. Fictional brand, built for a content-writing assignment.</p>
+      <p class="mb-0">
+        <a href="part-a-exit-prompt.html">Part A: exit prompt</a> ·
+        <a href="style-guide.html">UI copy style guide</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/logic.js"></script>
+<script src="assets/js/core.js"></script>
+</body>
+</html>
