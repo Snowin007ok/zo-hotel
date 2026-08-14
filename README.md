@@ -9,6 +9,8 @@ everything runs from the file system.
 | File | What it is |
 | --- | --- |
 | `index.html` | The hotel home page. Photography-led: hero, destinations, experience, rooms, meetings, then flexible booking as reassurance. |
+| `mumbai.html` | **ZO Hotel Mumbai.** Urban and type-led: hero, location, four nearby landmarks, the restaurant and three benefits, a facade band over the rate list, trust, one flexibility note, then the booking CTA. |
+| `goa.html` | **ZO Hotel Goa.** Coastal and photographic: hero, a day told in three photographs, four places along the coast, a pool band over the rate list, trust, one flexibility note, then the booking CTA. |
 | `flexible-booking.html` | **Part B in full** — the six cancellation reasons with answers, the whole policy table, the evidence, and the trust section. |
 | `part-a-exit-prompt.html` | **Part A** — the exit prompt, running live, with its four required pieces of copy and the rule behind each decision. |
 | `booking.html` | Booking form: live pricing, GST, full client-side validation, confirmation. |
@@ -18,18 +20,19 @@ everything runs from the file system.
 
 ## Photography
 
-The seven supplied images are used once each, never scaled beyond their own pixels.
-**Filenames did not match content**, so they are assigned by what they actually show:
+The seven supplied images are used once each on the home page, never scaled beyond
+their own pixels. **Filenames did not match content**, so they are assigned by what
+they actually show:
 
 | File | Actual content | Used for |
 | --- | --- | --- |
-| `goa-resort.jpg` (1846×1230) | Goa beach + cliffside resort, golden hour | Home hero, full bleed |
-| `hero-goa..jpg` (1200×943) | Grand city hotel at dusk, courtyard pool | Mumbai destination panel |
-| `mumbai-hotel.jpg` (900×600) | Night resort pool, lit villas | Goa destination panel |
-| `pool.jpg` (1900×750) | Day poolside, palms, loungers | Experience section, exit-prompt dialog |
-| `dining.avif` (500×250) | Poolside restaurant interior | Experience accent, capped at 420px wide |
-| `room-ocean.jpeg` (3413×2560) | Resort wing at dusk above a pool | Rooms band |
-| `room-business.jpg` (1000×1500) | Banquet hall, blue and white settings | Meetings section |
+| `goa-resort.jpg` (1846×1230) | Goa beach + cliffside resort, golden hour | Home hero, full bleed · Goa page hero |
+| `hero-goa..jpg` (1200×943) | Grand city hotel at dusk, courtyard pool | Mumbai destination panel · Mumbai page hero and rooms band |
+| `mumbai-hotel.jpg` (900×600) | Night resort pool, lit villas | Goa destination panel · Goa page rooms band |
+| `pool.jpg` (1900×750) | Day poolside, palms, loungers | Experience section, exit-prompt dialog · Goa page afternoon |
+| `dining.avif` (500×250) | Poolside restaurant interior | Experience accent, capped at 420px wide · Mumbai page inset and Goa page morning |
+| `room-ocean.jpeg` (3413×2560) | Resort wing at dusk above a pool | Rooms band · Goa page evening |
+| `room-business.jpg` (1000×1500) | Banquet hall, blue and white settings | Meetings section only |
 
 Added later, outside the supplied seven:
 
@@ -37,15 +40,56 @@ Added later, outside the supplied seven:
 | --- | --- | --- |
 | `award.png` (1010×941) | Gold statuette holding five stars, transparent ground | Recognition column of the home page trust section |
 
+### Borrowed photography — the nearby-attraction cards
+
+The supplied set contains no photograph of any real place, so the *Around the hotel*
+sections on the two property pages use eight photographs from **Wikimedia Commons** under
+CC BY or CC BY-SA. They are committed to `assets/img/` as local files at 1000px wide, so
+the site still runs from the file system with no network access.
+
+**These licences require attribution.** Each section therefore closes with a
+`.nearby__credit` line naming the photographer, the licence and the source, and a test
+fails the build if a `near-*.jpg` is added without one.
+
+| File | Place | Photographer | Licence |
+| --- | --- | --- | --- |
+| `near-mumbai-gateway.jpg` | Gateway of India | Sharvarism | CC BY-SA 4.0 |
+| `near-mumbai-marine.jpg` | Marine Drive, the Queen's Necklace at night | Ashwin Kumar | CC BY-SA 2.0 |
+| `near-mumbai-csmt.jpg` | Chhatrapati Shivaji Maharaj Terminus, floodlit | Dr. Raju Kasambe | CC BY-SA 4.0 |
+| `near-mumbai-colaba.jpg` | Antiques on Colaba Causeway | ghoseb (Flickr) | CC BY-SA 2.0 |
+| `near-goa-baga.jpg` | Baga Beach | Nikhilb239 | CC BY-SA 4.0 |
+| `near-goa-calangute.jpg` | Calangute Beach at sunset | Anoop M S | CC BY-SA 4.0 |
+| `near-goa-aguada.jpg` | Fort Aguada bastion and lighthouse | Harvinder Chandigarh | CC BY-SA 4.0 |
+| `near-goa-anjuna.jpg` | Anjuna Beach rocks | Nikhilb239 | CC BY 3.0 |
+
+Two rules these cards keep:
+
+- **No distance and no travel time.** The project commits to the hotel being at Marine Lines
+  in South Mumbai and at Baga Beach in North Goa, and to nothing more precise, so every
+  locator is relational — *the next beach south*, *Fort, just inland*. A test asserts no
+  number with a unit reaches either section, and each closes by saying the front desk gives
+  the real answer.
+- **The hotel is fictional; the places are not.** The credit line says so, so a reader never
+  takes a real photograph as evidence that ZO Hotel exists.
+
 Two notes worth keeping:
 
 - **`hero-goa..jpg` has two dots.** Any reference to `hero-goa.jpg` fails silently in a
   browser. A test asserts every referenced image exists on disk.
 - `room-business.jpg` shows another hotel's logo on a projector screen, so it is framed
   with `object-position: center 82%` to keep that out of shot. It is a banquet hall, not a
-  bedroom, so it sells meetings rather than a room.
+  bedroom, so it sells meetings rather than a room. **That framing is proportion-dependent
+  and does not travel**: the section it sits in on the home page is short enough to crop
+  the screen away, and a taller section reveals it. It is therefore used on the home page
+  only, and the Mumbai page uses the restaurant instead.
 - No supplied photograph shows a guest room. Rooms are therefore a photographic band plus
-  an editorial rate list, rather than four cards with imagery that would be a lie.
+  an editorial rate list, rather than four cards with imagery that would be a lie. On the
+  two property pages the same list gains a *View room* disclosure, so a guest compares
+  written detail rather than a stand-in photograph.
+- **The property pages reuse the photography, because there is no more of it.** Only
+  `hero-goa..jpg` shows a city hotel, so the Mumbai page shows it twice — wide across the
+  hero, then cropped to a letterbox of the lit guest-room windows over the rooms section.
+  Both crops are of the same building, which is the one the page is about.
 - **`award.png` is mostly empty.** The statuette sits in `x 409–599, y 0–588` of a
   1010×941 canvas; below it the file carries two decorative rules and some white lettering
   that would ghost on a warm background. Shown whole it would shrink to a thumbnail inside
@@ -55,6 +99,21 @@ Two notes worth keeping:
 
 ## What works, not just what renders
 
+- **Two paths out of the home page.** A destination panel is discovery, so *Explore Mumbai*
+  and *Explore Goa* open `mumbai.html` and `goa.html`; only an explicit booking CTA opens
+  `booking.html`. Each property page then walks one journey — discover, location,
+  experience, compare rooms, trust, book — and carries a final booking CTA so nobody
+  scrolls back up for it. The navigation entries named *Mumbai* and *Goa* point at the same
+  two pages on every page of the site.
+- **Around the hotel** — the *understand the location* step of that journey, four real places
+  per property with photographs, credited, and located relative to the hotel rather than by a
+  distance nobody has measured. This is what a guest searching "places to visit in Mumbai"
+  actually wants from a hotel page, and it is the reason the location is worth paying for.
+- **Property prefill** — every booking CTA on a property page carries `?property=mumbai` or
+  `?property=goa`, and each room row adds `&room=…`, so the form opens on the hotel and the
+  room the guest was reading about. `applyQueryParams` in `booking.js` already validated
+  both against the rate card, so an unknown value falls back to the existing default and
+  `booking.html` on its own is unchanged.
 - **Exit prompt** (Part A) — fires on *Cancel booking*, offers a date change first, keeps
   cancelling available as a quiet action.
 - **Cancellation flow** — exit prompt → reason step → confirmation. Picking a reason changes
@@ -74,7 +133,27 @@ Two notes worth keeping:
 - **Accessibility** — skip links, landmarks, focus trap and restore in every dialog, Escape
   to close, background hidden from assistive tech, visible focus, labelled controls, no
   placeholder standing in for a label, `prefers-reduced-motion` respected. Star ratings are
-  glyphs marked `aria-hidden` with a "Rated 5 out of 5" text alternative beside them.
+  glyphs marked `aria-hidden` with a "Rated 5 out of 5" text alternative beside them. The
+  *View room* panels on the property pages reuse the accordion the FAQ already uses, so the
+  toggle is a real button that reports `aria-expanded` and the panel is a region labelled by
+  it.
+
+### Hero type over photography
+
+White type on a photograph only meets a contrast ratio against the pixels it actually
+covers, so `.hero--property .hero__scrim` was tuned by measuring exactly that: screenshot
+the hero twice, once with the type shown and once hidden, mask to the pixels the glyphs
+change, and take the worst ratio in that mask. Both property heroes clear WCAG AA at 1440px
+and 390px — headline 4.0–4.7:1 against the 3:1 large-text threshold, lede 4.9–6.7:1 against
+4.5:1.
+
+**The home page hero does not, and was left alone:** it measures 1.8–2.0:1 for both the
+headline and the lede at either width. Raising it means a heavier scrim over
+`goa-resort.jpg`, which changes how that composition reads, so it is recorded here as a
+known gap rather than changed quietly. The property scrim above is the fix if it is wanted.
+
+The measurement needs a headless browser and this project has no dependencies, so it is not
+part of `tests/`. The numbers above are the record of it.
 
 ### Reproducible demo paths
 
@@ -85,13 +164,22 @@ Two notes worth keeping:
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 37 tests: pricing, refunds, validation, copy audit
-open tests/browser-check.html        # 56 checks: dialogs, focus, flows, overflow, console
+node --test tests/logic.test.js      # 44 tests: pricing, refunds, validation, copy audit
+open tests/browser-check.html        # 71 checks: dialogs, focus, flows, overflow, console
 ```
 
 The copy audit is not decorative: it fails the build if any page gains an exclamation
 point, a "Click here", an "Are you sure", an image without alt text or dimensions, a
 missing asset, a broken internal link, or the phrase "why guests cancel".
+
+Seven of the tests hold the information architecture and the photography licences in place,
+because both fail silently in a browser: a destination panel that regresses to
+`booking.html` fails, a booking CTA on a property page that drops its `property=` fails, a
+room priced differently from the rate card or sold at the wrong hotel fails, a property page
+that grows a second copy of the flexible-booking policy fails, a *View room* panel whose
+`aria-controls` and `aria-labelledby` do not pair up fails, a borrowed photograph without a
+photographer credit and a licence link fails, and a distance or travel time appearing in a
+nearby section fails.
 
 ## Where the numbers come from
 

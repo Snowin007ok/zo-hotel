@@ -385,8 +385,8 @@ const htmlFiles = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'));
 test('every page is present and declares a language and a title', () => {
   assert.deepEqual(
     htmlFiles.sort(),
-    ['booking.html', 'flexible-booking.html', 'index.html', 'manage.html',
-      'part-a-exit-prompt.html', 'style-guide.html']
+    ['booking.html', 'flexible-booking.html', 'goa.html', 'index.html', 'manage.html',
+      'mumbai.html', 'part-a-exit-prompt.html', 'style-guide.html']
   );
   htmlFiles.forEach((file) => {
     const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -542,6 +542,154 @@ test('internal page links point at files that exist', () => {
     [...html.matchAll(/href="([^"#:]+\.html)(#[^"]*)?"/g)].forEach((m) => {
       assert.ok(fs.existsSync(path.join(ROOT, m[1])), `${file} links to a missing page: ${m[1]}`);
     });
+  });
+});
+
+test('a destination panel opens its property page, never the booking form', () => {
+  const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+
+  // The two discovery panels are the whole journey's first step. If either one
+  // regresses to booking.html the middle of the funnel disappears silently.
+  assert.match(home, /class="place[^"]*" id="mumbai" href="mumbai\.html"/);
+  assert.match(home, /class="place[^"]*" id="goa" href="goa\.html"/);
+
+  // And the same two names in the navigation go to the same two pages.
+  htmlFiles.forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    assert.match(html, /href="mumbai\.html"[^>]*>Mumbai</, `${file} navigates to the Mumbai page`);
+    assert.match(html, /href="goa\.html"[^>]*>Goa</, `${file} navigates to the Goa page`);
+  });
+});
+
+test('every property page booking CTA names its property in the query string', () => {
+  [['mumbai.html', 'mumbai', 'goa'], ['goa.html', 'goa', 'mumbai']].forEach(([file, own, other]) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+
+    // Each link to the booking form carries this property, so the form opens
+    // on the hotel the guest was reading about.
+    const bookingLinks = [...html.matchAll(/href="(booking\.html[^"]*)"/g)].map((m) => m[1]);
+    assert.ok(bookingLinks.length >= 4, `${file} has booking CTAs, saw ${bookingLinks.length}`);
+    bookingLinks.forEach((href) => {
+      assert.ok(
+        href.includes(`property=${own}`),
+        `${file}: booking link without property=${own} — ${href}`
+      );
+      assert.ok(!href.includes(`property=${other}`), `${file}: booking link names ${other} — ${href}`);
+    });
+
+    // Rooms sold at this property only, and the room ids booking.js knows.
+    const rooms = [...html.matchAll(/room=([a-z]+)/g)].map((m) => m[1]);
+    assert.ok(rooms.length >= 2, `${file} links at least two rooms`);
+    rooms.forEach((id) => {
+      assert.ok(L.ROOMS[id], `${file}: unknown room id "${id}"`);
+      assert.ok(
+        L.ROOMS[id].properties.includes(own),
+        `${file}: ${id} is not sold at ${own}`
+      );
+    });
+
+    // Every price shown is the tariff the booking page will quote.
+    rooms.forEach((id) => {
+      assert.ok(
+        html.includes(L.formatINR(L.ROOMS[id].base)),
+        `${file}: ${id} price does not match the rate card`
+      );
+    });
+
+    // The anchor both hero CTAs point at has to exist.
+    assert.match(html, /id="rooms"/, `${file} has a rooms section to jump to`);
+
+    // Flexibility appears once as reassurance and points at the policy page.
+    // It must not become a second copy of it.
+    const flexSections = [...html.matchAll(/id="flexible"/g)];
+    assert.equal(flexSections.length, 1, `${file} carries one flexible-booking section`);
+    const flexCtas = [...html.matchAll(/See flexible booking options/g)];
+    assert.equal(flexCtas.length, 1, `${file} states the flexible-booking CTA once`);
+    assert.doesNotMatch(html, /<table class="data"/, `${file} leaves the policy table on its own page`);
+  });
+});
+
+test('the property pages keep coursework language off a customer-facing page', () => {
+  ['mumbai.html', 'goa.html'].forEach((file) => {
+    const text = visibleText(fs.readFileSync(path.join(ROOT, file), 'utf8'));
+    [/\bdataset\b/i, /\bretention\b/i, /\bconversion\b/i, /cancellation reduction/i,
+      /cancellation reasons/i].forEach((pattern) => {
+      assert.doesNotMatch(text, pattern, `${file} carries internal language: ${pattern}`);
+    });
+  });
+});
+
+test('a room detail panel is a labelled region its own button controls', () => {
+  ['mumbai.html', 'goa.html'].forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    // The accordion script only runs inside a [data-accordion] root.
+    assert.match(html, /class="rates" data-accordion/, `${file} wires the rate list to the accordion`);
+
+    const controls = [...html.matchAll(/aria-controls="(room-[a-z]+)" id="(room-[a-z]+-btn)"/g)];
+    assert.ok(controls.length >= 2, `${file} has room toggles, saw ${controls.length}`);
+    controls.forEach(([, panelId, btnId]) => {
+      assert.equal(`${panelId}-btn`, btnId, `${file}: ${panelId} pairs with its own button`);
+      assert.match(
+        html,
+        new RegExp(`id="${panelId}" role="region" aria-labelledby="${btnId}"`),
+        `${file}: ${panelId} is a region labelled by ${btnId}`
+      );
+    });
+  });
+});
+
+test('every borrowed photograph is credited on the page that uses it', () => {
+  // The nearby-attraction photographs come from Wikimedia Commons under CC BY
+  // and CC BY-SA, which require attribution. A photograph added without a
+  // credit is a licence breach, not a style slip, so it fails here.
+  ['mumbai.html', 'goa.html'].forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    const borrowed = [...html.matchAll(/src="assets\/img\/(near-[\w-]+\.jpg)"/g)].map((m) => m[1]);
+    assert.equal(borrowed.length, 4, `${file} shows four nearby places, saw ${borrowed.length}`);
+
+    borrowed.forEach((f) => {
+      assert.ok(fs.existsSync(path.join(ROOT, 'assets/img', f)), `${file}: ${f} is on disk`);
+    });
+
+    // One credit block, naming its source and at least one licence.
+    const credit = html.match(/<p class="nearby__credit">([\s\S]*?)<\/p>/);
+    assert.ok(credit, `${file} carries a photograph credit`);
+    assert.match(credit[1], /commons\.wikimedia\.org/, `${file} credit names the source`);
+    assert.match(
+      credit[1],
+      /creativecommons\.org\/licenses\/by(-sa)?\/[\d.]+/,
+      `${file} credit links a licence`
+    );
+
+    // A named photographer for each of the four, so no image rides along
+    // unnamed. Whitespace is normalised first: how the credit happens to wrap
+    // across lines is not what this test is about.
+    const flat = visibleText(credit[1]).replace(/\s+/g, ' ');
+    // Lower case is allowed: some photographers are credited by a username.
+    // The uppercase "CC BY-SA" of a licence name cannot match this.
+    const named = [...flat.matchAll(/ by [A-Za-z]/g)];
+    assert.equal(
+      named.length, borrowed.length,
+      `${file} names a photographer per photograph, saw ${named.length} for ${borrowed.length}`
+    );
+
+    // And the disclosure that keeps the fictional hotel apart from the real places.
+    assert.match(flat, /hotel itself is fictional/, `${file} separates hotel from place`);
+  });
+});
+
+test('the nearby sections state no distance or travel time', () => {
+  // "Do not invent precise distance claims" — the locators are relational, and
+  // a number creeping in later is the failure mode worth catching.
+  ['mumbai.html', 'goa.html'].forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    const section = html.slice(html.indexOf('id="nearby"'), html.indexOf('</section>', html.indexOf('id="nearby"')));
+    const text = visibleText(section);
+    [/\d+\s*(km|kilometre|kilometer|m|mile|min|minute|hour)\b/i,
+      /\b(a|an|one|two|three|four|five|ten|fifteen|twenty|thirty)[- ](minute|min|hour|km|kilometre)\b/i]
+      .forEach((pattern) => {
+        assert.doesNotMatch(text, pattern, `${file} nearby section states a distance: ${pattern}`);
+      });
   });
 });
 
