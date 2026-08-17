@@ -164,7 +164,7 @@ part of `tests/`. The numbers above are the record of it.
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 44 tests: pricing, refunds, validation, copy audit
+node --test tests/logic.test.js      # 46 tests: pricing, refunds, validation, copy audit
 open tests/browser-check.html        # 71 checks: dialogs, focus, flows, overflow, console
 ```
 
@@ -180,6 +180,22 @@ that grows a second copy of the flexible-booking policy fails, a *View room* pan
 `aria-controls` and `aria-labelledby` do not pair up fails, a borrowed photograph without a
 photographer credit and a licence link fails, and a distance or travel time appearing in a
 nearby section fails.
+
+Two more hold the copy rules the style guide commits to, both of which are departures from
+the Zoho UI manual and are argued as such on `style-guide.html` rather than left implicit:
+
+- **All caps on micro-labels.** The manual rules capitals out of labels as well as titles.
+  This product keeps them for labels of three words or fewer at 0.75rem — the eyebrow, the
+  field label, the definition term — because that small-caps label is what holds the design
+  together, and drops them where the manual's warning actually bites: **no CTA is ever
+  uppercased**, which a test enforces, along with an allowlist so a new uppercase selector
+  has to be added deliberately. The markup stays sentence case throughout, so a screen
+  reader hears words rather than rendered capitals.
+- **Periods split by copy family.** The manual's rule — no period on a single simple
+  sentence — is written for microcopy. Applied to marketing prose it puts a period on one
+  card in a row of three and not on its neighbours. So copy attached to a control follows
+  the manual (22 of 26 strings correctly carry no period), and prose in a content section
+  is punctuated as prose (25 of 25 carry one). A test keeps the prose side whole.
 
 ## Where the numbers come from
 

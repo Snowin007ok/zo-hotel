@@ -693,6 +693,67 @@ test('the nearby sections state no distance or travel time', () => {
   });
 });
 
+test('all caps stays on micro-labels and never reaches a CTA', () => {
+  // The style guide documents a departure from the manual: capitals are allowed
+  // on short labels, and ruled out on CTAs, where they read as shouting at the
+  // moment of commitment. That second half is the part worth enforcing.
+  const css = fs.readFileSync(path.join(ROOT, 'assets/css/main.css'), 'utf8');
+  const uppercased = [...css.matchAll(/([^{}]+)\{([^}]*text-transform:\s*uppercase[^}]*)\}/g)]
+    .map((m) => m[1].trim().split('\n').pop().trim());
+
+  // Nothing that renders an action may be uppercased.
+  uppercased.forEach((sel) => {
+    assert.doesNotMatch(sel, /\.btn|\.arrow-link|\.nav__link|\.accordion__btn|button/,
+      `all caps on an action: ${sel}`);
+  });
+
+  // And every uppercased selector is a known micro-label, so a new one has to
+  // be a deliberate addition here rather than a drift.
+  const ALLOWED = [
+    '.eyebrow', '.brand small', '.searchbar__label', '.place__kicker', '.nearby__where',
+    '.story__label', '.benefit h3', '.recognition dd', '.pillar__label', '.proof-strip__label',
+    '.concern__label', '.dialog__steps', '.dl-item dt', '.spec__key', '.compare__label',
+    '.site-footer h2'
+  ];
+  uppercased.forEach((sel) => {
+    assert.ok(ALLOWED.includes(sel), `undocumented all-caps selector: ${sel}`);
+  });
+
+  // The copy itself is sentence case, so a screen reader hears words.
+  ['mumbai.html', 'goa.html', 'index.html'].forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    [...html.matchAll(/<p class="(?:eyebrow[^"]*|nearby__where|story__label)">([^<]+)</g)]
+      .forEach((m) => {
+        const s = m[1].trim();
+        assert.notEqual(s, s.toUpperCase(), `${file}: "${s}" is capitalised in the markup`);
+      });
+  });
+});
+
+test('prose in a content section is punctuated as prose', () => {
+  // A period on one card in a row of three and not on its neighbours reads as a
+  // typo. Every prose string carries one, including single simple sentences.
+  const PROSE = [
+    ['benefit', /<div class="benefit[^"]*">\s*<h3>[^<]*<\/h3>\s*<p>([^<]+)<\/p>/g],
+    ['story line', /<p class="story__line">([^<]+)<\/p>/g],
+    ['nearby note', /<p class="nearby__note">\s*([^<]+?)\s*<\/p>/g],
+    ['place blurb', /<p class="place__blurb">([^<]+)<\/p>/g]
+  ];
+  let checked = 0;
+  ['index.html', 'mumbai.html', 'goa.html'].forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    PROSE.forEach(([name, pattern]) => {
+      [...html.matchAll(pattern)].forEach((m) => {
+        const s = m[1].replace(/\s+/g, ' ').trim();
+        if (!s) return;
+        checked++;
+        assert.match(s, /[.?]$/, `${file} ${name}: "${s.slice(0, 60)}" needs a period`);
+      });
+    });
+  });
+  assert.ok(checked >= 20, `expected the prose components to be covered, saw ${checked}`);
+});
+
 test('the customer-facing pages never say "why guests cancel"', () => {
   // Internal business language, per the brief. It must not reach a guest.
   htmlFiles.forEach((file) => {

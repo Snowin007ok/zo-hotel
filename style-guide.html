@@ -84,18 +84,47 @@
         <tbody>
           <tr>
             <th scope="row">Capitalization</th>
-            <td>Sentence case everywhere: headings, labels, buttons, links, table headers.</td>
-            <td>It is the manual's recommendation and the easiest rule to apply consistently. Simple rules produce consistent interfaces.</td>
+            <td>Sentence case everywhere in the markup: headings, labels, buttons, links, table headers. Where a micro-label reads as capitals, CSS is doing it, not the copy.</td>
+            <td>It is the manual's recommendation and the easiest rule to apply consistently. Keeping the source in sentence case also keeps it readable to a screen reader, which announces what is written rather than what is rendered.</td>
           </tr>
           <tr>
             <th scope="row">All caps</th>
-            <td>Only the small eyebrow labels that demarcate a section, such as <span class="eyebrow" style="margin:0;font-size:.7rem">Transparency</span>. Never in headings, labels, or buttons.</td>
-            <td>The manual allows all caps for section demarcation and rules it out everywhere else.</td>
+            <td>
+              Micro-labels only: at most three words, set at 0.75rem or smaller with wide
+              letter-spacing, and used to demarcate or to name a field — the eyebrow
+              <span class="eyebrow" style="margin:0;font-size:.7rem">Transparency</span>, a form
+              label, a term in a definition list, a step counter. Never on a CTA, and never on
+              anything long enough to be read as a sentence.
+            </td>
+            <td>
+              <strong>A considered departure from the manual,</strong> which rules all caps out of
+              labels as well as titles. The manual also says it is a set of suggestions rather than
+              a mandate, and that the thing that matters is making a conscious decision and
+              enforcing it. The readability cost it warns about applies to running text; on a
+              two-word field label the cost is negligible, and the small-caps label is what holds
+              this design together across eight pages. The part of the warning that does bite —
+              CTAs, where all caps reads as shouting at the moment of commitment — is kept, and a
+              test enforces it.
+            </td>
           </tr>
           <tr>
             <th scope="row">Microcopy punctuation</th>
-            <td>No period on a single simple sentence. A period when the copy runs to two sentences, or one sentence carrying a comma.</td>
-            <td>“No dates picked yet” takes none. “Cancel today and ₹3,606 of ₹7,212 is refundable.” takes one.</td>
+            <td>
+              <strong>Copy attached to a control</strong> — field hints, option notes, meta lines,
+              toasts — takes no period on a single simple sentence, and a period once it runs to
+              two sentences. Fragments never take one.
+              <strong>Prose in a content section</strong> — a benefit, a room detail, a nearby
+              place, a blurb — is punctuated as prose: every sentence ends in a period, including
+              a component holding only one.
+            </td>
+            <td>
+              The manual's rule is written for microcopy, and applying it to marketing prose puts
+              a period on one card in a row of three and not on its neighbours, which reads as a
+              typo rather than a rule. Splitting the two keeps each component internally
+              consistent, which is the manual's actual first principle. The product already obeys
+              this: 25 of 25 prose strings carry a period, and 22 of 26 control strings correctly
+              carry none.
+            </td>
           </tr>
           <tr>
             <th scope="row">Exclamation points</th>
