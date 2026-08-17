@@ -10,6 +10,12 @@
    5  Header and nav     12  Flexibility         19 Motion
    6  Hero               13  Trust and FAQ       20 Responsive
    7  Sections           14  Forms               21 Print
+
+   8b Property pages — the Mumbai and Goa panels on the home page open
+      mumbai.html and goa.html, which reuse this system: the hero of section 6,
+      the rate list of section 10, the benefit rules of section 12 and the
+      accordion of section 13. The few additions they need sit at the end of
+      section 8, next to the destination panels they follow from.
    ========================================================================== */
 
 /* -----------------------------------------------------------------------------
@@ -492,6 +498,171 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
 }
 .place__price { font-size: 0.9375rem; color: var(--white); margin: 0; }
 .place__price strong { color: var(--white); font-weight: 600; }
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   Property pages (mumbai.html, goa.html)
+
+   A destination panel opens the property page, so the two share a language.
+   Everything here is a variant of a component that already exists; nothing
+   introduces a second visual system.
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+/* The home page hero carries a search bar beneath the headline, which is what
+   gives that composition its footing. A property hero ends at its actions, so
+   it takes its own height and its own bottom margin instead. */
+.hero--property { min-height: min(74vh, 720px); }
+.hero--property .hero__body { padding-bottom: clamp(3rem, 9vh, 5.5rem); }
+
+/* A property hero carries a longer lede than the home page and sits lower in
+   the frame, which on both photographs puts type over a bright passage — the
+   sand at Goa, the lit windows at Mumbai. So the scrim is firmer here, while
+   staying directional: the right of each photograph is left open.
+   Tuned by measuring the brightest pixel each glyph actually covers, so both
+   heroes clear WCAG AA — 3:1 for the headline, 4.5:1 for the lede. Change a
+   stop and that margin goes with it. */
+.hero--property .hero__scrim {
+  background:
+    linear-gradient(to bottom, rgba(4, 42, 55, 0.52) 0%, rgba(4, 42, 55, 0.16) 15%, rgba(4, 42, 55, 0.06) 27%),
+    linear-gradient(100deg, rgba(4, 42, 55, 0.88) 0%, rgba(4, 42, 55, 0.76) 30%, rgba(4, 42, 55, 0.42) 55%, rgba(4, 42, 55, 0.06) 74%),
+    linear-gradient(to top, rgba(4, 42, 55, 0.74) 0%, rgba(4, 42, 55, 0.34) 36%, rgba(4, 42, 55, 0.04) 60%);
+}
+
+/* hero-goa..jpg is the only photograph of a city hotel in the set. Framed
+   higher than the default so the lit facade reads, not the pool alone. */
+.hero--city .hero__media img { object-position: center 38%; }
+
+/* Both property-page bands set their caption over a lit pool, where the home
+   page band has dark water. A firmer bottom gradient, so the caption holds. */
+.band--property .band__scrim {
+  background: linear-gradient(to top, rgba(4, 42, 55, 0.8) 0%, rgba(4, 42, 55, 0.4) 34%, rgba(4, 42, 55, 0.06) 68%);
+}
+
+/* The same building again, cropped to the lit guest-room windows, to open the
+   rooms section. A letterbox reads as a different photograph from the wide
+   courtyard view in the hero above it. */
+.band--facade img { object-position: center 14%; }
+
+/* dining.avif is 500×250. Shown at its own size inside its own frame, never
+   stretched to fill the column it sits in. */
+.editorial__inset {
+  margin: 0;
+  width: min(100%, 500px);
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 6px solid var(--soft-white);
+  box-shadow: var(--shadow);
+  aspect-ratio: 2 / 1;
+  background: var(--ivory-deep);
+}
+.editorial__inset img { width: 100%; height: 100%; object-fit: cover; }
+
+/* - - - Nearby attractions - - -
+
+   Photographs of the real places, which the supplied set does not contain, so
+   they come from Wikimedia Commons under CC BY / CC BY-SA and are committed to
+   assets/img as local files — the site still runs from the file system with no
+   network access. Those licences require attribution, which is why every one
+   of these sections closes with a credit line naming the photographer, the
+   licence and the source. Do not add a photograph here without one. */
+.nearby {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+.nearby > li { margin: 0; }
+
+.nearby__art {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  margin-bottom: 1.1rem;
+  border-radius: var(--radius);
+  background: var(--ivory-deep);
+}
+/* Two of the eight are 3:2 and lose their subject to a centred 4:3 crop. */
+.nearby__art--high { object-position: center 40%; }
+.nearby__art--low { object-position: center 62%; }
+
+.nearby__where {
+  margin: 0 0 0.4rem;
+  font-size: 0.625rem; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--sand-deep);
+}
+.nearby__name {
+  font-family: var(--serif); font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  line-height: 1.2; color: var(--navy); margin: 0 0 0.5rem;
+}
+.nearby__note { margin: 0; font-size: 0.875rem; line-height: 1.55; color: var(--ink-soft); }
+
+/* Travel times are left to the front desk rather than invented here. */
+.nearby__caveat {
+  display: flex; align-items: flex-start; gap: 0.55rem;
+  margin: clamp(2rem, 4vw, 2.75rem) 0 0; max-width: 74ch;
+  font-size: 0.8125rem; line-height: 1.55; color: var(--muted);
+}
+.nearby__caveat svg { flex: 0 0 auto; margin-top: 3px; color: var(--sand-deep); }
+
+/* Photographer credits. Small, but never hidden: these photographs are used
+   under licences that ask for exactly this. */
+.nearby__credit {
+  margin: 0.85rem 0 0; max-width: 88ch;
+  font-size: 0.75rem; line-height: 1.65; color: var(--muted);
+}
+.nearby__credit a { color: var(--muted); text-underline-offset: 2px; }
+.nearby__credit a:hover { color: var(--navy); }
+
+/* Benefit rules down one column, for the narrow half of an editorial split.
+   Two classes, because .benefits sets three columns from section 12 below. */
+.benefits.benefits--stack {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.35rem, 2.5vw, 1.85rem);
+}
+
+/* A day told in three photographs — morning, afternoon, evening. Three items,
+   no panels and no borders: the image, a label and one line. */
+.story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.5rem, 3vw, 2.5rem); }
+.story__item { margin: 0; }
+.story__media {
+  overflow: hidden; border-radius: var(--radius);
+  aspect-ratio: 3 / 2; background: var(--ivory-deep);
+  margin: 0 0 1.15rem;
+}
+.story__media img { width: 100%; height: 100%; object-fit: cover; }
+.story__label {
+  margin: 0 0 0.5rem; font-size: 0.6875rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--sand-deep);
+}
+.story__line {
+  margin: 0; font-family: var(--serif);
+  font-size: clamp(1.125rem, 1.6vw, 1.3125rem); line-height: 1.35;
+  color: var(--navy); text-wrap: pretty;
+}
+
+/* The rate row of section 10 gains a second action and a detail panel, so a
+   guest can compare rooms in place instead of leaving for the booking page to
+   find out what is in one. The panel is opened by the accordion script that
+   already runs the FAQ, so the keyboard and screen-reader behaviour is the
+   behaviour that is already tested. */
+.rate__actions { justify-self: end; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; }
+/* Descendant selector on purpose: .accordion__btn is declared later in the file
+   (section 13), so a single-class override here would lose to it. Colour is
+   left to .accordion__btn, which keeps the hover state working. */
+.rate .rate__toggle {
+  width: auto; justify-content: flex-start; gap: 0.5rem;
+  padding: 0.35rem 0; font-family: var(--sans);
+  font-size: 0.9375rem; font-weight: 600; letter-spacing: 0.01em;
+}
+.rate__detail { grid-column: 1 / -1; padding: 0.25rem 0 0.75rem; max-width: 64ch; }
+.rate__detail > :last-child { margin-bottom: 0; }
+.rate__detail ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.rate__detail li {
+  position: relative; margin: 0; padding-left: 1rem;
+  font-size: 0.9375rem; color: var(--ink-soft);
+}
+.rate__detail li::before {
+  content: ''; position: absolute; left: 0; top: 0.62em;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--sand);
+}
 
 /* -----------------------------------------------------------------------------
    9. Editorial experience
@@ -1234,6 +1405,14 @@ fieldset[data-invalid='true'] .option { border-color: var(--danger); }
   .rate { grid-template-columns: minmax(0, 1fr) auto; row-gap: 0.4rem; }
   .rate__meta { grid-column: 1 / -1; order: 3; }
   .rate__action { grid-column: 1 / -1; order: 4; justify-self: start; }
+  /* Property pages: the same fold, with the detail panel kept under its row. */
+  .rate__actions { grid-column: 1 / -1; order: 4; justify-self: start; margin-top: 0.35rem; }
+  .rate__detail { order: 5; }
+
+  /* Four landmarks in two rows rather than four cramped columns. Two, not one:
+     the drawings stay legible at half a phone screen and the section does not
+     become a long scroll on the way to the rooms. */
+  .nearby { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   /* Trust: one column, and the explicit desktop placement is released so
      markup order takes over — heading, pillars, review, then recognition
@@ -1277,6 +1456,21 @@ fieldset[data-invalid='true'] .option { border-color: var(--danger); }
   .spec__row { grid-template-columns: 1fr; gap: 0.4rem; }
   .cta-band { flex-direction: column; align-items: flex-start; }
   .hero__body { max-width: none; }
+  .hero--property .hero__body { max-width: none; }
+
+  /* Type now runs the full width, so the diagonal above is no use: its open
+     right-hand side is exactly where the line endings land. Two vertical
+     gradients instead, weighted to the band the headline and lede occupy.
+     Two classes, to outrank the .hero--property rule in section 8. */
+  .hero.hero--property .hero__scrim {
+    background:
+      linear-gradient(to bottom, rgba(4, 42, 55, 0.52) 0%, rgba(4, 42, 55, 0.2) 20%, rgba(4, 42, 55, 0.12) 36%),
+      linear-gradient(to top, rgba(4, 42, 55, 0.8) 0%, rgba(4, 42, 55, 0.68) 45%, rgba(4, 42, 55, 0.54) 66%, rgba(4, 42, 55, 0.32) 85%, rgba(4, 42, 55, 0.2) 100%);
+  }
+
+  /* Three photographs of one day read better stacked than squeezed. */
+  .story { grid-template-columns: minmax(0, 1fr); gap: clamp(1.75rem, 5vw, 2.5rem); }
+  .story__media { aspect-ratio: 16 / 9; }
 }
 
 @media (max-width: 640px) {
@@ -1286,6 +1480,8 @@ fieldset[data-invalid='true'] .option { border-color: var(--danger); }
   .footer-grid { grid-template-columns: 1fr; }
 
   .hero { min-height: 88vh; }
+  /* No search bar to make room for, so a property hero stops shorter. */
+  .hero--property { min-height: 76vh; }
   /* Sized so "Keep the freedom." holds its own line rather than breaking. */
   .hero h1 { font-size: clamp(2.1rem, 10.2vw, 3rem); }
   /* Narrow screens put text across the full width, including the bright sand,
@@ -1372,5 +1568,9 @@ fieldset[data-invalid='true'] .option { border-color: var(--danger); }
   .hero__media, .hero__scrim { display: none; }
   .card, .booking-card { break-inside: avoid; }
   .pillar, .review, .proof-strip li, .proof__aside { break-inside: avoid; }
+  .story__item, .rate { break-inside: avoid; }
+  /* A collapsed room panel still belongs on a printed page. */
+  .rate__detail[hidden] { display: block; }
+  .rate__toggle { display: none; }
   .award { --award-w: 150px; }
 }
