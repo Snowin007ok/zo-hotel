@@ -97,6 +97,41 @@ Two notes worth keeping:
   The file is still displayed at its own proportions — `height: auto`, never stretched —
   and only the empty margins are cropped.
 
+### Brand assets
+
+The supplied artwork was a 6336×2688 render on a flat white ground. Three assets are
+derived from that one file, and the derivation is worth recording because the obvious
+approach breaks it.
+
+| File | Size | Where |
+| --- | --- | --- |
+| `zo-logo-mark.webp` | 480×255, 18KB | Header on all eight pages, and the footer brand |
+| `zo-logo-emblem.webp` | 900×843, 108KB | The brand band on `index.html` |
+| `zo-favicon.png` | 64×64, 6KB | Favicon, replacing the inline SVG |
+
+- **Keying the background needed a flood fill, not a threshold.** The letters **Z** and
+  **O** are white, and the palest gold is close enough to white that an alpha-from-
+  distance-to-white pass would have ghosted the crest and punched holes through both
+  letters. So background is whatever white is *connected to the border*: a fill inward
+  from the edges, with a short alpha ramp at the boundary so the palm fronds do not come
+  out jagged. 278,696 white pixels survive inside the artwork — those are the letters.
+- **The header gets the tiles only.** At the 34px the brand slot allows, the crest and its
+  filigree turn to noise while two saturated squares carrying a Z and an O still read. The
+  tiles are found by hue with a row projection, since the gold has dark rims that fool a
+  plain luminance test.
+- **WebP, because PNG could not carry it.** Canvas PNG put the header mark at 510KB — these
+  are marbled textures and PNG handles them badly. WebP keeps the alpha channel at 18KB.
+  The favicon stays PNG for the widest support.
+- **The wordmark is typeset, not baked in.** The supplied lockup read `ZO HOTEL & & RESORT`
+  — a doubled ampersand, the usual way generated type fails. The band sets *ZO Hotel &
+  Resort* and *Elegance unveiled* in the site's own serif instead, so the ampersand is ours,
+  it stays crisp at every width, and it is editable. A test asserts no doubled ampersand
+  reaches the page.
+- **The header and footer marks are decorative.** `alt=""`, because the wordmark beside them
+  already names the brand and a described image would announce it twice. A test allows an
+  empty alt *only* on those two classes, so an accidental empty alt on a content image is a
+  failure rather than a silent omission.
+
 ## What works, not just what renders
 
 - **Two paths out of the home page.** A destination panel is discovery, so *Explore Mumbai*
@@ -182,7 +217,7 @@ Coursework links and framing are off the six customer-facing pages — no *Part 
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 54 tests: pricing, refunds, validation, copy audit
+node --test tests/logic.test.js      # 55 tests: pricing, refunds, validation, copy audit
 open tests/browser-check.html        # 76 checks: dialogs, focus, flows, images, overflow, console
 ```
 

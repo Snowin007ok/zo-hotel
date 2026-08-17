@@ -519,6 +519,20 @@ test('every image carries alternative text and intrinsic dimensions', () => {
       assert.match(tag, /\salt="/, `${file}: image without alt text — ${tag.slice(0, 70)}`);
       assert.match(tag, /\swidth="\d+"/, `${file}: image without width — ${tag.slice(0, 70)}`);
       assert.match(tag, /\sheight="\d+"/, `${file}: image without height — ${tag.slice(0, 70)}`);
+
+      /* alt="" and a missing alt are not the same thing: the first declares a
+         decorative image, the second is a defect. Only the brand marks are
+         decorative here, because the wordmark beside them already says the
+         name — anything else with an empty alt is a description someone forgot
+         to write, and this is where that gets caught. */
+      if (/\salt=""/.test(tag)) {
+        assert.match(tag, /class="(?:brand__mark|footer-brand__mark)"/,
+          `${file}: empty alt on a non-decorative image — ${tag.slice(0, 90)}`);
+      } else {
+        const alt = tag.match(/\salt="([^"]*)"/)[1];
+        assert.ok(alt.length > 15,
+          `${file}: alt="${alt}" is too thin to describe anything`);
+      }
     });
   });
 });
@@ -713,7 +727,7 @@ test('all caps stays on micro-labels and never reaches a CTA', () => {
     '.eyebrow', '.brand small', '.searchbar__label', '.place__kicker', '.nearby__where',
     '.story__label', '.benefit h3', '.recognition dd', '.pillar__label', '.proof-strip__label',
     '.concern__label', '.dialog__steps', '.dl-item dt', '.spec__key', '.compare__label',
-    '.site-footer h2'
+    '.site-footer h2', '.brandband__tagline'
   ];
   uppercased.forEach((sel) => {
     assert.ok(ALLOWED.includes(sel), `undocumented all-caps selector: ${sel}`);
@@ -990,6 +1004,48 @@ test('coursework links and framing stay off the customer-facing pages', () => {
         `${file} should link ${other} so the documentation stays reachable`);
     });
   });
+});
+
+test('the brand mark is on every page and stays light enough to ship', () => {
+  const htmlFilesAll = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'));
+
+  htmlFilesAll.forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    // Header brand mark, on all eight pages.
+    assert.match(html, /<img class="brand__mark" src="assets\/img\/zo-logo-mark\.webp"/,
+      `${file} carries the header brand mark`);
+    // Decorative: the wordmark beside it already says the name, so a described
+    // image would make a screen reader announce the brand twice.
+    const mark = html.match(/<img class="brand__mark"[^>]*>/)[0];
+    assert.match(mark, /\salt=""/, `${file}: the header mark is decorative`);
+    assert.match(mark, /width="\d+"[^>]*height="\d+"/, `${file}: the mark declares its size`);
+    // Favicon is a real file rather than an inline SVG.
+    assert.match(html, /<link rel="icon" type="image\/png" href="assets\/img\/zo-favicon\.png">/,
+      `${file} points at the favicon file`);
+  });
+
+  // The emblem appears once, on the home page, where it has room to read.
+  const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const emblems = [...home.matchAll(/zo-logo-emblem\.webp/g)];
+  assert.equal(emblems.length, 1, 'the full emblem is used once');
+  const emblem = home.match(/<img class="brandband__emblem"[^>]*>/s)[0];
+  // This one is content, not decoration, so it describes the crest.
+  assert.ok(/alt="[^"]{60,}"/.test(emblem), 'the emblem carries descriptive alternative text');
+
+  // Every brand file exists and is small enough for an offline-first site.
+  const BUDGET = { 'zo-logo-mark.webp': 40, 'zo-logo-emblem.webp': 160, 'zo-favicon.png': 16 };
+  Object.entries(BUDGET).forEach(([name, maxKb]) => {
+    const p = path.join(ROOT, 'assets/img', name);
+    assert.ok(fs.existsSync(p), `${name} exists`);
+    const kb = fs.statSync(p).size / 1024;
+    assert.ok(kb <= maxKb, `${name} is ${kb.toFixed(0)}KB, budget is ${maxKb}KB`);
+  });
+
+  // The supplied lockup had "ZO HOTEL & & RESORT" baked in. The wordmark is
+  // typeset instead, so the ampersand is ours and there is exactly one.
+  assert.match(home, /<h2 class="brandband__name"[^>]*>ZO Hotel &amp; Resort<\/h2>/,
+    'the wordmark is typeset, with one ampersand');
+  assert.doesNotMatch(home, /&amp;\s*&amp;/, 'no doubled ampersand reaches the page');
 });
 
 test('the customer-facing pages never say "why guests cancel"', () => {

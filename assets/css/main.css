@@ -292,11 +292,21 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
 }
 
 .brand {
-  display: inline-flex; align-items: baseline; gap: 0.55rem;
+  display: inline-flex; align-items: center; gap: 0.6rem;
   font-family: var(--serif); font-size: 1.375rem; letter-spacing: 0.02em;
   color: var(--white); text-decoration: none; margin-right: auto;
   transition: color 0.45s var(--ease);
 }
+/* The two enamel tiles from the emblem, and only those. The crest above them
+   in the full artwork is fine filigree that turns to noise at this size, so
+   the header takes the part that still reads: two saturated squares carrying a
+   Z and an O. Decorative, because the wordmark beside it says the name. */
+.brand__mark {
+  display: block; width: auto; height: 34px;
+  flex: 0 0 auto; align-self: center;
+}
+.brand__text { display: inline-block; }
+/* Kept: the wave mark the header used before the emblem existed. */
 .brand__wave { display: inline-block; width: 22px; transition: color 0.45s var(--ease); }
 .brand small {
   display: block; font-family: var(--sans); font-size: 0.5625rem;
@@ -1369,7 +1379,33 @@ fieldset[data-invalid='true'] .option { border-color: var(--danger); }
 .site-footer ul { list-style: none; margin: 0; padding: 0; }
 .site-footer li { margin-bottom: 0.55rem; }
 .footer-grid { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: clamp(1.75rem, 4vw, 3rem); }
-.footer-brand { display: flex; align-items: baseline; gap: 0.55rem; margin-bottom: 0.85rem; color: var(--white); font-family: var(--serif); font-size: 1.35rem; }
+.footer-brand { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.85rem; color: var(--white); font-family: var(--serif); font-size: 1.35rem; }
+.footer-brand__mark { display: block; width: auto; height: 30px; flex: 0 0 auto; }
+
+/* - - - Brand band (index.html)
+   Where the full emblem gets the room it needs. The crest reads at this size,
+   and the wordmark underneath is set in the site's own serif rather than baked
+   into the artwork — which is also how the doubled ampersand in the supplied
+   lockup stops being a problem. */
+.brandband { text-align: center; }
+.brandband__emblem {
+  display: block; width: auto; height: clamp(180px, 24vw, 260px);
+  margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+}
+.brandband__name {
+  font-family: var(--serif); font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  line-height: 1.1; letter-spacing: 0.02em; color: var(--navy);
+  margin: 0 0 0.75rem;
+}
+.brandband__tagline {
+  margin: 0 auto; max-width: 34ch;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--sand-deep);
+}
+.brandband__rule {
+  width: 64px; height: 2px; margin: clamp(1.5rem, 3vw, 2rem) auto 0;
+  background: var(--sand); border: 0;
+}
 .footer-bottom {
   margin-top: 3rem; padding-top: 1.35rem; border-top: 1px solid rgba(255, 255, 255, 0.14);
   display: flex; flex-wrap: wrap; gap: 0.75rem 1.75rem; justify-content: space-between;
