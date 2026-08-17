@@ -157,8 +157,11 @@
     function showConfirmation(booking) {
       var q = { total: booking.total };
       var refund = L.refundQuote(booking, new Date());
-      var manageUrl = 'manage.html?ref=' + encodeURIComponent(booking.reference) +
-        '&email=' + encodeURIComponent(booking.email);
+      /* Reference only. The email used to travel in this query string, which put
+         a guest's address into browser history, the referer header and any
+         analytics or shared link. The reference alone is enough to open the
+         booking that was just made on this device, and manage.js matches on it. */
+      var manageUrl = 'manage.html?ref=' + encodeURIComponent(booking.reference);
 
       formCard.hidden = true;
       var summaryCard = $('#summary-card');

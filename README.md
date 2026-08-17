@@ -16,7 +16,7 @@ everything runs from the file system.
 | `booking.html` | Booking form: live pricing, GST, full client-side validation, confirmation. |
 | `manage.html` | Where the exit prompt fires. Look up a booking, change dates, add requests, cancel. |
 | `style-guide.html` | The copy decisions this site commits to, with before/after against the current ZO site. |
-| `tests/browser-check.html` | Open it to drive the real dialogs in your browser and see 56 behaviour checks pass. |
+| `tests/browser-check.html` | Open it to drive the real dialogs in your browser and see 76 behaviour checks pass. |
 
 ## Photography
 
@@ -161,11 +161,29 @@ part of `tests/`. The numbers above are the record of it.
 - Demo booking on `manage.html`: `ZO-4193-MUM` / `guest@example.com`.
 - Bookings are stored in `localStorage` for this browser only.
 
+
+## Accessibility and privacy pass
+
+Eight fixes, each with a test behind it so it cannot quietly come back.
+
+| Fix | What was wrong |
+| --- | --- |
+| `.btn[hidden]` | `.btn` sets `display: inline-flex`, which outranks the UA rule for `[hidden]`. The reason step's offer button stayed on screen and stayed clickable after the script hid it, so that dialog always showed an empty third button. |
+| `required` on mandatory fields | Nine controls on `booking.html` and two on `manage.html` showed a `*` and told assistive tech nothing. The rate group is a `radiogroup` with `aria-required`, named by its legend, with `required` on each radio — one group, not a radiogroup nested inside a fieldset. |
+| Contrast | White on `--teal` measured **3.94:1** on the filled button, `--muted` **3.67:1** on ivory, `--sand-deep` **3.00:1** on ivory. All three are text and all three now clear 4.5:1 against white, ivory and soft white. `--sand` is unchanged because it only ever draws a rule. |
+| Hero type over photography | The home headline measured **1.99:1** and its lede **1.76:1**. Both now clear AA at 1440px and 390px. On a phone `cover` scales `goa-resort.jpg` by height, so the centred slice was open sand; it is framed onto the hillside instead, which does more than a heavier scrim could. |
+| No email in a URL | The confirmation handed the guest `manage.html?ref=…&email=…`, putting their address into history, the referer header and any link they pasted. The link now carries the reference alone, and `manage.js` no longer reads an address out of the query string. |
+| `tests/browser-check.html` | `ZO.Flows.ART` paths are written relative to the project root, so from `tests/` the dialog photograph 404ed — and the check passed anyway, because it only looked for an `<img>` element. A `<base href="../">` fixes resolution, and the check now asserts `complete && naturalWidth > 0`, since `complete` alone is true for a 404. |
+| The cancellation reason | Answering was mandatory: the step refused to continue without a selection. It is optional now, the description says so, and the quiet action reads **Skip to cancellation review** until something is chosen, then **Continue cancellation**. |
+| Honest link labels | Four *View room* links on the home page opened the booking form. They read *Choose this room*. The property pages keep *View room* because there it really does open a detail panel in place. |
+
+Coursework links and framing are off the six customer-facing pages — no *Part A*, no *Style guide*, no "content-writing assignment". `part-a-exit-prompt.html` and `style-guide.html` are unchanged and still link to each other, so the documentation stays reachable on its own. What did **not** go is the fictional-brand disclosure: the site shows invented prices, reviews and an award, and saying so is what keeps it from misleading anyone.
+
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 46 tests: pricing, refunds, validation, copy audit
-open tests/browser-check.html        # 71 checks: dialogs, focus, flows, overflow, console
+node --test tests/logic.test.js      # 54 tests: pricing, refunds, validation, copy audit
+open tests/browser-check.html        # 76 checks: dialogs, focus, flows, images, overflow, console
 ```
 
 The copy audit is not decorative: it fails the build if any page gains an exclamation

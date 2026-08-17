@@ -187,13 +187,17 @@
       body: '' +
         '<p class="dialog__steps"><span aria-current="step">Step 1 of 2</span></p>' +
         '<h2 class="dialog__title" id="dlg-reason-title">Tell us why you are cancelling</h2>' +
-        '<p class="dialog__lede" id="dlg-reason-desc">This tells us what to fix. Pick the closest reason.</p>' +
+        /* The reason is optional. Asking is worth it, because a reason with a
+           fix behind it is how a guest finds the date change instead of losing
+           the booking — but a guest who wants out should not have to answer a
+           question first, so cancelling stays reachable in one click either
+           way. */
+        '<p class="dialog__lede" id="dlg-reason-desc">If a reason fits, we may be able to fix it instead. Answering is optional.</p>' +
         '<form novalidate data-reason-form>' +
         '<fieldset>' +
-        '<legend class="visually-hidden">Reason for cancelling</legend>' +
+        '<legend class="visually-hidden">Reason for cancelling, optional</legend>' +
         '<div class="option-list">' + options + '</div>' +
         '</fieldset>' +
-        '<p class="error-text" data-error-for="reason" hidden></p>' +
         '<div class="field mt-2" data-slot="noteField" hidden>' +
         '<label class="label" for="reason-note">What happened? <span class="muted" style="font-weight:400">(optional)</span></label>' +
         '<textarea class="textarea" id="reason-note" name="reasonNote" rows="3"></textarea>' +
@@ -205,7 +209,10 @@
         '<p data-slot="offerBody"></p>' +
         '</div></div>' +
         '<div class="dialog__actions dialog__actions--retention">' +
-        '<button type="button" class="btn btn--quiet-danger" data-reason-continue>Continue cancellation</button>' +
+        /* Reads as a skip while nothing is chosen, and as continuing once a
+           reason is. Either way it is the quiet action and Keep booking is the
+           filled one. */
+        '<button type="button" class="btn btn--quiet-danger" data-reason-continue>Skip to cancellation review</button>' +
         '<button type="button" class="btn btn--primary" data-dialog-close data-reason-keep>Keep booking</button>' +
         '<button type="submit" class="btn btn--primary" data-reason-offer hidden></button>' +
         '</div>' +
@@ -321,7 +328,7 @@
         '<div class="field">' +
         '<label class="label" for="price-link">Link to the lower price <span class="req" aria-hidden="true">*</span></label>' +
         '<p class="hint" id="price-link-hint">A public page anyone can open, starting with https://</p>' +
-        '<input class="input" type="url" id="price-link" name="link" aria-describedby="price-link-hint" data-autofocus>' +
+        '<input class="input" type="url" id="price-link" name="link" required aria-describedby="price-link-hint" data-autofocus>' +
         '<p class="error-text" data-error-for="link" hidden></p>' +
         '</div>' +
         '<div class="dialog__actions">' +
@@ -547,6 +554,12 @@
     slot('dlg-reason', 'offer').hidden = true;
     slot('dlg-reason', 'noteField').hidden = true;
     $('#dlg-reason [data-reason-offer]').hidden = true;
+    /* Reopening starts with nothing chosen, so the quiet action goes back to
+       offering the skip and Keep booking goes back to being the filled one. */
+    var reopenContinue = $('#dlg-reason [data-reason-continue]');
+    if (reopenContinue) reopenContinue.textContent = 'Skip to cancellation review';
+    var reopenKeep = $('#dlg-reason [data-reason-keep]');
+    if (reopenKeep) reopenKeep.className = 'btn btn--primary';
     ZO.Form.clearError($('#dlg-reason'), 'reason');
     ZO.Dialog.replace('dlg-reason', { returnFocus: returnFocus });
   }
@@ -603,6 +616,13 @@
       var offerBox = slot('dlg-reason', 'offer');
       var offerBtn = $('#dlg-reason [data-reason-offer]');
       var keepBtn = $('#dlg-reason [data-reason-keep]');
+      var continueBtn = $('#dlg-reason [data-reason-continue]');
+
+      /* Once something is chosen there is nothing left to skip, so the quiet
+         action stops calling itself a skip and names what it does. */
+      if (continueBtn) {
+        continueBtn.textContent = state.reason ? 'Continue cancellation' : 'Skip to cancellation review';
+      }
 
       if (reason && reason.offer) {
         var body = reason.offerBody;
@@ -633,13 +653,10 @@
       runOffer(offerBtn.dataset.offer, null);
     });
 
+    /* No gate. A guest who will not answer still gets to the review in one
+       click, and the cancellation records a null reason rather than a
+       reluctant guess. */
     ZO.on($('#dlg-reason [data-reason-continue]'), 'click', function () {
-      if (!state.reason) {
-        ZO.Form.setError($('#dlg-reason'), 'reason', 'Please pick a reason so we know what to fix');
-        var first = $('#reason-dates');
-        if (first) first.focus();
-        return;
-      }
       var note = $('#reason-note');
       state.reasonNote = note ? note.value.trim() : '';
       goToConfirm(null);

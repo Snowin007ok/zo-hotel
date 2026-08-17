@@ -754,6 +754,244 @@ test('prose in a content section is punctuated as prose', () => {
   assert.ok(checked >= 20, `expected the prose components to be covered, saw ${checked}`);
 });
 
+/* --------------------------------------------------------------------------
+   Accessibility and privacy fixes
+   ----------------------------------------------------------------------- */
+
+/** WCAG 2.1 relative luminance of a #rrggbb string. */
+function luminance(hex) {
+  const h = hex.replace('#', '');
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  const f = (c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+}
+function contrast(a, b) {
+  const [la, lb] = [luminance(a), luminance(b)];
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+/** Read a custom property out of the :root block of main.css. */
+function token(css, name) {
+  const m = css.match(new RegExp('--' + name + ':\\s*(#[0-9a-fA-F]{6})'));
+  assert.ok(m, `token --${name} is defined as a hex value`);
+  return m[1];
+}
+
+test('a hidden button is actually hidden', () => {
+  // .btn sets display: inline-flex, which outranks the UA rule for [hidden].
+  // Without an override the reason step's offer button stays on screen and
+  // stays clickable after the script hides it.
+  const css = fs.readFileSync(path.join(ROOT, 'assets/css/main.css'), 'utf8');
+  assert.match(css, /\.btn\[hidden\]\s*\{[^}]*display:\s*none/,
+    '.btn[hidden] must set display: none');
+
+  // Every component that sets display on a class it also toggles with `hidden`
+  // needs the same override, so none of them regress.
+  ['.field', '.error-text', '.error-summary', '.banner', '.dialog-backdrop', '.btn']
+    .forEach((sel) => {
+      assert.match(css, new RegExp(sel.replace('.', '\\.') + '\\[hidden\\]\\s*\\{[^}]*display:\\s*none'),
+        `${sel}[hidden] needs display: none`);
+    });
+});
+
+test('every mandatory field is marked required', () => {
+  const booking = fs.readFileSync(path.join(ROOT, 'booking.html'), 'utf8');
+  const manage = fs.readFileSync(path.join(ROOT, 'manage.html'), 'utf8');
+
+  // A visible asterisk is a promise to assistive tech that has to be kept.
+  const MANDATORY = {
+    'booking.html': ['property', 'roomId', 'checkIn', 'checkOut', 'guests',
+      'fullName', 'email', 'phone', 'consent'],
+    'manage.html': ['reference', 'email']
+  };
+  Object.entries(MANDATORY).forEach(([file, ids]) => {
+    const html = file === 'booking.html' ? booking : manage;
+    ids.forEach((id) => {
+      const tag = html.match(new RegExp('<(?:input|select|textarea)[^>]*id="' + id + '"[^>]*>'));
+      assert.ok(tag, `${file}: control #${id} exists`);
+      assert.match(tag[0], /\srequired\b|\saria-required="true"/,
+        `${file}: #${id} carries an asterisk, so it must be required`);
+    });
+  });
+
+  // A required choice group: the group says it is required and each radio
+  // carries `required`, so one selection satisfies it.
+  assert.match(booking, /<fieldset id="plan-fieldset"[^>]*aria-required="true"/,
+    'the rate group declares aria-required');
+  assert.match(booking, /<fieldset id="plan-fieldset"[^>]*role="radiogroup"/,
+    'the rate group is a radiogroup, so aria-required applies to it');
+  assert.match(booking, /<fieldset id="plan-fieldset"[^>]*aria-labelledby="plan-legend"/,
+    'the radiogroup is named by its legend');
+  assert.match(booking, /id="plan-legend"/, 'the legend carries that id');
+  ['flexible', 'semiflex', 'saver'].forEach((planId) => {
+    const tag = booking.match(new RegExp('<input[^>]*id="plan-' + planId + '"[^>]*>'));
+    assert.match(tag[0], /\srequired\b/, `plan-${planId} carries required`);
+  });
+
+  // A radiogroup inside a fieldset would announce two groups, so there is one.
+  assert.doesNotMatch(booking, /option-list[^>]*role="radiogroup"/,
+    'the radiogroup is not nested inside another group');
+
+  // The price-match link is validated as mandatory, so it says so too.
+  const flows = fs.readFileSync(path.join(ROOT, 'assets/js/flows.js'), 'utf8');
+  assert.match(flows, /id="price-link"[^>]*\srequired/, 'the price link is required');
+  // The forcing-function field is required only while it is in play.
+  assert.match(flows, /input\.required = needsForce/,
+    'the CANCEL field is required only when the money is unrecoverable');
+});
+
+test('text colours meet WCAG AA against every ground they sit on', () => {
+  const css = fs.readFileSync(path.join(ROOT, 'assets/css/main.css'), 'utf8');
+  const white = token(css, 'white');
+  const grounds = [['white', white], ['ivory', token(css, 'ivory')],
+    ['soft white', token(css, 'soft-white')]];
+
+  // Filled button text. 15px semibold is not "large text", so it needs 4.5:1.
+  const btn = token(css, 'teal-btn');
+  const btnRatio = contrast(white, btn);
+  assert.ok(btnRatio >= 4.5,
+    `white on --teal-btn is ${btnRatio.toFixed(2)}:1, needs 4.5:1`);
+  // The filled button must not fall back to --teal, which measures 3.94:1.
+  assert.match(css, /\.btn--primary\s*\{[^}]*background:\s*var\(--teal-btn\)/,
+    '.btn--primary uses the accessible teal');
+
+  // Body-adjacent text colours, against all three page grounds.
+  [['muted', 4.5], ['sand-deep', 4.5], ['ink-soft', 4.5], ['ink', 4.5]].forEach(([name, need]) => {
+    const fg = token(css, name);
+    grounds.forEach(([groundName, bg]) => {
+      const r = contrast(fg, bg);
+      assert.ok(r >= need,
+        `--${name} on ${groundName} is ${r.toFixed(2)}:1, needs ${need}:1`);
+    });
+  });
+
+  // --sand only ever draws a rule, so it is held to the 3:1 asked of a
+  // non-text element rather than to 4.5:1.
+  const sandRule = contrast(token(css, 'sand'), token(css, 'ivory'));
+  assert.ok(sandRule >= 1.5, `--sand rule on ivory is ${sandRule.toFixed(2)}:1`);
+});
+
+test('the manage link carries a reference and no personal information', () => {
+  const bookingJs = fs.readFileSync(path.join(ROOT, 'assets/js/booking.js'), 'utf8');
+  const manageJs = fs.readFileSync(path.join(ROOT, 'assets/js/manage.js'), 'utf8');
+
+  // The confirmation used to hand the guest a link with their address in it,
+  // which lands in history, the referer header and anything they paste.
+  const url = bookingJs.match(/var manageUrl = ([^;]+);/s);
+  assert.ok(url, 'booking.js builds a manage URL');
+  assert.match(url[1], /ref=/, 'the link carries the reference');
+  assert.doesNotMatch(url[1], /email/i, 'the link carries no email address');
+  assert.doesNotMatch(url[1], /booking\.(email|phone|fullName)/,
+    'the link carries no other personal field');
+
+  // And nothing reads an address back out of the query string.
+  assert.doesNotMatch(manageJs, /params\.get\(\s*['"]email['"]\s*\)/,
+    'manage.js does not accept an email from the URL');
+
+  // A reference on its own still opens the booking, because find() treats the
+  // address as optional.
+  assert.match(manageJs, /return b\.reference === ref && \(!mail \|\| /,
+    'find() matches on the reference alone');
+});
+
+test('the browser check resolves assets and proves images decoded', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'tests/browser-check.html'), 'utf8');
+
+  // ART paths are written relative to the project root, so this page has to
+  // resolve from there or the photograph 404s while the DOM check still passes.
+  assert.match(html, /<base href="\.\.\/">/, 'the check resolves paths from the project root');
+  assert.doesNotMatch(html, /"\.\.\/assets/, 'no path double-steps out of tests/');
+
+  // complete is true for a 404 as well; naturalWidth is what separates a
+  // decoded image from a broken one.
+  assert.match(html, /img\.complete && img\.naturalWidth > 0/,
+    'the check asserts the image decoded, not merely that the element exists');
+  assert.match(html, /naturalWidth=/, 'a failure reports the measured width');
+
+  // Every ART entry names a file that is really on disk at that path.
+  const flows = fs.readFileSync(path.join(ROOT, 'assets/js/flows.js'), 'utf8');
+  const srcs = [...flows.matchAll(/src:\s*'(assets\/img\/[^']+)'/g)].map((m) => m[1]);
+  assert.ok(srcs.length >= 3, `expected the dialog art, saw ${srcs.length}`);
+  srcs.forEach((src) => {
+    assert.ok(fs.existsSync(path.join(ROOT, src)), `dialog art missing: ${src}`);
+  });
+});
+
+test('the cancellation reason is optional and the skip is named', () => {
+  const flows = fs.readFileSync(path.join(ROOT, 'assets/js/flows.js'), 'utf8');
+
+  // No gate: a guest who will not answer still reaches the review in one click.
+  assert.doesNotMatch(flows, /Please pick a reason/,
+    'the reason step no longer refuses to continue');
+  const handler = flows.match(/\[data-reason-continue\]'\), 'click', function \(\) \{([\s\S]*?)\n    \}\)/);
+  assert.ok(handler, 'the continue handler exists');
+  assert.doesNotMatch(handler[1], /if \(!state\.reason\)/,
+    'the continue handler does not gate on a reason');
+  assert.match(handler[1], /goToConfirm/, 'it goes straight to the review');
+
+  // The question says it is optional, in the description and in the legend.
+  assert.match(flows, /Answering is optional/, 'the description says it is optional');
+  assert.match(flows, /Reason for cancelling, optional/, 'the legend says so too');
+
+  // And the quiet action names the skip while nothing is chosen.
+  assert.match(flows, />Skip to cancellation review</,
+    'the initial label offers the skip');
+  assert.match(flows, /state\.reason \? 'Continue cancellation' : 'Skip to cancellation review'/,
+    'the label follows the selection');
+});
+
+test('a link that opens the booking form says so', () => {
+  const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+
+  // "View room" on the home page went to booking.html, which is not viewing a
+  // room. The property pages keep the label because there it really does open
+  // a detail panel in place.
+  const roomLinks = [...home.matchAll(/<a class="arrow-link" href="(booking\.html[^"]*)">([^<]+)<\/a>/g)];
+  assert.ok(roomLinks.length >= 4, `expected the rate list links, saw ${roomLinks.length}`);
+  roomLinks.forEach(([, href, label]) => {
+    assert.doesNotMatch(label, /^View room$/,
+      `"${label}" opens ${href}, so it must not claim to view a room`);
+    assert.match(label, /Choose this room/, `unexpected label: ${label}`);
+  });
+
+  ['mumbai.html', 'goa.html'].forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    // There, "View room" is a disclosure button, not a link away.
+    assert.doesNotMatch(html, /<a[^>]*href="booking\.html[^"]*"[^>]*>\s*View room/,
+      `${file}: View room must not be a link to the booking form`);
+    assert.match(html, /<button class="accordion__btn rate__toggle"[^>]*>\s*View room/,
+      `${file}: View room is the disclosure button`);
+  });
+});
+
+test('coursework links and framing stay off the customer-facing pages', () => {
+  const CUSTOMER = ['index.html', 'mumbai.html', 'goa.html', 'booking.html',
+    'manage.html', 'flexible-booking.html'];
+  const DOCS = ['part-a-exit-prompt.html', 'style-guide.html'];
+
+  CUSTOMER.forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    assert.doesNotMatch(html, /href="part-a-exit-prompt\.html"/, `${file} links Part A`);
+    assert.doesNotMatch(html, /href="style-guide\.html"/, `${file} links the style guide`);
+    const text = visibleText(html);
+    [/\bPart A\b/, /\bPart B\b/, /coursework/i, /content-writing assignment/i,
+      /student project/i, /educational demonstration/i].forEach((pattern) => {
+      assert.doesNotMatch(text, pattern, `${file} carries coursework language: ${pattern}`);
+    });
+    // The fictional-brand disclosure is not coursework framing and stays.
+    assert.match(text, /fictional/i, `${file} still says the brand is fictional`);
+  });
+
+  // The documentation is still reachable — the two pages link to each other.
+  DOCS.forEach((file) => {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    const others = DOCS.filter((d) => d !== file);
+    others.forEach((other) => {
+      assert.match(html, new RegExp('href="' + other.replace('.', '\\.') + '"'),
+        `${file} should link ${other} so the documentation stays reachable`);
+    });
+  });
+});
+
 test('the customer-facing pages never say "why guests cancel"', () => {
   // Internal business language, per the brief. It must not reach a guest.
   htmlFiles.forEach((file) => {

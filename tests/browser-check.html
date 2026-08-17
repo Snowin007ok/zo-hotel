@@ -4,7 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ZO Hotel — browser behaviour check</title>
-<link rel="stylesheet" href="../assets/css/main.css">
+<!-- Every asset path in the product is written relative to the project root,
+     including ZO.Flows.ART. This page lives in tests/, so it resolves from
+     the root too and the dialog photographs load exactly as they do in the
+     real pages. -->
+<base href="../">
+<link rel="stylesheet" href="assets/css/main.css">
 <style>
   body { padding: 24px; font-family: var(--sans); background: var(--soft-white); }
   h1 { font-size: 1.5rem; }
@@ -33,11 +38,11 @@
      headless screenshot always captures the finished result. */
   window.requestAnimationFrame = function (cb) { cb(performance.now()); return 0; };
 </script>
-<script src="../assets/js/logic.js"></script>
-<script src="../assets/js/core.js"></script>
-<script src="../assets/js/dialog.js"></script>
-<script src="../assets/js/forms.js"></script>
-<script src="../assets/js/flows.js"></script>
+<script src="assets/js/logic.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/dialog.js"></script>
+<script src="assets/js/forms.js"></script>
+<script src="assets/js/flows.js"></script>
 <script>
 (function () {
   'use strict';
@@ -46,6 +51,7 @@
   var out = document.getElementById('results');
   var pass = 0;
   var fail = 0;
+  var imagesToVerify = [];
   var errors = [];
 
   window.addEventListener('error', function (e) {
@@ -132,6 +138,15 @@
       document.querySelectorAll('#dlg-exit .dialog__actions .btn').length + ' buttons');
     check('the photograph rendered inside the dialog',
       !!$('#dlg-exit .dialog__art img'));
+    check('the dialog photograph carries alternative text and dimensions',
+      (function () {
+        var img = $('#dlg-exit .dialog__art img');
+        return !!img && (img.getAttribute('alt') || '').length > 20 &&
+          Number(img.getAttribute('width')) > 0 && Number(img.getAttribute('height')) > 0;
+      })());
+    /* Held for the asynchronous pass at the foot of this file: an <img> in the
+       DOM proves markup, not that the file exists. */
+    imagesToVerify.push($('#dlg-exit .dialog__art img'));
     check('the consequence line states the refund against the amount paid',
       /refundable/.test($('#dlg-exit [data-slot="consequence"]').textContent) &&
       /₹/.test($('#dlg-exit [data-slot="consequence"]').textContent),
@@ -213,11 +228,24 @@
     check('the reason step offers the dataset-derived reasons',
       document.querySelectorAll('#dlg-reason input[name="reason"]').length === 6);
 
-    // Continuing without a reason is refused.
+    // The reason is optional, so the quiet action offers a way past it.
+    check('the reason step says answering is optional',
+      /optional/i.test($('#dlg-reason-desc').textContent),
+      $('#dlg-reason-desc').textContent);
+    check('the quiet action offers a skip while nothing is chosen',
+      $('#dlg-reason [data-reason-continue]').textContent.trim() === 'Skip to cancellation review',
+      $('#dlg-reason [data-reason-continue]').textContent.trim());
+    check('the offer button is hidden, not merely marked hidden',
+      getComputedStyle($('#dlg-reason [data-reason-offer]')).display === 'none',
+      getComputedStyle($('#dlg-reason [data-reason-offer]')).display);
+    // Skipping with nothing chosen reaches the review rather than being refused.
     $('#dlg-reason [data-reason-continue]').click();
-    check('a reason is required before cancelling',
-      !$('[data-error-for="reason"]').hidden &&
-      /pick a reason/.test($('[data-error-for="reason"]').textContent));
+    check('skipping the reason reaches the cancellation review',
+      !$('#dlg-cancel').hidden && $('#dlg-reason').hidden);
+    // Back to the reason step for the rest of the path.
+    ZO.Dialog.closeAll();
+    ZO.Flows.openExitPrompt('dates', trigger);
+    $('#dlg-exit [data-exit-cancel]').click();
 
     // Picking a reason with a fix surfaces the offer.
     var priceRadio = $('#reason-price');
@@ -337,10 +365,41 @@
       document.documentElement.scrollWidth + ' vs ' + document.documentElement.clientWidth);
     check('no uncaught JavaScript errors', errors.length === 0, errors.join(' | '));
 
-    var tally = document.getElementById('tally');
-    tally.textContent = pass + ' passed, ' + fail + ' failed';
-    tally.style.color = fail ? '#a33224' : '#1c6b52';
-    document.title = (fail ? 'FAIL' : 'PASS') + ' ' + pass + '/' + (pass + fail);
+    function writeTally() {
+      var tally = document.getElementById('tally');
+      tally.textContent = pass + ' passed, ' + fail + ' failed';
+      tally.style.color = fail ? '#a33224' : '#1c6b52';
+      document.title = (fail ? 'FAIL' : 'PASS') + ' ' + pass + '/' + (pass + fail);
+    }
+
+    /* 13. the dialog photographs actually loaded.
+       complete alone is true for a 404 as well, so naturalWidth is what
+       separates a decoded image from a broken one. Runs last because it is the
+       only asynchronous check here; the tally is written when it settles. */
+    writeTally();
+    (function verifyImages() {
+      var pending = imagesToVerify.filter(Boolean);
+      if (!pending.length) return;
+
+      function settle(img) {
+        return new Promise(function (resolve) {
+          if (img.complete) return resolve();
+          img.addEventListener('load', function () { resolve(); }, { once: true });
+          img.addEventListener('error', function () { resolve(); }, { once: true });
+          window.setTimeout(resolve, 4000);
+        });
+      }
+
+      Promise.all(pending.map(settle)).then(function () {
+        pending.forEach(function (img) {
+          var name = (img.getAttribute('src') || '').split('/').pop();
+          check('dialog photograph ' + name + ' loaded',
+            img.complete && img.naturalWidth > 0,
+            'complete=' + img.complete + ' naturalWidth=' + img.naturalWidth);
+        });
+        writeTally();
+      });
+    })();
   })();
 })();
 </script>

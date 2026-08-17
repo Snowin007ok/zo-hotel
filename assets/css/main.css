@@ -28,8 +28,16 @@
   --near-black: #14272d;
   --teal: #148ca5;
   --teal-dark: #0f7288;
+  /* Filled buttons only. White on --teal measures 3.94:1, under the 4.5:1 that
+     15px semibold button text needs, so the filled button takes this instead
+     and --teal stays as the accent it was chosen to be. */
+  --teal-btn: #107b93;
+  --teal-btn-hover: #0d6376;
   --sand: #c9a979;
-  --sand-deep: #a8875a;
+  /* Small sand labels are text, so they are held to 4.5:1 against the three
+     page grounds — white, ivory and soft white. #a8875a managed 3.00:1 on
+     ivory. --sand itself stays lighter because it only ever draws a rule. */
+  --sand-deep: #806538;
 
   /* surfaces */
   --ivory: #f6f2ea;
@@ -41,7 +49,8 @@
   /* text */
   --ink: #14272d;
   --ink-soft: #3f5a63;
-  --muted: #6b8189;
+  /* Hints, meta lines and captions. #6b8189 measured 3.67:1 on ivory. */
+  --muted: #5a6f75;
   --on-dark: rgba(255, 255, 255, 0.92);
   --on-dark-soft: rgba(255, 255, 255, 0.72);
 
@@ -209,8 +218,8 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
               border-color 0.25s var(--ease), transform 0.25s var(--ease);
 }
 
-.btn--primary { background: var(--teal); border-color: var(--teal); color: var(--white); }
-.btn--primary:hover { background: var(--teal-dark); border-color: var(--teal-dark); color: var(--white); }
+.btn--primary { background: var(--teal-btn); border-color: var(--teal-btn); color: var(--white); }
+.btn--primary:hover { background: var(--teal-btn-hover); border-color: var(--teal-btn-hover); color: var(--white); }
 
 .btn--dark { background: var(--navy); border-color: var(--navy); color: var(--white); }
 .btn--dark:hover { background: var(--navy-deep); color: var(--white); }
@@ -243,6 +252,13 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
 .btn--sm { min-height: 44px; padding: 0.5rem 1.1rem; font-size: 0.875rem; }
 .btn--block { width: 100%; }
 .btn[disabled], .btn[aria-disabled='true'] { opacity: 0.5; cursor: not-allowed; }
+
+/* `display: inline-flex` above outranks the UA rule for [hidden], so a button
+   the script hides would otherwise stay on screen and stay clickable. The
+   reason step in flows.js hides and shows its offer button on every change of
+   selection, which is where this bit. Every other component that toggles
+   `hidden` declares the same override. */
+.btn[hidden] { display: none; }
 
 .btn-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
 
@@ -351,14 +367,17 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
   to { transform: scale(1); }
 }
 
-/* Overlay exists only to make type legible. It is kept narrow and shallow so
-   the beach and sea on the right stay untouched. */
+/* Overlay exists only to make type legible, and it has to actually do that:
+   the earlier values left the headline at 1.99:1 and the lede at 1.76:1 over
+   the sand, both well under WCAG AA. Tuned by measuring the brightest pixel
+   each glyph covers, not the average of the frame. Still directional, so the
+   beach and sea on the right stay open. */
 .hero__scrim {
   position: absolute; inset: 0; z-index: -1;
   background:
-    linear-gradient(to bottom, rgba(4, 42, 55, 0.46) 0%, rgba(4, 42, 55, 0.1) 13%, rgba(4, 42, 55, 0) 22%),
-    linear-gradient(103deg, rgba(4, 42, 55, 0.72) 0%, rgba(4, 42, 55, 0.5) 22%, rgba(4, 42, 55, 0.16) 46%, rgba(4, 42, 55, 0) 62%),
-    linear-gradient(to top, rgba(4, 42, 55, 0.58) 0%, rgba(4, 42, 55, 0.1) 30%, rgba(4, 42, 55, 0) 50%);
+    linear-gradient(to bottom, rgba(4, 42, 55, 0.52) 0%, rgba(4, 42, 55, 0.16) 14%, rgba(4, 42, 55, 0.06) 24%),
+    linear-gradient(103deg, rgba(4, 42, 55, 0.88) 0%, rgba(4, 42, 55, 0.76) 26%, rgba(4, 42, 55, 0.44) 50%, rgba(4, 42, 55, 0.06) 68%),
+    linear-gradient(to top, rgba(4, 42, 55, 0.7) 0%, rgba(4, 42, 55, 0.28) 32%, rgba(4, 42, 55, 0.04) 54%);
 }
 
 .hero__body {
@@ -1488,9 +1507,18 @@ fieldset[data-invalid='true'] .option { border-color: var(--danger); }
      so the scrim carries more weight here than on desktop. */
   .hero__scrim {
     background:
-      linear-gradient(to bottom, rgba(4, 42, 55, 0.55) 0%, rgba(4, 42, 55, 0.2) 16%, rgba(4, 42, 55, 0.12) 30%),
-      linear-gradient(to top, rgba(4, 42, 55, 0.72) 0%, rgba(4, 42, 55, 0.42) 45%, rgba(4, 42, 55, 0.22) 75%);
+      linear-gradient(to bottom, rgba(4, 42, 55, 0.55) 0%, rgba(4, 42, 55, 0.24) 18%, rgba(4, 42, 55, 0.16) 32%),
+      linear-gradient(to top, rgba(4, 42, 55, 0.84) 0%, rgba(4, 42, 55, 0.74) 40%, rgba(4, 42, 55, 0.64) 62%, rgba(4, 42, 55, 0.46) 84%, rgba(4, 42, 55, 0.34) 100%);
   }
+
+  /* On a phone `cover` scales goa-resort.jpg by height, so nothing is cropped
+     vertically and the horizontal slice is all that changes. Centred, that
+     slice is open sand — the brightest ground in the frame and the worst thing
+     to set a lede on, which left it at 3.15:1. Framed onto the hillside and
+     the garden at the left instead, so the photograph carries the type rather
+     than the scrim having to paint over it. Home hero only: the property heroes
+     are framed on their own buildings and already clear AA. */
+  .hero:not(.hero--property) .hero__media img { object-position: 20% center; }
   .searchbar { padding: 0.35rem; }
   .searchbar__grid { grid-template-columns: 1fr 1fr; }
   .searchbar__field { border-right: 0; border-bottom: 1px solid var(--line-soft); }

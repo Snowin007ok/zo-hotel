@@ -81,7 +81,7 @@
           <div class="form-grid">
             <div class="field">
               <label class="label" for="property">Property <span class="req" aria-hidden="true">*</span></label>
-              <select class="select" id="property" name="property">
+              <select class="select" id="property" name="property" required>
                 <option value="mumbai">ZO Hotel Mumbai · Marine Lines</option>
                 <option value="goa">ZO Hotel Goa · Baga Beach</option>
               </select>
@@ -90,7 +90,7 @@
 
             <div class="field">
               <label class="label" for="roomId">Room type <span class="req" aria-hidden="true">*</span></label>
-              <select class="select" id="roomId" name="roomId">
+              <select class="select" id="roomId" name="roomId" required>
                 <!-- Options are built from the rate card in booking.js -->
               </select>
               <p class="error-text" data-error-for="roomId" id="err-roomId" hidden></p>
@@ -99,29 +99,29 @@
             <div class="field">
               <label class="label" for="checkIn">Check-in <span class="req" aria-hidden="true">*</span></label>
               <p class="hint" id="hint-checkIn">Rooms are ready from 2:00 pm</p>
-              <input class="input" type="date" id="checkIn" name="checkIn" aria-describedby="hint-checkIn">
+              <input class="input" type="date" id="checkIn" name="checkIn" required aria-describedby="hint-checkIn">
               <p class="error-text" data-error-for="checkIn" id="err-checkIn" hidden></p>
             </div>
 
             <div class="field">
               <label class="label" for="checkOut">Check-out <span class="req" aria-hidden="true">*</span></label>
               <p class="hint" id="hint-checkOut">Check-out by 11:00 am</p>
-              <input class="input" type="date" id="checkOut" name="checkOut" aria-describedby="hint-checkOut">
+              <input class="input" type="date" id="checkOut" name="checkOut" required aria-describedby="hint-checkOut">
               <p class="error-text" data-error-for="checkOut" id="err-checkOut" hidden></p>
             </div>
 
             <div class="field">
               <label class="label" for="guests">Guests <span class="req" aria-hidden="true">*</span></label>
               <p class="hint" id="hint-guests">Up to 8 in one booking</p>
-              <input class="input" type="number" id="guests" name="guests" value="2" min="1" max="8" step="1" inputmode="numeric" aria-describedby="hint-guests">
+              <input class="input" type="number" id="guests" name="guests" value="2" min="1" max="8" step="1" inputmode="numeric" required aria-describedby="hint-guests">
               <p class="error-text" data-error-for="guests" id="err-guests" hidden></p>
             </div>
           </div>
 
           <hr>
 
-          <fieldset id="plan-fieldset">
-            <legend style="display:flex;align-items:center;gap:.4rem">
+          <fieldset id="plan-fieldset" role="radiogroup" aria-required="true" aria-labelledby="plan-legend">
+            <legend style="display:flex;align-items:center;gap:.4rem" id="plan-legend">
               Rate <span class="req" aria-hidden="true">*</span>
               <span class="tip" data-tip>
                 <button class="tip__btn" type="button" aria-label="How the three rates differ" aria-describedby="tip-rates">?</button>
@@ -134,7 +134,7 @@
 
             <div class="option-list" id="plan-list">
               <label class="option" for="plan-flexible" data-plan="flexible">
-                <input type="radio" id="plan-flexible" name="planId" value="flexible" checked>
+                <input type="radio" id="plan-flexible" name="planId" value="flexible" required checked>
                 <span class="option__text">
                   <span class="option__title">
                     Flexible
@@ -148,7 +148,7 @@
               </label>
 
               <label class="option" for="plan-semiflex" data-plan="semiflex">
-                <input type="radio" id="plan-semiflex" name="planId" value="semiflex">
+                <input type="radio" id="plan-semiflex" name="planId" value="semiflex" required>
                 <span class="option__text">
                   <span class="option__title">
                     Semi-flex
@@ -161,7 +161,7 @@
               </label>
 
               <label class="option" for="plan-saver" data-plan="saver">
-                <input type="radio" id="plan-saver" name="planId" value="saver">
+                <input type="radio" id="plan-saver" name="planId" value="saver" required>
                 <span class="option__text">
                   <span class="option__title">
                     Saver
@@ -244,14 +244,14 @@
             <div class="field field--full">
               <label class="label" for="fullName">Full name <span class="req" aria-hidden="true">*</span></label>
               <p class="hint" id="hint-fullName">As printed on the ID you will carry</p>
-              <input class="input" type="text" id="fullName" name="fullName" autocomplete="name" aria-describedby="hint-fullName">
+              <input class="input" type="text" id="fullName" name="fullName" autocomplete="name" required aria-describedby="hint-fullName">
               <p class="error-text" data-error-for="fullName" id="err-fullName" hidden></p>
             </div>
 
             <div class="field">
               <label class="label" for="email">Email <span class="req" aria-hidden="true">*</span></label>
               <p class="hint" id="hint-email">Your confirmation and cancellation deadline go here</p>
-              <input class="input" type="email" id="email" name="email" autocomplete="email" aria-describedby="hint-email">
+              <input class="input" type="email" id="email" name="email" autocomplete="email" required aria-describedby="hint-email">
               <p class="error-text" data-error-for="email" id="err-email" hidden></p>
             </div>
 
@@ -266,14 +266,14 @@
                 </span>
               </label>
               <p class="hint" id="hint-phone">10 digits, Indian number</p>
-              <input class="input" type="tel" id="phone" name="phone" autocomplete="tel" inputmode="numeric" aria-describedby="hint-phone">
+              <input class="input" type="tel" id="phone" name="phone" autocomplete="tel" inputmode="numeric" required aria-describedby="hint-phone">
               <p class="error-text" data-error-for="phone" id="err-phone" hidden></p>
             </div>
           </div>
 
           <div class="field mt-3">
             <label class="checkline" for="consent">
-              <input type="checkbox" id="consent" name="consent">
+              <input type="checkbox" id="consent" name="consent" required>
               <span>
                 I have read the cancellation terms for the rate I picked, shown in the summary.
                 <span class="req" aria-hidden="true">*</span>
@@ -288,7 +288,7 @@
           </div>
 
           <p class="tiny muted mt-2">
-            This is a coursework demo, so no payment is taken and no card details are collected.
+            No payment is taken and no card details are collected.
             Bookings are stored in this browser only.
           </p>
         </form>
@@ -311,12 +311,10 @@
 <footer class="site-footer">
   <div class="container">
     <div class="footer-bottom" style="margin-top:0;border-top:0">
-      <p class="mb-0">© <span data-year>2026</span> ZO Hotel. Fictional brand, built for a content-writing assignment.</p>
+      <p class="mb-0">© <span data-year>2026</span> ZO Hotel. A fictional brand, built as a prototype.</p>
       <p class="mb-0">
         <a href="index.html">Home</a> ·
-        <a href="manage.html">Manage booking</a> ·
-        <a href="part-a-exit-prompt.html">Part A: exit prompt</a> ·
-        <a href="style-guide.html">Style guide</a>
+        <a href="manage.html">Manage booking</a>
       </p>
     </div>
   </div>

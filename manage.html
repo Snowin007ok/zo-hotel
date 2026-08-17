@@ -78,14 +78,14 @@
           <div class="field">
             <label class="label" for="reference">Booking reference <span class="req" aria-hidden="true">*</span></label>
             <p class="hint" id="hint-reference">Six characters and three letters, like ZO-4193-MUM</p>
-            <input class="input" type="text" id="reference" name="reference" autocomplete="off" spellcheck="false" aria-describedby="hint-reference">
+            <input class="input" type="text" id="reference" name="reference" autocomplete="off" spellcheck="false" required aria-describedby="hint-reference">
             <p class="error-text" data-error-for="reference" id="err-reference" hidden></p>
           </div>
 
           <div class="field">
             <label class="label" for="email">Email on the booking <span class="req" aria-hidden="true">*</span></label>
             <p class="hint" id="hint-email">The address your confirmation was sent to</p>
-            <input class="input" type="email" id="email" name="email" autocomplete="email" aria-describedby="hint-email">
+            <input class="input" type="email" id="email" name="email" autocomplete="email" required aria-describedby="hint-email">
             <p class="error-text" data-error-for="email" id="err-email" hidden></p>
           </div>
         </div>
@@ -129,12 +129,10 @@
 <footer class="site-footer">
   <div class="container">
     <div class="footer-bottom" style="margin-top:0;border-top:0">
-      <p class="mb-0">© <span data-year>2026</span> ZO Hotel. Fictional brand, built for a content-writing assignment.</p>
+      <p class="mb-0">© <span data-year>2026</span> ZO Hotel. A fictional brand, built as a prototype.</p>
       <p class="mb-0">
         <a href="index.html">Home</a> ·
-        <a href="booking.html">Book a stay</a> ·
-        <a href="part-a-exit-prompt.html">Part A: exit prompt</a> ·
-        <a href="style-guide.html">Style guide</a>
+        <a href="booking.html">Book a stay</a>
       </p>
     </div>
   </div>

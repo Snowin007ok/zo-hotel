@@ -396,17 +396,20 @@
       }
     });
 
-    /* Deep link from the booking confirmation: ?ref=...&email=... */
+    /* Deep link from the booking confirmation: ?ref=... and nothing else.
+       An email in a query string ends up in history, in the referer header and
+       in anything the guest pastes to somebody else, so it is not accepted here
+       even if an old link still carries one. find() already treats the address
+       as optional, and a reference is enough to open a booking held on this
+       device. */
     var params = new window.URLSearchParams(window.location.search);
     var ref = params.get('ref');
-    var email = params.get('email');
     if (ref) {
-      var found = find(ref, email || '');
+      var found = find(ref, '');
       if (found) {
         current = found;
       } else {
         $('#reference').value = ref;
-        if (email) $('#email').value = email;
         ZO.banner($('#page-alert'), {
           tone: 'warn',
           title: 'That booking is not on this device',
