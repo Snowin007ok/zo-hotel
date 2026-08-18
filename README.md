@@ -9,7 +9,7 @@ everything runs from the file system.
 | File | What it is |
 | --- | --- |
 | `index.html` | The hotel home page. Photography-led: hero, destinations, experience, rooms, meetings, then flexible booking as reassurance. |
-| `mumbai.html` | **ZO Hotel Mumbai.** Urban and type-led: hero, location, four nearby landmarks, the restaurant and three benefits, a facade band over the rate list, trust, one flexibility note, then the booking CTA. |
+| `mumbai.html` | **ZO Hotel Mumbai.** Urban and type-led: hero, location, five nearby landmarks, the restaurant and three benefits, a facade band over the rate list, trust, one flexibility note, then the booking CTA. |
 | `goa.html` | **ZO Hotel Goa.** Coastal and photographic: hero, a day told in three photographs, four places along the coast, a pool band over the rate list, trust, one flexibility note, then the booking CTA. |
 | `flexible-booking.html` | **Part B in full** — the six cancellation reasons with answers, the whole policy table, the evidence, and the trust section. |
 | `part-a-exit-prompt.html` | **Part A** — the exit prompt, running live, with its four required pieces of copy and the rule behind each decision. |
@@ -43,7 +43,7 @@ Added later, outside the supplied seven:
 ### Borrowed photography — the nearby-attraction cards
 
 The supplied set contains no photograph of any real place, so the *Around the hotel*
-sections on the two property pages use eight photographs from **Wikimedia Commons** under
+sections on the two property pages use nine photographs from **Wikimedia Commons** under
 CC BY or CC BY-SA. They are committed to `assets/img/` as local files at 1000px wide, so
 the site still runs from the file system with no network access.
 
@@ -57,6 +57,7 @@ fails the build if a `near-*.jpg` is added without one.
 | `near-mumbai-marine.jpg` | Marine Drive, the Queen's Necklace at night | Ashwin Kumar | CC BY-SA 2.0 |
 | `near-mumbai-csmt.jpg` | Chhatrapati Shivaji Maharaj Terminus, floodlit | Dr. Raju Kasambe | CC BY-SA 4.0 |
 | `near-mumbai-colaba.jpg` | Antiques on Colaba Causeway | ghoseb (Flickr) | CC BY-SA 2.0 |
+| `near-mumbai-vadapav.jpg` | Vada pav, the city's own sandwich | Rutvi Mistry | CC BY-SA 4.0 |
 | `near-goa-baga.jpg` | Baga Beach | Nikhilb239 | CC BY-SA 4.0 |
 | `near-goa-calangute.jpg` | Calangute Beach at sunset | Anoop M S | CC BY-SA 4.0 |
 | `near-goa-aguada.jpg` | Fort Aguada bastion and lighthouse | Harvinder Chandigarh | CC BY-SA 4.0 |

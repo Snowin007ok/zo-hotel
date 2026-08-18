@@ -659,7 +659,14 @@ test('every borrowed photograph is credited on the page that uses it', () => {
   ['mumbai.html', 'goa.html'].forEach((file) => {
     const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
     const borrowed = [...html.matchAll(/src="assets\/img\/(near-[\w-]+\.jpg)"/g)].map((m) => m[1]);
-    assert.equal(borrowed.length, 4, `${file} shows four nearby places, saw ${borrowed.length}`);
+    // Mumbai carries five, Goa four. What matters is that the count and the
+    // number of credited photographers move together, which is asserted below.
+    assert.ok(borrowed.length >= 4, `${file} shows its nearby places, saw ${borrowed.length}`);
+    assert.match(html, /class="nearby(?: nearby--five)?"/, `${file} uses the nearby grid`);
+    if (borrowed.length === 5) {
+      assert.match(html, /class="nearby nearby--five"/,
+        `${file} has five cards, so the grid must take five columns`);
+    }
 
     borrowed.forEach((f) => {
       assert.ok(fs.existsSync(path.join(ROOT, 'assets/img', f)), `${file}: ${f} is on disk`);
