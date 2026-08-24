@@ -244,9 +244,9 @@
 
     // Matches the drawer breakpoint in main.css.
     /* Must match the drawer breakpoint in main.css. The CSS turns the nav into
-       a drawer at 1140px because the horizontal list wraps below that, and if
+       a drawer at 1240px because the horizontal list wraps below that, and if
        this number disagrees the drawer renders open and unmanaged. */
-    var mq = window.matchMedia('(max-width: 1140px)');
+    var mq = window.matchMedia('(max-width: 1240px)');
 
     function setOpenState(open) {
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');

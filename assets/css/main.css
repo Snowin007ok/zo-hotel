@@ -1522,13 +1522,16 @@ fieldset[data-invalid='true'] .option { border-color: var(--danger); }
 }
 
 /* The drawer starts early: nine navigation items will not fit one row. */
-/* The drawer takes over at 1140px, not 1000px. Between those widths the
-   horizontal list wrapped to a second row, which pushed the header to 104px
-   while --header-h stayed 76px — so on a .page--solid page the header sat over
-   the top of the content. That was true before Accessibility joined the
-   navigation and a short label only narrowed the band it happened in; the
-   honest fix is to stop showing a horizontal nav at widths it does not fit. */
-@media (max-width: 1140px) {
+/* The drawer takes over at 1240px, not 1000px. Below that the horizontal list
+   wrapped to a second row, which pushed the header to 104px while --header-h
+   stayed 76px — and that token drives scroll-padding-top and the top padding on
+   every .page--solid page, so the header sat over the content.
+
+   The number is measured, not guessed: with eight links and the booking button
+   the list needs 921px unwrapped, and a 1200px viewport leaves it 912px. Every
+   nav item added moves this threshold, so it is measured again each time
+   rather than assumed. */
+@media (max-width: 1240px) {
   .nav__toggle { display: inline-flex; }
   .nav {
     position: absolute; left: 0; right: 0; top: 100%;

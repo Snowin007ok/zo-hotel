@@ -1122,7 +1122,7 @@ test('the three travelling parties are offered something real', () => {
   const booking = fs.readFileSync(path.join(ROOT, 'booking.html'), 'utf8');
 
   // A section each, on the page the navigation points at.
-  ['children', 'older', 'facilities'].forEach((id) => {
+  ['children', 'older', 'disability', 'facilities'].forEach((id) => {
     assert.match(page, new RegExp('id="' + id + '"'), `the page has a ${id} section`);
   });
   const text = visibleText(page).replace(/\s+/g, ' ');
@@ -1152,15 +1152,24 @@ test('the three travelling parties are offered something real', () => {
 
   // Each borrowed photograph on the page is credited, as everywhere else.
   assert.match(page, /<p class="nearby__credit">/, 'the page credits its photographs');
+  // One borrowed photograph per travelling party.
   const borrowed = [...page.matchAll(/src="assets\/img\/(all-[\w-]+\.jpg)"/g)].map((m) => m[1]);
-  assert.equal(borrowed.length, 2, `two borrowed photographs, saw ${borrowed.length}`);
+  assert.equal(borrowed.length, 3, `one photograph per party, saw ${borrowed.length}`);
+  ['all-children.jpg', 'all-older.jpg', 'all-accessible.jpg'].forEach((f) => {
+    assert.ok(borrowed.includes(f), `${f} is on the page`);
+  });
+  // Each party section is a split panel, so the three read as a set.
+  ['children', 'older', 'disability'].forEach((id) => {
+    assert.match(page, new RegExp('<section class="split[^"]*" id="' + id + '"'),
+      `the ${id} section is a split panel`);
+  });
   borrowed.forEach((f) => {
     assert.ok(fs.existsSync(path.join(ROOT, 'assets/img', f)), `${f} is on disk`);
   });
   const credit = page.match(/<p class="nearby__credit">([\s\S]*?)<\/p>/)[1];
   assert.match(credit, /creativecommons\.org/, 'the credit links a licence');
   // And it does not let a borrowed photograph pass as one of this hotel.
-  assert.match(visibleText(credit).replace(/\s+/g, ' '), /Neither shows a ZO hotel/,
+  assert.match(visibleText(credit).replace(/\s+/g, ' '), /(?:Neither|None of the three) shows a ZO hotel/,
     'the credit says the photographs are not of this hotel');
 
   // The home page routes to the page rather than repeating it.
@@ -1261,9 +1270,31 @@ test('the nav drawer breakpoint is the same number in CSS and in JS', () => {
   assert.equal(cssBp[1], jsBp[1],
     `CSS turns the nav into a drawer at ${cssBp[1]}px but JS manages it at ${jsBp[1]}px`);
 
-  // Wide enough that the horizontal list actually fits at the width above it.
-  assert.ok(Number(cssBp[1]) >= 1100,
-    `${cssBp[1]}px is too narrow for ${7} nav links plus the booking button`);
+  /* Wide enough that the horizontal list actually fits above it. The threshold
+     is a measured number — eight links plus the booking button need 921px and
+     a 1200px viewport leaves 912px — so it moves every time a nav item is
+     added. This asserts the relationship rather than the number: more links
+     require a wider breakpoint. */
+  const navLinks = (fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8')
+    .match(/class="nav__link"/g) || []).length;
+  const floor = 1000 + (navLinks - 6) * 120;
+  assert.ok(Number(cssBp[1]) >= floor,
+    `${navLinks} nav links need a drawer breakpoint of at least ${floor}px, ` +
+    `and it is ${cssBp[1]}px — measure it again after adding a nav item`);
+});
+
+test('Best price is in the navigation and points at the guarantee', () => {
+  fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).forEach((f) => {
+    const html = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    const link = html.match(/<a class="nav__link" href="([^"]*#best-rate)">Best price<\/a>/);
+    assert.ok(link, `${f} has Best price in the navigation`);
+    // Same-page anchor on the home page, cross-page anchor everywhere else.
+    assert.equal(link[1], f === 'index.html' ? '#best-rate' : 'index.html#best-rate',
+      `${f}: Best price points at ${link[1]}`);
+  });
+  // And the section it points at exists.
+  assert.match(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'), /id="best-rate"/,
+    'the home page has the section the label promises');
 });
 
 test('the customer-facing pages never say "why guests cancel"', () => {
