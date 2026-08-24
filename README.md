@@ -150,6 +150,14 @@ approach breaks it.
   room the guest was reading about. `applyQueryParams` in `booking.js` already validated
   both against the rate card, so an unknown value falls back to the existing default and
   `booking.html` on its own is unchanged.
+- **Whoever you bring** (`index.html#everyone`) — three travelling parties, and the point of
+  putting them together is that they overlap more than hotel websites admit: a lower floor
+  near the lift helps an eighty-year-old and a wheelchair user for the same reason. So
+  *Room on a lower floor* is one shared request rather than two filed under separate labels.
+  Every offer named is either an existing fact of the hotel — the Family room sleeps four,
+  pools 6:00 am to 9:00 pm, breakfast until 11:00, early check-in from 9:00 am, ₹900 a night
+  for a cot — or a request in `L.REQUESTS`. A test checks the numbers against the rate card,
+  so the cards cannot drift away from what the booking form charges.
 - **Accessible stays** (`index.html#accessibility`) — named facilities rather than the word
   "friendly", because a guest cannot plan around an adjective: step-free entrance, lifts to
   every floor, accessible parking, wider doorways, grab rails, a roll-in shower with a seat.
@@ -159,6 +167,14 @@ approach breaks it.
   saying no checklist covers everybody and offering a number to call, which is the honest
   part. A test fails if the copy promises a control the form does not offer. Like the rest of
   this fictional hotel the facilities are invented; the mechanism to request them is not.
+- **What is not step-free** — the part most hotel sites leave out, and the reason the
+  accessibility section is worth having. Two named gaps and one absent facility: the stepped
+  path to the Goa garden villas, the shallow step at the Mumbai pool gate, and no pool hoist
+  at either hotel. A guest who meets a step on arrival has been failed twice, once by the
+  building and once by the page that did not mention it. A test asserts the disclosure is
+  still there and that no blanket "fully accessible" claim has crept in beside it, because
+  the tidying-away of an inconvenient paragraph is exactly the kind of edit that looks like
+  an improvement.
 - **Best rate guarantee** (`index.html#best-rate`) — every term is one the product already
   honours. The price-match dialog in `flows.js` takes a public link, matches the rate and
   takes another 10% off, checked within one business day, within 24 hours of booking. A test
@@ -233,7 +249,7 @@ Coursework links and framing are off the six customer-facing pages — no *Part 
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 57 tests: pricing, refunds, validation, copy audit
+node --test tests/logic.test.js      # 58 tests: pricing, refunds, validation, copy audit
 open tests/browser-check.html        # 76 checks: dialogs, focus, flows, images, overflow, console
 ```
 

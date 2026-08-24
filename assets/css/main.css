@@ -646,6 +646,10 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
 
 /* Benefit rules down one column, for the narrow half of an editorial split.
    Two classes, because .benefits sets three columns from section 12 below. */
+/* Four short rules across, for a section that has four things to say rather
+   than three. Falls to the same two-column fold as the default below 1024px. */
+.benefits--four { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1.25rem, 2.5vw, 2.25rem); }
+
 .benefits.benefits--stack {
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(1.35rem, 2.5vw, 1.85rem);
@@ -1024,6 +1028,20 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
   border-radius: var(--radius); padding: clamp(1.35rem, 2.5vw, 1.85rem);
 }
 .card--ivory { background: var(--ivory); border-color: var(--line); }
+
+/* A short list of facts inside a card. Same sand dot as the room detail in
+   section 8, so "what this room has" reads the same wherever it appears.
+   Unlike .keep-list it carries no background of its own, which is what lets it
+   sit inside a card without nesting one box in another. */
+.factlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.factlist li {
+  position: relative; margin: 0; padding-left: 1rem;
+  font-size: 0.9375rem; line-height: 1.55; color: var(--ink-soft);
+}
+.factlist li::before {
+  content: ''; position: absolute; left: 0; top: 0.62em;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--sand);
+}
 .grid { display: grid; gap: clamp(1.25rem, 2.5vw, 2rem); }
 .grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }

@@ -1087,6 +1087,52 @@ test('the accessibility promise is one a guest can act on', () => {
   // Confirmation in writing, on the same two-hour promise the requests carry.
   assert.match(text, /in writing within two hours/,
     'requests are confirmed in writing, as everywhere else on the site');
+
+  /* The disclosure is the part worth protecting. A guest who meets a step on
+     arrival has been failed twice: by the building, and by the page that did
+     not mention it. If somebody later tidies this away for looking negative,
+     this fails. */
+  assert.match(home, /What is not step-free/,
+    'the section names what is not accessible, not only what is');
+  ['garden villas', 'stepped path', 'pool hoist'].forEach((gap) => {
+    assert.ok(new RegExp(gap, 'i').test(text), `the disclosure names the gap: ${gap}`);
+  });
+  // And it stays honest rather than burying the gap in a positive frame.
+  assert.doesNotMatch(text, /fully accessible|accessible to all|no barriers/i,
+    'no blanket accessibility claim, given the gaps just listed');
+});
+
+test('the three travelling parties are offered something real', () => {
+  const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const booking = fs.readFileSync(path.join(ROOT, 'booking.html'), 'utf8');
+  assert.match(home, /id="everyone"/, 'the home page addresses who is travelling');
+
+  const section = home.slice(home.indexOf('id="everyone"'),
+    home.indexOf('</section>', home.indexOf('id="everyone"')));
+  const text = visibleText(section).replace(/\s+/g, ' ');
+
+  // Each card names a party and offers it something concrete.
+  ['With children', 'With older parents', 'With a disability'].forEach((who) => {
+    assert.ok(text.includes(who), `a card for travelling ${who.toLowerCase()}`);
+  });
+
+  /* A lower floor near the lift helps an older guest and a wheelchair user for
+     the same reason, so it is a shared request rather than filed under one
+     label — and it has to exist for either card to be telling the truth. */
+  assert.ok(L.REQUESTS.lowerFloor, 'a lower floor is a request in the rate card');
+  assert.match(booking, /id="req-lowerFloor"[^>]*value="lowerFloor"/,
+    'the booking form offers it');
+
+  // Facts carried over from the product rather than invented alongside it.
+  assert.match(text, /sleeps four/i, 'the family room capacity matches the rate card');
+  assert.equal(L.ROOMS.family.sleeps, 4, 'and the rate card agrees');
+  assert.match(text, /₹900 a night/, 'the cot price matches the extra-bed request');
+  assert.match(text, /6:00 am to 9:00 pm/, 'the pool hours match the experience section');
+  assert.match(text, /9:00 am/, 'early check-in matches the request note');
+
+  // The disability card sends a guest to the detail rather than summarising it.
+  assert.match(section, /href="#accessibility"/,
+    'the disability card links the detailed section');
 });
 
 test('the best rate guarantee promises exactly what the flow delivers', () => {
