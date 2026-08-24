@@ -805,6 +805,11 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
   background: var(--ivory);
 }
 .split--reverse .split__media { order: 2; }
+/* Per-photograph framing for the split panel. The default is tuned for the
+   banquet hall on the home page; a close-up of hands wants its middle and a
+   wide shore wants the band the figures walk along. */
+.split__media--mid { object-position: center 50% !important; }
+.split__media--low { object-position: center 62% !important; }
 
 /* -----------------------------------------------------------------------------
    12. Flexibility

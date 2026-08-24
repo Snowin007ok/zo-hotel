@@ -385,8 +385,8 @@ const htmlFiles = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'));
 test('every page is present and declares a language and a title', () => {
   assert.deepEqual(
     htmlFiles.sort(),
-    ['accessibility.html', 'booking.html', 'flexible-booking.html', 'goa.html', 'index.html',
-      'manage.html', 'mumbai.html', 'part-a-exit-prompt.html', 'style-guide.html']
+    ['booking.html', 'flexible-booking.html', 'goa.html', 'index.html', 'manage.html',
+      'mumbai.html', 'part-a-exit-prompt.html', 'room-for-all.html', 'style-guide.html']
   );
   htmlFiles.forEach((file) => {
     const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -1057,20 +1057,22 @@ test('the brand mark is on every page and stays light enough to ship', () => {
 
 test('the accessibility promise is one a guest can act on', () => {
   const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  const page = fs.readFileSync(path.join(ROOT, 'accessibility.html'), 'utf8');
+  const page = fs.readFileSync(path.join(ROOT, 'room-for-all.html'), 'utf8');
   const booking = fs.readFileSync(path.join(ROOT, 'booking.html'), 'utf8');
 
   // Summary on the home page, detail on its own page, and a route between —
   // the relationship #flexible already has with flexible-booking.html.
-  assert.match(home, /id="accessibility"/, 'the home page keeps a summary');
-  assert.match(home, /href="accessibility\.html"/, 'and links the detail');
+  assert.match(home, /id="room-for-all"/, 'the home page keeps a summary');
+  assert.match(home, /href="room-for-all\.html"/, 'and links the detail');
 
   // Accessibility is in the navigation of every page, which is the point of
   // giving it a page at all.
   fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).forEach((f) => {
     const html = fs.readFileSync(path.join(ROOT, f), 'utf8');
-    assert.match(html, /<a class="nav__link" href="accessibility\.html"/,
-      `${f} has Accessibility in the navigation`);
+    // aria-current="page" sits between the href and the label on the page
+    // itself, so the label is matched past any attributes.
+    assert.match(html, /<a class="nav__link" href="room-for-all\.html"[^>]*>Room for all</,
+      `${f} has Room for all in the navigation`);
   });
 
   // The section tells a guest to add an accessible room to their booking, so
@@ -1115,17 +1117,23 @@ test('the accessibility promise is one a guest can act on', () => {
 });
 
 test('the three travelling parties are offered something real', () => {
+  const page = fs.readFileSync(path.join(ROOT, 'room-for-all.html'), 'utf8');
   const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   const booking = fs.readFileSync(path.join(ROOT, 'booking.html'), 'utf8');
-  assert.match(home, /id="everyone"/, 'the home page addresses who is travelling');
 
-  const section = home.slice(home.indexOf('id="everyone"'),
-    home.indexOf('</section>', home.indexOf('id="everyone"')));
-  const text = visibleText(section).replace(/\s+/g, ' ');
+  // A section each, on the page the navigation points at.
+  ['children', 'older', 'facilities'].forEach((id) => {
+    assert.match(page, new RegExp('id="' + id + '"'), `the page has a ${id} section`);
+  });
+  const text = visibleText(page).replace(/\s+/g, ' ');
+  ['Travelling with children', 'Travelling with older parents', 'Travelling with a disability']
+    .forEach((who) => assert.ok(text.includes(who), `a section headed "${who}"`));
 
-  // Each card names a party and offers it something concrete.
+  // The home page summarises all three and routes to the page.
+  const summary = visibleText(home.slice(home.indexOf('id="room-for-all"'),
+    home.indexOf('</section>', home.indexOf('id="room-for-all"'))));
   ['With children', 'With older parents', 'With a disability'].forEach((who) => {
-    assert.ok(text.includes(who), `a card for travelling ${who.toLowerCase()}`);
+    assert.ok(summary.includes(who), `the summary names travelling ${who.toLowerCase()}`);
   });
 
   /* A lower floor near the lift helps an older guest and a wheelchair user for
@@ -1142,9 +1150,21 @@ test('the three travelling parties are offered something real', () => {
   assert.match(text, /6:00 am to 9:00 pm/, 'the pool hours match the experience section');
   assert.match(text, /9:00 am/, 'early check-in matches the request note');
 
-  // The disability card sends a guest to the detail rather than summarising it.
-  assert.match(section, /href="accessibility\.html"/,
-    'the disability card links the accessibility page');
+  // Each borrowed photograph on the page is credited, as everywhere else.
+  assert.match(page, /<p class="nearby__credit">/, 'the page credits its photographs');
+  const borrowed = [...page.matchAll(/src="assets\/img\/(all-[\w-]+\.jpg)"/g)].map((m) => m[1]);
+  assert.equal(borrowed.length, 2, `two borrowed photographs, saw ${borrowed.length}`);
+  borrowed.forEach((f) => {
+    assert.ok(fs.existsSync(path.join(ROOT, 'assets/img', f)), `${f} is on disk`);
+  });
+  const credit = page.match(/<p class="nearby__credit">([\s\S]*?)<\/p>/)[1];
+  assert.match(credit, /creativecommons\.org/, 'the credit links a licence');
+  // And it does not let a borrowed photograph pass as one of this hotel.
+  assert.match(visibleText(credit).replace(/\s+/g, ' '), /Neither shows a ZO hotel/,
+    'the credit says the photographs are not of this hotel');
+
+  // The home page routes to the page rather than repeating it.
+  assert.match(home, /href="room-for-all\.html"/, 'the summary links the page');
 });
 
 test('the best rate guarantee promises exactly what the flow delivers', () => {
@@ -1181,7 +1201,7 @@ test('the best rate guarantee promises exactly what the flow delivers', () => {
 });
 
 test('the accessibility page prices access at nothing extra', () => {
-  const page = fs.readFileSync(path.join(ROOT, 'accessibility.html'), 'utf8');
+  const page = fs.readFileSync(path.join(ROOT, 'room-for-all.html'), 'utf8');
   const text = visibleText(page).replace(/\s+/g, ' ');
 
   /* The load-bearing claim: access is not an upsell. Every figure comes off

@@ -11,7 +11,7 @@ everything runs from the file system.
 | `index.html` | The hotel home page. Photography-led: hero, destinations, experience, rooms, meetings, then flexible booking as reassurance. |
 | `mumbai.html` | **ZO Hotel Mumbai.** Urban and type-led: hero, location, five nearby landmarks, the restaurant and three benefits, a facade band over the rate list, trust, one flexibility note, then the booking CTA. |
 | `goa.html` | **ZO Hotel Goa.** Coastal and photographic: hero, a day told in three photographs, four places along the coast, a pool band over the rate list, trust, one flexibility note, then the booking CTA. |
-| `accessibility.html` | **Accessibility**, in the navigation of every page. What it costs (nothing extra), what each hotel has, what is not step-free, every room type at its own rate, and a statement about the site itself. |
+| `room-for-all.html` | **Room for all**, in the navigation of every page. A section each for travelling with children, with older parents and with a disability; what it costs (nothing extra); what is not step-free; every room type at its own rate; and a statement about the site itself. |
 | `flexible-booking.html` | **Part B in full** — the six cancellation reasons with answers, the whole policy table, the evidence, and the trust section. |
 | `part-a-exit-prompt.html` | **Part A** — the exit prompt, running live, with its four required pieces of copy and the rule behind each decision. |
 | `booking.html` | Booking form: live pricing, GST, full client-side validation, confirmation. |
@@ -63,6 +63,19 @@ fails the build if a `near-*.jpg` is added without one.
 | `near-goa-calangute.jpg` | Calangute Beach at sunset | Anoop M S | CC BY-SA 4.0 |
 | `near-goa-aguada.jpg` | Fort Aguada bastion and lighthouse | Harvinder Chandigarh | CC BY-SA 4.0 |
 | `near-goa-anjuna.jpg` | Anjuna Beach rocks | Nikhilb239 | CC BY 3.0 |
+| `all-children.jpg` | Children's hands and spades in sand | Shixart1985 | CC BY 2.0 |
+| `all-older.jpg` | A wide shore with two distant walkers | Alice Donovan Rouse | CC0 |
+
+- **The children's photograph shows no faces.** A CC licence covers the photographer's
+  copyright, not the subject's likeness, and a real identifiable child advertising a fictional
+  hotel is the shakier half of that. Hands and spades in sand say *children playing* without
+  putting anybody's face to it.
+- **The older-guest photograph is not what was asked for, and does not pretend to be.** A
+  posed shot of grandparents in conversation does not exist on Commons under a free licence —
+  fourteen queries across two rounds turned up a seniors cricket match and a family snapshot
+  in somebody's front room. What shipped is a CC0 shore at low tide with two distant walkers,
+  and the alt text describes exactly that rather than claiming a relationship the photograph
+  does not show.
 
 Two rules these cards keep:
 
