@@ -1055,6 +1055,73 @@ test('the brand mark is on every page and stays light enough to ship', () => {
   assert.doesNotMatch(home, /&amp;\s*&amp;/, 'no doubled ampersand reaches the page');
 });
 
+test('the accessibility promise is one a guest can act on', () => {
+  const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const booking = fs.readFileSync(path.join(ROOT, 'booking.html'), 'utf8');
+
+  assert.match(home, /id="accessibility"/, 'the home page has an accessibility section');
+
+  // The section tells a guest to add an accessible room to their booking, so
+  // that has to be a request the booking form actually offers. A promise with
+  // no control behind it is the badge this section exists to avoid.
+  assert.ok(L.REQUESTS.accessible, 'an accessible room is a request in the rate card');
+  assert.match(booking, /id="req-accessible"[^>]*value="accessible"/,
+    'the booking form offers it');
+
+  // First in the object, so it is first in every UI built from L.REQUESTS.
+  assert.equal(Object.keys(L.REQUESTS)[0], 'accessible',
+    'the accessible room leads the request group');
+
+  // Concrete, because "wheelchair friendly" gives a guest nothing to plan on.
+  const text = visibleText(home);
+  ['step-free', 'lift', 'grab rail', 'roll-in shower', 'doorway']
+    .forEach((term) => {
+      assert.ok(new RegExp(term, 'i').test(text),
+        `the section names something specific: expected "${term}"`);
+    });
+
+  // And it does not pretend a checklist covers everyone.
+  assert.match(text, /call/i, 'the section offers a human to talk to');
+  assert.match(home, /href="tel:\+912240001234"/, 'with a real number to call');
+
+  // Confirmation in writing, on the same two-hour promise the requests carry.
+  assert.match(text, /in writing within two hours/,
+    'requests are confirmed in writing, as everywhere else on the site');
+});
+
+test('the best rate guarantee promises exactly what the flow delivers', () => {
+  const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const flows = fs.readFileSync(path.join(ROOT, 'assets/js/flows.js'), 'utf8');
+
+  assert.match(home, /id="best-rate"/, 'the home page has a best rate section');
+  const text = visibleText(home).replace(/\s+/g, ' ');
+
+  // Each term on the page is a term the price-match dialog actually honours.
+  // If either side is edited alone, this fails rather than letting the page
+  // over-promise what the product does.
+  const TERMS = [
+    [/another 10% off/i, /another 10% off/i, '10% below the matched price'],
+    [/within 24 hours of booking/i, /within 24 hours of booking/i, 'the 24-hour window'],
+    [/within one business day/i, /within one business day/i, 'the checking time'],
+    [/public page anyone can open/i, /public page anyone can open/i, 'a publicly visible price']
+  ];
+  TERMS.forEach(([onPage, inFlow, what]) => {
+    assert.match(text, onPage, `the page states ${what}`);
+    assert.match(flows, inFlow, `the flow honours ${what}`);
+  });
+
+  // The page sends the guest where the claim is actually redeemed.
+  assert.match(home, /id="best-rate"[\s\S]*?href="manage\.html"/,
+    'the section links the page the price link is sent from');
+
+  // No superlative the product cannot back.
+  ['lowest price on the internet', 'cheapest anywhere', 'guaranteed lowest']
+    .forEach((claim) => {
+      assert.doesNotMatch(text.toLowerCase(), new RegExp(claim),
+        `unsupported superlative: ${claim}`);
+    });
+});
+
 test('the customer-facing pages never say "why guests cancel"', () => {
   // Internal business language, per the brief. It must not reach a guest.
   htmlFiles.forEach((file) => {

@@ -284,6 +284,67 @@
   </section>
 
   <!-- ===================================================================
+       ACCESSIBLE STAYS
+
+       Concrete, because "wheelchair friendly" tells a guest nothing they can
+       plan around. Every facility named here is arrangeable through the
+       existing request system — "Accessible room" is a request in
+       logic.js — so the promise on this page has something behind it rather
+       than being a badge. The closing line is the part that matters: access
+       needs are specific, so the page invites a conversation instead of
+       pretending a checklist covers everybody.
+       =================================================================== -->
+  <section class="section" id="accessibility" aria-labelledby="access-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">Accessible stays</p>
+        <h2 id="access-title">A stay you can get into.</h2>
+        <p class="lede">
+          Both hotels have step-free entrances, lifts to every floor and accessible rooms. Access
+          needs differ from one guest to the next, so tell us yours and we confirm each one in
+          writing before you travel.
+        </p>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit reveal">
+          <h3>Getting in and around</h3>
+          <p>
+            A step-free entrance, lifts to every floor, and accessible parking beside the door at
+            no charge.
+          </p>
+        </div>
+        <div class="benefit reveal reveal--d1">
+          <h3>In the room</h3>
+          <p>
+            Wider doorways, grab rails by the bed and the bath, and a roll-in shower with a seat.
+          </p>
+        </div>
+        <div class="benefit reveal reveal--d2">
+          <h3>Tell us what you need</h3>
+          <p>
+            Add an accessible room to your booking, or call the front desk, and we confirm it in
+            writing within two hours.
+          </p>
+        </div>
+      </div>
+
+      <p class="btn-row mt-4">
+        <a class="btn btn--outline" href="booking.html">Book an accessible room</a>
+        <a class="arrow-link" href="tel:+912240001234">Call +91 22 4000 1234</a>
+      </p>
+
+      <p class="nearby__caveat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6h.01"/></svg>
+        Assistance dogs are welcome in every room and every restaurant. No checklist covers
+        everybody, so call us and we will tell you exactly what a room has before you book. This
+        site is built to WCAG 2.1 AA: it works by keyboard, carries visible focus, and every
+        page has been measured for contrast.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
        FLEXIBILITY — the cancellation story, as reassurance
        =================================================================== -->
   <section class="section section--ivory" id="flexible">
@@ -315,6 +376,45 @@
       <p class="btn-row mt-4">
         <a class="btn btn--dark" href="flexible-booking.html">See flexible booking options</a>
         <a class="arrow-link" href="manage.html">Manage an existing booking</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       BEST RATE GUARANTEE
+
+       Every term here is the one the product already honours: the price
+       dialog in flows.js takes a public link, matches the rate and takes
+       another 10% off, checked within one business day. Copy and behaviour
+       are kept in step by a test, so this cannot drift into a badge that
+       promises more than the flow delivers.
+       =================================================================== -->
+  <section class="section" id="best-rate" aria-labelledby="rate-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">Book direct</p>
+        <h2 id="rate-title">The best rate is the one on this page.</h2>
+        <p class="lede">
+          Find the same room and the same dates publicly listed for less and we match that price,
+          then take another 10% off it. Booking direct is how you get the flexible terms as well.
+        </p>
+      </div>
+
+      <ul class="editorial__list" style="max-width:60ch">
+        <li><b>01</b><span>Book direct on this site, at the rate shown here.</span></li>
+        <li><b>02</b><span>Found it cheaper? Send us the link within 24 hours of booking, from the manage booking page.</span></li>
+        <li><b>03</b><span>We check it within one business day, match the price, and take another 10% off.</span></li>
+      </ul>
+
+      <p class="btn-row mt-3">
+        <a class="btn btn--dark" href="booking.html">Check availability</a>
+        <a class="arrow-link" href="manage.html">Send us a lower price</a>
+      </p>
+
+      <p class="nearby__caveat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6h.01"/></svg>
+        The lower price has to be on a public page anyone can open, for the same hotel, room type
+        and dates, including taxes.
       </p>
     </div>
   </section>
@@ -668,6 +768,7 @@
           <li><a href="goa.html">ZO Hotel Goa</a></li>
           <li><a href="#rooms">Rooms and rates</a></li>
           <li><a href="#meetings">Meetings and celebrations</a></li>
+          <li><a href="#accessibility">Accessible stays</a></li>
         </ul>
       </div>
 

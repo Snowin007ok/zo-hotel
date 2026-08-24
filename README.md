@@ -150,6 +150,21 @@ approach breaks it.
   room the guest was reading about. `applyQueryParams` in `booking.js` already validated
   both against the rate card, so an unknown value falls back to the existing default and
   `booking.html` on its own is unchanged.
+- **Accessible stays** (`index.html#accessibility`) — named facilities rather than the word
+  "friendly", because a guest cannot plan around an adjective: step-free entrance, lifts to
+  every floor, accessible parking, wider doorways, grab rails, a roll-in shower with a seat.
+  The section tells a guest to add an accessible room to their booking, so *Accessible room*
+  is a real request in `L.REQUESTS` — listed first, so it leads every UI built from that
+  object, and so nobody has to telephone while everyone else books online. It closes by
+  saying no checklist covers everybody and offering a number to call, which is the honest
+  part. A test fails if the copy promises a control the form does not offer. Like the rest of
+  this fictional hotel the facilities are invented; the mechanism to request them is not.
+- **Best rate guarantee** (`index.html#best-rate`) — every term is one the product already
+  honours. The price-match dialog in `flows.js` takes a public link, matches the rate and
+  takes another 10% off, checked within one business day, within 24 hours of booking. A test
+  asserts each term appears both on the page and in the flow, so the section cannot drift
+  into a badge that promises more than the product does, and it refuses superlatives like
+  "guaranteed lowest" that nothing could back.
 - **Exit prompt** (Part A) — fires on *Cancel booking*, offers a date change first, keeps
   cancelling available as a quiet action.
 - **Cancellation flow** — exit prompt → reason step → confirmation. Picking a reason changes
@@ -218,7 +233,7 @@ Coursework links and framing are off the six customer-facing pages — no *Part 
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 55 tests: pricing, refunds, validation, copy audit
+node --test tests/logic.test.js      # 57 tests: pricing, refunds, validation, copy audit
 open tests/browser-check.html        # 76 checks: dialogs, focus, flows, images, overflow, console
 ```
 
