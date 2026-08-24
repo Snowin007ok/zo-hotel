@@ -11,6 +11,7 @@ everything runs from the file system.
 | `index.html` | The hotel home page. Photography-led: hero, destinations, experience, rooms, meetings, then flexible booking as reassurance. |
 | `mumbai.html` | **ZO Hotel Mumbai.** Urban and type-led: hero, location, five nearby landmarks, the restaurant and three benefits, a facade band over the rate list, trust, one flexibility note, then the booking CTA. |
 | `goa.html` | **ZO Hotel Goa.** Coastal and photographic: hero, a day told in three photographs, four places along the coast, a pool band over the rate list, trust, one flexibility note, then the booking CTA. |
+| `accessibility.html` | **Accessibility**, in the navigation of every page. What it costs (nothing extra), what each hotel has, what is not step-free, every room type at its own rate, and a statement about the site itself. |
 | `flexible-booking.html` | **Part B in full** — the six cancellation reasons with answers, the whole policy table, the evidence, and the trust section. |
 | `part-a-exit-prompt.html` | **Part A** — the exit prompt, running live, with its four required pieces of copy and the rule behind each decision. |
 | `booking.html` | Booking form: live pricing, GST, full client-side validation, confirmation. |
@@ -258,10 +259,27 @@ Eight fixes, each with a test behind it so it cannot quietly come back.
 
 Coursework links and framing are off the six customer-facing pages — no *Part A*, no *Style guide*, no "content-writing assignment". `part-a-exit-prompt.html` and `style-guide.html` are unchanged and still link to each other, so the documentation stays reachable on its own. What did **not** go is the fictional-brand disclosure: the site shows invented prices, reviews and an award, and saying so is what keeps it from misleading anyone.
 
+### The navigation drawer breakpoint
+
+Adding *Accessibility* to the navigation surfaced a bug that predated it. Between 1000px and
+1140px the horizontal list wrapped to a second row, which pushed the header from 76px to
+104px while `--header-h` stayed at 76 — and since that token drives both `scroll-padding-top`
+and the top padding on every `.page--solid` page, the header sat over the top of the content.
+A short label only narrowed the band it happened in.
+
+The drawer now takes over at **1140px** rather than 1000px, because a horizontal nav should
+not be shown at a width it does not fit. Two numbers had to move together: the media query in
+`main.css` and the `matchMedia` call in `core.js`. When only the CSS moved, the drawer
+rendered open and unmanaged between the two widths — which is how the mismatch was found. A
+test now reads both numbers and fails if they disagree.
+
+*FAQ* left the navigation to make room. It was an anchor to an accordion on one page, where
+Accessibility is a page; it keeps a route from the footer of all nine pages.
+
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 58 tests: pricing, refunds, validation, copy audit
+node --test tests/logic.test.js      # 60 tests: pricing, refunds, validation, copy audit
 open tests/browser-check.html        # 76 checks: dialogs, focus, flows, images, overflow, console
 ```
 

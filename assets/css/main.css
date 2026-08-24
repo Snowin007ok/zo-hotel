@@ -1517,7 +1517,13 @@ fieldset[data-invalid='true'] .option { border-color: var(--danger); }
 }
 
 /* The drawer starts early: nine navigation items will not fit one row. */
-@media (max-width: 1000px) {
+/* The drawer takes over at 1140px, not 1000px. Between those widths the
+   horizontal list wrapped to a second row, which pushed the header to 104px
+   while --header-h stayed 76px — so on a .page--solid page the header sat over
+   the top of the content. That was true before Accessibility joined the
+   navigation and a short label only narrowed the band it happened in; the
+   honest fix is to stop showing a horizontal nav at widths it does not fit. */
+@media (max-width: 1140px) {
   .nav__toggle { display: inline-flex; }
   .nav {
     position: absolute; left: 0; right: 0; top: 100%;

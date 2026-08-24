@@ -385,8 +385,8 @@ const htmlFiles = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'));
 test('every page is present and declares a language and a title', () => {
   assert.deepEqual(
     htmlFiles.sort(),
-    ['booking.html', 'flexible-booking.html', 'goa.html', 'index.html', 'manage.html',
-      'mumbai.html', 'part-a-exit-prompt.html', 'style-guide.html']
+    ['accessibility.html', 'booking.html', 'flexible-booking.html', 'goa.html', 'index.html',
+      'manage.html', 'mumbai.html', 'part-a-exit-prompt.html', 'style-guide.html']
   );
   htmlFiles.forEach((file) => {
     const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -1057,9 +1057,21 @@ test('the brand mark is on every page and stays light enough to ship', () => {
 
 test('the accessibility promise is one a guest can act on', () => {
   const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const page = fs.readFileSync(path.join(ROOT, 'accessibility.html'), 'utf8');
   const booking = fs.readFileSync(path.join(ROOT, 'booking.html'), 'utf8');
 
-  assert.match(home, /id="accessibility"/, 'the home page has an accessibility section');
+  // Summary on the home page, detail on its own page, and a route between —
+  // the relationship #flexible already has with flexible-booking.html.
+  assert.match(home, /id="accessibility"/, 'the home page keeps a summary');
+  assert.match(home, /href="accessibility\.html"/, 'and links the detail');
+
+  // Accessibility is in the navigation of every page, which is the point of
+  // giving it a page at all.
+  fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).forEach((f) => {
+    const html = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    assert.match(html, /<a class="nav__link" href="accessibility\.html"/,
+      `${f} has Accessibility in the navigation`);
+  });
 
   // The section tells a guest to add an accessible room to their booking, so
   // that has to be a request the booking form actually offers. A promise with
@@ -1073,7 +1085,7 @@ test('the accessibility promise is one a guest can act on', () => {
     'the accessible room leads the request group');
 
   // Concrete, because "wheelchair friendly" gives a guest nothing to plan on.
-  const text = visibleText(home);
+  const text = visibleText(page);
   ['step-free', 'lift', 'grab rail', 'roll-in shower', 'doorway']
     .forEach((term) => {
       assert.ok(new RegExp(term, 'i').test(text),
@@ -1082,7 +1094,7 @@ test('the accessibility promise is one a guest can act on', () => {
 
   // And it does not pretend a checklist covers everyone.
   assert.match(text, /call/i, 'the section offers a human to talk to');
-  assert.match(home, /href="tel:\+912240001234"/, 'with a real number to call');
+  assert.match(page, /href="tel:\+912240001234"/, 'with a real number to call');
 
   // Confirmation in writing, on the same two-hour promise the requests carry.
   assert.match(text, /in writing within two hours/,
@@ -1092,8 +1104,8 @@ test('the accessibility promise is one a guest can act on', () => {
      arrival has been failed twice: by the building, and by the page that did
      not mention it. If somebody later tidies this away for looking negative,
      this fails. */
-  assert.match(home, /What is not step-free/,
-    'the section names what is not accessible, not only what is');
+  assert.match(page, /What is not step-free/,
+    'the page names what is not accessible, not only what is');
   ['garden villas', 'stepped path', 'pool hoist'].forEach((gap) => {
     assert.ok(new RegExp(gap, 'i').test(text), `the disclosure names the gap: ${gap}`);
   });
@@ -1131,8 +1143,8 @@ test('the three travelling parties are offered something real', () => {
   assert.match(text, /9:00 am/, 'early check-in matches the request note');
 
   // The disability card sends a guest to the detail rather than summarising it.
-  assert.match(section, /href="#accessibility"/,
-    'the disability card links the detailed section');
+  assert.match(section, /href="accessibility\.html"/,
+    'the disability card links the accessibility page');
 });
 
 test('the best rate guarantee promises exactly what the flow delivers', () => {
@@ -1166,6 +1178,72 @@ test('the best rate guarantee promises exactly what the flow delivers', () => {
       assert.doesNotMatch(text.toLowerCase(), new RegExp(claim),
         `unsupported superlative: ${claim}`);
     });
+});
+
+test('the accessibility page prices access at nothing extra', () => {
+  const page = fs.readFileSync(path.join(ROOT, 'accessibility.html'), 'utf8');
+  const text = visibleText(page).replace(/\s+/g, ' ');
+
+  /* The load-bearing claim: access is not an upsell. Every figure comes off
+     the rate card, so a rate change cannot leave this page quoting a price
+     the booking form no longer charges. */
+  const rates = Object.values(L.ROOMS).map((r) => r.base);
+  const cheapest = L.formatINR(Math.min(...rates));
+  const dearest = L.formatINR(Math.max(...rates));
+  assert.ok(text.includes(cheapest), `the page quotes the lowest rate ${cheapest}`);
+  assert.ok(text.includes(dearest), `and the highest ${dearest}`);
+
+  // Every room type appears at its own rate, and each one is bookable.
+  Object.values(L.ROOMS).forEach((room) => {
+    assert.ok(text.includes(L.formatINR(room.base)),
+      `${room.id} appears at ${L.formatINR(room.base)}`);
+    assert.match(page, new RegExp('room=' + room.id + '|room=family'),
+      `${room.id} is bookable from this page`);
+  });
+
+  // The extra bed is the one thing that costs, and it matches the request.
+  assert.match(L.REQUESTS.extraBed.note, /₹900/, 'the cot is ₹900 in the rate card');
+  assert.match(text, /₹900 a night/, 'and ₹900 on the page');
+
+  // Everything a guest might expect to be charged for is stated as free.
+  ['A room on a lower floor', 'Accessible parking', 'grab rail', 'Early check-in',
+    'wheelchair to borrow'].forEach((row) => {
+    assert.ok(new RegExp(row, 'i').test(text), `the table lists ${row}`);
+  });
+  const freeCount = (text.match(/\bFree\b/g) || []).length;
+  assert.ok(freeCount >= 4, `the table says Free where it is free, saw ${freeCount}`);
+
+  // And no surcharge has crept in.
+  assert.doesNotMatch(text, /accessib\w* (?:supplement|surcharge)|\+ ?₹\d+ for an accessible/i,
+    'no accessibility surcharge');
+  assert.match(text, /₹0/, 'the page states the surcharge as zero outright');
+
+  // GST is quoted the way the policy table quotes it, not invented here.
+  const flex = fs.readFileSync(path.join(ROOT, 'flexible-booking.html'), 'utf8');
+  ['12%', '18%', '₹7,500'].forEach((n) => {
+    assert.ok(text.includes(n), `the tax note states ${n}`);
+    assert.ok(visibleText(flex).includes(n), `and the policy page agrees on ${n}`);
+  });
+});
+
+test('the nav drawer breakpoint is the same number in CSS and in JS', () => {
+  /* These two have to agree. The CSS decides when the horizontal list becomes
+     a drawer; core.js decides when to manage it as one. When they disagreed
+     the drawer rendered open and unmanaged between the two widths, which is
+     how this was found. */
+  const css = fs.readFileSync(path.join(ROOT, 'assets/css/main.css'), 'utf8');
+  const js = fs.readFileSync(path.join(ROOT, 'assets/js/core.js'), 'utf8');
+
+  const cssBp = css.match(/@media \(max-width: (\d+)px\) \{\s*\n\s*\.nav__toggle \{ display: inline-flex/);
+  assert.ok(cssBp, 'the CSS declares where the drawer takes over');
+  const jsBp = js.match(/matchMedia\('\(max-width: (\d+)px\)'\)/);
+  assert.ok(jsBp, 'core.js declares the same thing');
+  assert.equal(cssBp[1], jsBp[1],
+    `CSS turns the nav into a drawer at ${cssBp[1]}px but JS manages it at ${jsBp[1]}px`);
+
+  // Wide enough that the horizontal list actually fits at the width above it.
+  assert.ok(Number(cssBp[1]) >= 1100,
+    `${cssBp[1]}px is too narrow for ${7} nav links plus the booking button`);
 });
 
 test('the customer-facing pages never say "why guests cancel"', () => {

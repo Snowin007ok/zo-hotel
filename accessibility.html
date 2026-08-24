@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accessibility — ZO Hotel</title>
+<meta name="description" content="Accessible rooms at ZO Hotel Mumbai and Goa at the same rate as any room, what each one contains, and the two places that are still not step-free.">
+<link rel="icon" type="image/png" href="assets/img/zo-favicon.png">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body class="page--solid">
+
+<a class="skip-link" href="#main">Skip to the main content</a>
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a class="brand" href="index.html">
+      <img class="brand__mark" src="assets/img/zo-logo-mark.webp"
+           alt="" width="480" height="255" decoding="async">
+      <span class="brand__text">ZO Hotel<small>Mumbai · Goa</small></span>
+    </a>
+
+    <button class="nav__toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      Menu
+    </button>
+
+    <nav class="nav" id="site-nav" data-nav aria-label="Main">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="index.html#stays">Stays</a></li>
+        <li><a class="nav__link" href="mumbai.html">Mumbai</a></li>
+        <li><a class="nav__link" href="goa.html">Goa</a></li>
+        <li><a class="nav__link" href="index.html#rooms">Rooms</a></li>
+        <li><a class="nav__link" href="accessibility.html" aria-current="page">Accessibility</a></li>
+        <li><a class="nav__link" href="flexible-booking.html">Flexible booking</a></li>
+        <li aria-hidden="true"><span class="nav__divider"></span></li>
+        <li><a class="nav__link" href="manage.html">Manage booking</a></li>
+        <li class="nav__cta"><a class="btn btn--primary btn--sm" href="booking.html">Book a stay</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ===================================================================
+       INTRO
+
+       No photograph here, and not for want of looking: nothing in the
+       supplied set shows a grab rail, a lift or a step-free entrance, and
+       every accessible-hotel photograph on Commons is a competitor's
+       branded property. The page leads on type instead, the way
+       flexible-booking.html does, and carries the hotel's own photography
+       further down where it is honest to use it.
+       =================================================================== -->
+  <section class="section section--ivory section--tight">
+    <div class="container">
+      <div class="section__head" style="margin-bottom:0">
+        <p class="eyebrow">Accessibility</p>
+        <h1 class="display-2"><span>A stay you can</span><span>get into.</span></h1>
+        <p class="lede">
+          Accessible rooms at both hotels, at the same rate as any other room. This page lists
+          what each one contains, what costs nothing, and the two places that are still not
+          step-free — because you should hear that from us and not on arrival.
+        </p>
+        <p class="btn-row mt-3">
+          <a class="btn btn--primary" href="booking.html">Book an accessible room</a>
+          <a class="arrow-link" href="tel:+912240001234">Call +91 22 4000 1234</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       PRICE
+
+       The load-bearing claim on this page. Access is not an upgrade, so the
+       numbers come straight from the rate card in logic.js and a test reads
+       them back. Everything a guest might expect to be charged for is free,
+       and the one thing that is not is named rather than hidden.
+       =================================================================== -->
+  <section class="section" id="price" aria-labelledby="price-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">What it costs</p>
+        <h2 id="price-title">Nothing extra, for any of it.</h2>
+        <p class="lede">
+          An accessible room is priced as the room it is, not as a special arrangement. Nobody
+          pays more here for needing a wider doorway.
+        </p>
+      </div>
+
+      <ul class="proof-strip">
+        <li>
+          <span class="proof-strip__value">₹0</span>
+          <span class="proof-strip__label">Added for an accessible room</span>
+        </li>
+        <li>
+          <span class="proof-strip__value">₹6,999</span>
+          <span class="proof-strip__label">Where an accessible stay starts</span>
+        </li>
+        <li>
+          <span class="proof-strip__value">2 hours</span>
+          <span class="proof-strip__label">To confirm it in writing</span>
+        </li>
+      </ul>
+
+      <div class="table-wrap mt-4">
+        <table class="data" data-stacked>
+          <caption>What each part of an accessible stay costs, at both hotels.</caption>
+          <thead>
+            <tr>
+              <th scope="col">What you are asking for</th>
+              <th scope="col">Price</th>
+              <th scope="col">How you get it</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">An accessible room</th>
+              <td>The standard rate, ₹6,999 to ₹12,499 a night</td>
+              <td>A request on any room type</td>
+            </tr>
+            <tr>
+              <th scope="row">A room on a lower floor</th>
+              <td>Free</td>
+              <td>A request on any room type</td>
+            </tr>
+            <tr>
+              <th scope="row">Accessible parking beside the door</th>
+              <td>Free</td>
+              <td>A request, or ask on arrival</td>
+            </tr>
+            <tr>
+              <th scope="row">A grab rail or a bath seat fitted</th>
+              <td>Free</td>
+              <td>Call before you travel</td>
+            </tr>
+            <tr>
+              <th scope="row">Early check-in from 9:00 am</th>
+              <td>Free, whenever a room is ready</td>
+              <td>A request on any room type</td>
+            </tr>
+            <tr>
+              <th scope="row">A wheelchair to borrow</th>
+              <td>Free</td>
+              <td>Ask at reception</td>
+            </tr>
+            <tr>
+              <th scope="row">An extra bed or a cot</th>
+              <td>₹900 a night</td>
+              <td>A request on any room type</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="nearby__caveat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6h.01"/></svg>
+        Rates include GST at 12% up to ₹7,500 a night and 18% above it. There is no resort fee,
+        no service charge and no card surcharge, so the number you see before you pay is the
+        number you pay.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       THE FACILITIES
+       =================================================================== -->
+  <section class="section section--white" id="facilities" aria-labelledby="facilities-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">What each hotel has</p>
+        <h2 id="facilities-title">Named, so you can plan around it.</h2>
+        <p class="lede">
+          Access needs differ from one guest to the next, so this is a list rather than an
+          adjective. Ask about anything missing from it and we will measure it and tell you.
+        </p>
+      </div>
+
+      <div class="benefits benefits--four">
+        <div class="benefit reveal">
+          <svg class="facticon" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20h20"/><path d="M4 20L15 9"/><path d="M15 9h5v11"/><path d="M9 20v-4"/></svg>
+          <h3>Getting in and around</h3>
+          <p>
+            A step-free entrance, lifts to every floor, and accessible parking beside the door at
+            no charge.
+          </p>
+        </div>
+        <div class="benefit reveal reveal--d1">
+          <svg class="facticon" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3.4"/><path d="M8 7.2a4 4 0 0 1 8 0z"/><path d="M9.6 10.4v1.8"/><path d="M12 10.4v2.4"/><path d="M14.4 10.4v1.8"/><path d="M10.8 15v1.8"/><path d="M13.2 15v1.8"/></svg>
+          <h3>In the room</h3>
+          <p>
+            Wider doorways, grab rails by the bed and the bath, and a roll-in shower with a seat.
+          </p>
+        </div>
+        <div class="benefit reveal reveal--d2">
+          <svg class="facticon" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h2.5L11 17V7L6.5 10H4z"/><path d="M15 9.5a4.5 4.5 0 0 1 0 5"/><path d="M17.8 7a8 8 0 0 1 0 10"/></svg>
+          <h3>Hearing and sight</h3>
+          <p>
+            A hearing loop at reception, a visual fire alarm and a vibrating pillow pad in
+            accessible rooms, and menus and hotel information in large print.
+          </p>
+        </div>
+        <div class="benefit reveal reveal--d3">
+          <svg class="facticon" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v10.5H9.5L4 19.5V5z"/><path d="M8 9h8"/><path d="M8 12h5"/></svg>
+          <h3>Tell us what you need</h3>
+          <p>
+            Add an accessible room to your booking, or call the front desk, and we confirm it in
+            writing within two hours.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid--2 mt-4">
+        <div>
+          <h3 style="font-size:1.125rem">In an accessible room</h3>
+          <ul class="factlist mt-2">
+            <li>A doorway a wheelchair fits through, and turning space beside the bed.</li>
+            <li>A roll-in shower with a fold-down seat, and grab rails at the shower and the toilet.</li>
+            <li>A bed at transfer height, with the wardrobe rail and the peephole set lower.</li>
+            <li>Light switches and sockets reachable from a seated position.</li>
+            <li>A wheelchair to borrow at either hotel, and a step-free route to the pool and the restaurant.</li>
+            <li>Assistance dogs are welcome in every room and every restaurant, with a relief area outside.</li>
+          </ul>
+        </div>
+
+        <!-- The part most hotel sites leave out, and the reason this page is
+             worth having. A guest who meets a step on arrival has been failed
+             twice: once by the building and once by the page that did not
+             mention it. -->
+        <div class="card card--ivory">
+          <p class="eyebrow" style="margin-bottom:.75rem">What is not step-free</p>
+          <ul class="factlist">
+            <li>
+              In Goa the garden villas are reached by a stepped path, so we place accessible
+              bookings in the main wing, which has lift access throughout.
+            </li>
+            <li>
+              In Mumbai there is one shallow step at the courtyard pool gate. Tell us and
+              somebody will meet you there with the ramp.
+            </li>
+            <li>
+              Neither hotel has a pool hoist. We will say so again if you ask, rather than
+              letting you find out at the water.
+            </li>
+          </ul>
+          <p class="small mt-3 mb-0" style="color:var(--ink-soft)">
+            If anything else here would stop you, ask before you book and we will measure it and
+            tell you.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       THE BUILDING
+
+       The one place a photograph earns its keep on this page: the hotel's
+       own wing, floors served by a lift, which is what the copy above
+       describes.
+       =================================================================== -->
+  <section id="building">
+    <div class="band band--property">
+      <img src="assets/img/room-ocean.jpeg"
+           alt="A ZO resort wing at dusk, balconies lit on every floor above a turquoise pool framed by tall palms."
+           width="3413" height="2560" loading="lazy" decoding="async">
+      <div class="band__scrim" aria-hidden="true"></div>
+      <div class="band__caption">
+        <div class="container">
+          <p class="eyebrow eyebrow--light">Both hotels</p>
+          <h2 style="color:#fff;margin-bottom:.5rem;max-width:26ch">Every floor is served by a lift.</h2>
+          <p>Accessible rooms sit on the lower floors of each wing, close to the lift and the entrance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       ROOM BY ROOM
+       =================================================================== -->
+  <section class="section section--tight" id="rooms" aria-labelledby="rooms-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">Room by room</p>
+        <h2 id="rooms-title">Every room type, at its own rate.</h2>
+        <p class="lede">
+          An accessible version of each room type is held at both hotels. The rate is the rate
+          for that room, whichever version you take.
+        </p>
+      </div>
+
+      <div class="rates">
+        <article class="rate">
+          <h3 class="rate__name">City Comfort room</h3>
+          <p class="rate__meta">Mumbai · king bed · 2 guests · accessible version available</p>
+          <p class="rate__price">₹6,999 <span>/ night</span></p>
+          <div class="rate__actions">
+            <a class="btn btn--sm btn--outline" href="booking.html?property=mumbai&amp;room=city">Book now</a>
+          </div>
+        </article>
+        <article class="rate">
+          <h3 class="rate__name">Business room</h3>
+          <p class="rate__meta">Mumbai · work desk · 2 guests · accessible version available</p>
+          <p class="rate__price">₹8,499 <span>/ night</span></p>
+          <div class="rate__actions">
+            <a class="btn btn--sm btn--outline" href="booking.html?property=mumbai&amp;room=business">Book now</a>
+          </div>
+        </article>
+        <article class="rate">
+          <h3 class="rate__name">Family room</h3>
+          <p class="rate__meta">Mumbai and Goa · two queen beds · 4 guests · accessible version available</p>
+          <p class="rate__price">₹9,999 <span>/ night</span></p>
+          <div class="rate__actions">
+            <a class="btn btn--sm btn--outline" href="booking.html?room=family">Book now</a>
+          </div>
+        </article>
+        <article class="rate">
+          <h3 class="rate__name">Resort view room</h3>
+          <p class="rate__meta">Goa · sea-facing balcony · 3 guests · accessible version in the main wing</p>
+          <p class="rate__price">₹12,499 <span>/ night</span></p>
+          <div class="rate__actions">
+            <a class="btn btn--sm btn--outline" href="booking.html?property=goa&amp;room=resort">Book now</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       THE WEBSITE ITSELF
+       =================================================================== -->
+  <section class="section section--ivory section--tight" id="website" aria-labelledby="web-title">
+    <div class="container container--narrow">
+      <p class="eyebrow">This website</p>
+      <h2 id="web-title">Built to WCAG 2.1 AA.</h2>
+      <p class="lede">
+        Every page works by keyboard, carries visible focus, and has been measured for contrast
+        rather than assumed to pass. Dialogs trap focus, return it where you left it, and close
+        on Escape. Star ratings and decorative marks are hidden from screen readers, and every
+        photograph carries a description unless it is decoration.
+      </p>
+      <p class="small mt-3 mb-0" style="color:var(--ink-soft)">
+        If something on this site does not work for you, call
+        <a href="tel:+912240001234">+91 22 4000 1234</a> and we will take the booking over the
+        phone while we fix it.
+      </p>
+    </div>
+  </section>
+
+  <!-- =================================================================== -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <div>
+          <h2>Tell us what you need.</h2>
+          <p>Add it to the booking and we confirm it in writing within two hours, before you travel.</p>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="booking.html">Book an accessible room</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="margin-top:0;border-top:0">
+      <p class="mb-0">© <span data-year>2026</span> ZO Hotel. A fictional brand, built as a prototype.</p>
+      <p class="mb-0">
+        <a href="index.html">Home</a> ·
+        <a href="index.html#faq">Questions</a> ·
+        <a href="booking.html">Book a stay</a> ·
+        <a href="manage.html">Manage booking</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/logic.js"></script>
+<script src="assets/js/core.js"></script>
+</body>
+</html>
