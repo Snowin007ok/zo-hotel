@@ -1033,6 +1033,17 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
    section 8, so "what this room has" reads the same wherever it appears.
    Unlike .keep-list it carries no background of its own, which is what lets it
    sit inside a card without nesting one box in another. */
+/* Pictograms rather than photographs, for the two sections about who the hotel
+   suits. Commons holds no brand-free photograph of a grab rail, a lift or a
+   step-free entrance — every hotel-looking result is a competitor's property,
+   and the rest is transport infrastructure or a military medical wing. All
+   seven supplied photographs are already on this page once each, so reusing one
+   would just read as repetition. For facility information a pictogram is the
+   convention in any case: a guest scanning for "is there a roll-in shower"
+   reads a symbol faster than a photograph of somebody else's bathroom. */
+.facticon { display: block; color: var(--teal); margin-bottom: 0.9rem; }
+.card .facticon { margin-bottom: 1rem; }
+
 .factlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
 .factlist li {
   position: relative; margin: 0; padding-left: 1rem;

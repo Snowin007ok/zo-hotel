@@ -158,6 +158,18 @@ approach breaks it.
   pools 6:00 am to 9:00 pm, breakfast until 11:00, early check-in from 9:00 am, ₹900 a night
   for a cot — or a request in `L.REQUESTS`. A test checks the numbers against the rate card,
   so the cards cannot drift away from what the booking form charges.
+- **Pictograms, not photographs, in those two sections.** Both were asked for images and
+  neither got one, for a reason worth recording. All seven supplied photographs are already
+  on `index.html` once each, so a second use would read as repetition. Wikimedia Commons
+  holds nothing usable: every hotel-looking result is a competitor's branded property —
+  Sofitel, Marriott, Cala Millor — and the brand-free accessibility imagery is transport
+  infrastructure or a military medical wing, which would read as a hospital rather than a
+  hotel. Beyond availability, a pictogram is the convention for facility information anyway:
+  a guest scanning for *is there a roll-in shower* reads a symbol faster than a photograph of
+  somebody else's bathroom, and disability stock photography tends to show a model rather
+  than the bathroom. Seven original inline SVGs in the site's existing icon language, checked
+  at 30px — three were redrawn after the first pass, because a staircase, a shower and a
+  wheel all failed to read at that size.
 - **Accessible stays** (`index.html#accessibility`) — named facilities rather than the word
   "friendly", because a guest cannot plan around an adjective: step-free entrance, lifts to
   every floor, accessible parking, wider doorways, grab rails, a roll-in shower with a seat.
