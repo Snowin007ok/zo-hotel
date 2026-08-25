@@ -318,10 +318,39 @@ links, so the next item cannot be added without re-measuring.
 *FAQ* left the navigation to make room for *Room for all*, and keeps a route from the footer
 of all nine pages.
 
+### Why the free list is free
+
+Asked how early check-in can be given away. The answer is the conditional, and it is load
+bearing rather than hedging.
+
+Early check-in costs the hotel nothing when a room is **already clean and vacant** —
+housekeeping has finished it, or it went unsold. It costs a full room-night only when the
+hotel must hold a room empty the night before to *guarantee* 9:00 am, and that is what
+hotels charge for. So *free when a room is ready* gives away something with no marginal
+cost, while a guarantee would be a product with a real one. Nine mentions across the site,
+and every one carries the condition; a test now fails if any of them claims it is free
+without it.
+
+The rest of the list holds up on the same test. Parking, a high chair, a fitted grab rail, a
+lower floor, a wheelchair to borrow, towels and shade at the pool — all owned equipment or
+pure room allocation, with effectively no cost per guest. The extra bed at ₹900 is the one
+request with real marginal cost — linen, a bed, an extra body in the room — and it is the
+only priced one. A test asserts exactly one request carries a price, so that coherence
+cannot quietly break.
+
+The accessible room at the standard rate is not generosity at all. Charging more for an
+accessible room is disability discrimination, and unlawful in many jurisdictions including
+under India's Rights of Persons with Disabilities Act. That one is the floor, not a favour.
+
+One ambiguity this turned up and fixed: *"a high chair in either restaurant, and smaller
+portions at any meal, on request at no charge"* could be read as the food being free. The
+high chair is free; a smaller portion is still a paid meal. Now written as two clauses so it
+cannot be read the generous way.
+
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 62 tests: pricing, refunds, validation, copy audit
+node --test tests/logic.test.js      # 63 tests: pricing, refunds, validation, copy audit
 open tests/browser-check.html        # 76 checks: dialogs, focus, flows, images, overflow, console
 ```
 

@@ -1261,6 +1261,40 @@ test('every amenity the page offers on request is really requestable', () => {
     'and the page names the control by the label the form uses');
 });
 
+test('early check-in is never promised without its condition', () => {
+  /* The only reason this can be free is that it costs nothing when a room is
+     already clean and vacant. Guaranteeing 9:00 am means holding the room the
+     night before, which is a lost room-night and is what hotels charge for. So
+     the conditional is not hedging — it is the entire commercial basis, and
+     dropping it anywhere turns a courtesy into a promise the hotel cannot keep.
+  */
+  const COND = /(when(?:ever)? a room is ready|subject to availability|if a room is ready)/i;
+  let checked = 0;
+  fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).forEach((file) => {
+    const text = visibleText(fs.readFileSync(path.join(ROOT, file), 'utf8')).replace(/\s+/g, ' ');
+    // Each mention that also claims it is free must carry the condition nearby.
+    [...text.matchAll(/.{0,90}[Ee]arly check-in.{0,120}/g)].forEach((m) => {
+      const near = m[0];
+      if (!/\b(free|no charge|at no cost)\b/i.test(near)) return;
+      checked++;
+      assert.match(near, COND,
+        `${file}: early check-in claimed free without its condition — "${near.trim().slice(0, 110)}"`);
+    });
+  });
+  assert.ok(checked >= 4, `expected the claim to appear and be checked, saw ${checked}`);
+
+  // The rate card carries the condition too, since that note is what the
+  // booking form and both dialogs render.
+  assert.match(L.REQUESTS.earlyCheckin.note, COND,
+    'the request note states the condition');
+
+  // And the one request with a real marginal cost is the one with a price,
+  // which is what makes the free list coherent rather than generous.
+  const priced = Object.values(L.REQUESTS).filter((r) => /₹/.test(r.note));
+  assert.equal(priced.length, 1, `exactly one request costs money, saw ${priced.length}`);
+  assert.equal(priced[0].id, 'extraBed', 'and it is the extra bed');
+});
+
 test('the accessibility page prices access at nothing extra', () => {
   const page = fs.readFileSync(path.join(ROOT, 'room-for-all.html'), 'utf8');
   const text = visibleText(page).replace(/\s+/g, ' ');
