@@ -64,19 +64,27 @@ fails the build if a `near-*.jpg` is added without one.
 | `near-goa-aguada.jpg` | Fort Aguada bastion and lighthouse | Harvinder Chandigarh | CC BY-SA 4.0 |
 | `near-goa-anjuna.jpg` | Anjuna Beach rocks | Nikhilb239 | CC BY 3.0 |
 | `all-children.jpg` | Children's hands and spades in sand | Shixart1985 | CC BY 2.0 |
-| `all-older.jpg` | A wide shore with two distant walkers | Alice Donovan Rouse | CC0 |
+| `all-older.jpg` | Two people playing carrom, hands over the board | Thinktech86 | CC BY-SA 4.0 |
 | `all-accessible.jpg` | An accessible bathroom, wet-room shower with a fold-down seat | Nishimuraya Kinosaki Onsen | CC BY 2.0 |
 
 - **The children's photograph shows no faces.** A CC licence covers the photographer's
   copyright, not the subject's likeness, and a real identifiable child advertising a fictional
   hotel is the shakier half of that. Hands and spades in sand say *children playing* without
   putting anybody's face to it.
-- **The older-guest photograph is not what was asked for, and does not pretend to be.** A
-  posed shot of grandparents in conversation does not exist on Commons under a free licence —
-  fourteen queries across two rounds turned up a seniors cricket match and a family snapshot
-  in somebody's front room. What shipped is a CC0 shore at low tide with two distant walkers,
-  and the alt text describes exactly that rather than claiming a relationship the photograph
-  does not show.
+- **The older-guest photograph came right on the third attempt, by searching for the
+  activity rather than the age group.** Twenty-one queries looking for *elderly*, *senior* and
+  *grandparents* produced a cricket match and a snapshot in somebody's front room, and a wide
+  empty shore shipped as a substitute. Searching instead for the game the copy names — carrom —
+  found it immediately. The lesson generalises: Commons is a documentary archive, so it
+  answers *what is happening* far better than *who it is happening to*.
+- **It is hands over the board, not faces.** Same reason as the children's photograph: a CC
+  licence covers the photographer's copyright, not the subject's likeness.
+- **Two photographs were rejected for branding inside the frame.** The first carrom shot had
+  its maker's name printed along the board edge; shifting the crop past it brought a
+  games-brand box into the other edge. A different photograph from the same set has no
+  branding at all. Provenance was never the objection — a competitor or a product legible
+  *inside the frame* is, which is the same fault as the projector screen in
+  `room-business.jpg`.
 
 Two rules these cards keep:
 

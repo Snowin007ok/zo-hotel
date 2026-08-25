@@ -810,6 +810,13 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
    wide shore wants the band the figures walk along. */
 .split__media--mid { object-position: center 50% !important; }
 .split__media--low { object-position: center 62% !important; }
+/* Kept for a photograph whose subject sits right of centre. The carrom shot
+   that needed it was replaced: shifting its frame past the maker's name printed
+   on the board brought a games-brand box into the other edge, so a different
+   photograph from the same set was used instead — one with no branding in it at
+   all. A hotel page should not advertise somebody else's product any more than
+   a competitor's logo. */
+.split__media--right { object-position: 74% center; }
 
 /* -----------------------------------------------------------------------------
    12. Flexibility
