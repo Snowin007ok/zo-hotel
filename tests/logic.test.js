@@ -1426,6 +1426,27 @@ test('an acronym a guest would not know is spelled out', () => {
   });
 });
 
+test('visible prose uses the typographic apostrophe', () => {
+  /* Slipped in twice now — once on the vada pav card and once on the
+     older-guest list — because a straight apostrophe is what a keyboard gives
+     you. Alt text and comments keep the straight one, so this checks only what
+     a reader actually sees. */
+  fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).forEach((file) => {
+    let h = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    h = h.replace(/<!--[\s\S]*?-->/g, ' ')
+         .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+         .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+         // Code, markup samples and keyboard keys keep the straight quote.
+         .replace(/<(code|pre|kbd)[\s\S]*?<\/\1>/gi, ' ')
+         .replace(/\salt="[^"]*"/g, ' ');
+    const text = h.replace(/<[^>]+>/g, ' ');
+    const straight = [...text.matchAll(/\w'\w/g)].map((m) =>
+      text.slice(Math.max(0, m.index - 40), m.index + 20).replace(/\s+/g, ' ').trim());
+    assert.equal(straight.length, 0,
+      `${file}: straight apostrophe in visible prose — ${straight.slice(0, 2).join(' | ')}`);
+  });
+});
+
 test('the customer-facing pages never say "why guests cancel"', () => {
   // Internal business language, per the brief. It must not reach a guest.
   htmlFiles.forEach((file) => {

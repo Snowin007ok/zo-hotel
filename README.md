@@ -11,7 +11,7 @@ everything runs from the file system.
 | `index.html` | The hotel home page. Photography-led: hero, destinations, experience, rooms, meetings, then flexible booking as reassurance. |
 | `mumbai.html` | **ZO Hotel Mumbai.** Urban and type-led: hero, location, five nearby landmarks, the restaurant and three benefits, a facade band over the rate list, trust, one flexibility note, then the booking CTA. |
 | `goa.html` | **ZO Hotel Goa.** Coastal and photographic: hero, a day told in three photographs, four places along the coast, a pool band over the rate list, trust, one flexibility note, then the booking CTA. |
-| `room-for-all.html` | **Room for all**, in the navigation of every page. A section each for travelling with children, with older parents and with a disability; what it costs (nothing extra); what is not step-free; every room type at its own rate; and a statement about the site itself. |
+| `room-for-all.html` | **Room for all**, in the navigation of every page. A section each for travelling with children (a shaded play area, the children's pool, board games), with older parents (morning yoga, carrom and cards, live sitar and tabla, a slow neighbourhood walk) and with a disability; what it costs (nothing extra); what is not step-free; every room type at its own rate; and a statement about the site itself. |
 | `flexible-booking.html` | **Part B in full** — the six cancellation reasons with answers, the whole policy table, the evidence, and the trust section. |
 | `part-a-exit-prompt.html` | **Part A** — the exit prompt, running live, with its four required pieces of copy and the rule behind each decision. |
 | `booking.html` | Booking form: live pricing, GST, full client-side validation, confirmation. |
@@ -343,6 +343,16 @@ at any meal, on request at no charge"* could be read as the food being free. The
 free; a smaller portion is still a paid meal. Now two clauses, so the generous reading is not
 available.
 
+- **Facilities are stated; requests are asked for.** The play area, the children's pool, the
+  yoga, the music and the guided walk are things the hotel *has*, so they are named with times
+  and places and no checkbox — a guest does not request a playground. That distinction is why
+  they needed no addition to `L.REQUESTS`, and why the test binding promised amenities to real
+  requests still passes untouched.
+- **None of them joined the free list.** A yoga instructor and a sitar player are real staff
+  costs, and the free list only holds together because everything on it is owned equipment or
+  pure room allocation. So the activities are stated without a price claim either way, rather
+  than being labelled free and quietly breaking the argument the rest of the page makes.
+
 ### Language standard, and where it departs from Zoho
 
 Audited against the Zoho Style Basics mechanics, not just the UI guidance. Most of it holds
@@ -383,7 +393,7 @@ document it, is the one followed.
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 65 tests: pricing, refunds, validation, copy audit
+node --test tests/logic.test.js      # 66 tests: pricing, refunds, validation, copy audit
 open tests/browser-check.html        # 76 checks: dialogs, focus, flows, images, overflow, console
 ```
 
