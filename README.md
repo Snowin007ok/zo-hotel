@@ -165,6 +165,16 @@ approach breaks it.
   room the guest was reading about. `applyQueryParams` in `booking.js` already validated
   both against the rate card, so an unknown value falls back to the existing default and
   `booking.html` on its own is unchanged.
+- **Every amenity offered on request is really requestable.** Found by being challenged on
+  one sentence. The children's card promised a high chair, smaller portions and a fridge, and
+  invited a family to *say who is coming* — while the booking form captured a guest count and
+  had no way to say a child was travelling at all. Four of that card's seven claims had
+  nothing behind them. The accessibility card had been held to this standard; this one had
+  not. *Travelling with children* is now a request in `L.REQUESTS` with a control on the
+  form, the fridge claim is gone because no room blurb mentions one, and the overstated
+  sentence names the checkbox instead. A test maps each amenity the page offers on request to
+  the request that delivers it, and asserts the form offers exactly the requests the rate card
+  defines.
 - **Whoever you bring** (`index.html#everyone`) — three travelling parties, and the point of
   putting them together is that they overlap more than hotel websites admit: a lower floor
   near the lift helps an eighty-year-old and a wheelchair user for the same reason. So
@@ -188,6 +198,16 @@ approach breaks it.
   a photograph out is a competitor identifiable *inside the frame*, which is the actual fault
   in `room-business.jpg` and its projector screen. The accessible bathroom carries no logo,
   no signage and no crested towel, so it is credited and used.
+- **Every amenity offered on request is really requestable.** Found by being challenged on
+  one sentence. The children's card promised a high chair, smaller portions and a fridge, and
+  invited a family to *say who is coming* — while the booking form captured a guest count and
+  had no way to say a child was travelling at all. Four of that card's seven claims had
+  nothing behind them. The accessibility card had been held to this standard; this one had
+  not. *Travelling with children* is now a request in `L.REQUESTS` with a control on the
+  form, the fridge claim is gone because no room blurb mentions one, and the overstated
+  sentence names the checkbox instead. A test maps each amenity the page offers on request to
+  the request that delivers it, and asserts the form offers exactly the requests the rate card
+  defines.
 - **Accessible stays** (`index.html#accessibility`) — named facilities rather than the word
   "friendly", because a guest cannot plan around an adjective: step-free entrance, lifts to
   every floor, accessible parking, wider doorways, grab rails, a roll-in shower with a seat.
@@ -301,7 +321,7 @@ of all nine pages.
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 61 tests: pricing, refunds, validation, copy audit
+node --test tests/logic.test.js      # 62 tests: pricing, refunds, validation, copy audit
 open tests/browser-check.html        # 76 checks: dialogs, focus, flows, images, overflow, console
 ```
 

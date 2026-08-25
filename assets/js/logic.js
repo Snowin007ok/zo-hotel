@@ -118,6 +118,7 @@
        it, and should not have to telephone while everyone else books online. */
     accessible: { id: 'accessible', label: 'Accessible room', note: 'Step-free, wider doorway, grab rails, roll-in shower' },
     lowerFloor: { id: 'lowerFloor', label: 'Room on a lower floor', note: 'Near the lift, fewer stairs to manage' },
+    children: { id: 'children', label: 'Travelling with children', note: 'High chair, and smaller portions at any meal' },
     parking: { id: 'parking', label: 'Car parking', note: 'Free, on site' },
     earlyCheckin: { id: 'earlyCheckin', label: 'Early check-in', note: 'From 9:00 am, subject to availability' },
     view: { id: 'view', label: 'Sea or city view', note: 'Confirmed at check-in' },

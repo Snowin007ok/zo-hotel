@@ -1209,6 +1209,58 @@ test('the best rate guarantee promises exactly what the flow delivers', () => {
     });
 });
 
+test('every amenity the page offers on request is really requestable', () => {
+  /* Found by being challenged on it: the children's card promised a high chair,
+     smaller portions and a fridge, and offered to let a family "say who is
+     coming" — while the booking form captured a guest count and had no way to
+     say a child was travelling at all. The accessibility card was held to this
+     standard and this one was not.
+
+     So: anything the page describes as being on request has to correspond to a
+     request the form actually offers. */
+  const page = fs.readFileSync(path.join(ROOT, 'room-for-all.html'), 'utf8');
+  const booking = fs.readFileSync(path.join(ROOT, 'booking.html'), 'utf8');
+  const text = visibleText(page).replace(/\s+/g, ' ');
+
+  /* Every request in the rate card has a control on the form. Matched on the
+     submitted value, not the element id: the meal checkbox is deliberately
+     req-meal-booking, because booking.js targets it and req-meal already
+     exists in the manage dialog. The value is the contract. */
+  const offered = [...booking.matchAll(/<input[^>]*name="requests"[^>]*value="(\w+)"/g)]
+    .map((m) => m[1]);
+  Object.values(L.REQUESTS).forEach((r) => {
+    assert.ok(offered.includes(r.id),
+      `${r.label} (${r.id}) is offered by the booking form — form has ${offered.join(', ')}`);
+  });
+  assert.equal(offered.length, Object.keys(L.REQUESTS).length,
+    'the form offers exactly the requests the rate card defines');
+
+  // The amenities this page names on request, and the request behind each.
+  const PROMISED = [
+    [/high chair/i, 'children'],
+    [/smaller portions/i, 'children'],
+    [/cot or an extra bed/i, 'extraBed'],
+    [/lower floor/i, 'lowerFloor'],
+    [/accessible room/i, 'accessible'],
+    [/[Ee]arly check-in/, 'earlyCheckin']
+  ];
+  PROMISED.forEach(([claim, id]) => {
+    assert.match(text, claim, `the page promises ${claim}`);
+    assert.ok(L.REQUESTS[id], `and ${id} is a request that delivers it`);
+  });
+
+  // Claims that had nothing behind them, and must not come back without one.
+  assert.doesNotMatch(text, /fridge/i,
+    'no fridge is promised: no room blurb mentions one');
+  assert.doesNotMatch(text, /[Ss]ay who is coming/,
+    'the form takes a guest count, not who they are — do not imply otherwise');
+
+  // A family can now say a child is coming, which is the gap that started this.
+  assert.ok(L.REQUESTS.children, 'travelling with children is a request');
+  assert.match(text, /Travelling with\s+children/,
+    'and the page names the control by the label the form uses');
+});
+
 test('the accessibility page prices access at nothing extra', () => {
   const page = fs.readFileSync(path.join(ROOT, 'room-for-all.html'), 'utf8');
   const text = visibleText(page).replace(/\s+/g, ' ');
