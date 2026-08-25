@@ -343,10 +343,47 @@ at any meal, on request at no charge"* could be read as the food being free. The
 free; a smaller portion is still a paid meal. Now two clauses, so the generous reading is not
 available.
 
+### Language standard, and where it departs from Zoho
+
+Audited against the Zoho Style Basics mechanics, not just the UI guidance. Most of it holds
+without comment: inclusive language is clean (no gendered pronouns anywhere, singular *they*,
+no gendered job titles), the phone number uses the local convention the standard explicitly
+allows, percentages are numerals with `%`, money is symbol-plus-amount, en dashes carry ranges
+with no spaces, and prose spells out numbers under ten — *two pools*, *three rooms*, *two
+queen beds*.
+
+Four conventions depart from the standard, and they are one decision rather than four:
+
+| | This product | Zoho standard |
+| --- | --- | --- |
+| Spelling | Indian English — *cancelled*, *travelling*, *licence* | American English |
+| Dates | 14 Aug 2026 | Aug. 14, 2026 |
+| Times | 2:00 pm | 2 p.m. |
+| Rupees | ₹1,00,000 | 100,000 |
+
+The standard calls the language choice **a business decision, not a claim that one spelling is
+better** — and this business is a hotel in Mumbai and Goa writing for guests in India. The
+pages are `lang="en-IN"` and read that way.
+
+**What matters more than the choice is that it is total, and it is: 78 British spellings and
+not one American counterpart anywhere in the copy.** The only American forms in the repository
+are `justify-content: center` and `scrollIntoView({behavior})`, which are CSS and DOM
+identifiers rather than copy. A test now fails if any word appears in both spellings, because
+*cancelled* on one page and *canceled* on the next is the actual defect. Dates, digit grouping
+and now times are each pinned by an assertion, and the whole choice is written down on
+`style-guide.html` — the time format was the one of the four that had never been documented.
+
+Two smaller findings from the same pass, both fixed: **WCAG** was used without being spelled
+out, and unlike GST or UPI it is not an acronym a hotel guest has reason to know, so it now
+reads *Web Content Accessibility Guidelines (WCAG) 2.1, level AA* on first use. And the
+buttons are sentence case where Style Basics asks for title case on buttons and field names —
+here the two Zoho documents disagree with each other, and the UI guidance's rule, pick one and
+document it, is the one followed.
+
 ## Tests
 
 ```bash
-node --test tests/logic.test.js      # 63 tests: pricing, refunds, validation, copy audit
+node --test tests/logic.test.js      # 65 tests: pricing, refunds, validation, copy audit
 open tests/browser-check.html        # 76 checks: dialogs, focus, flows, images, overflow, console
 ```
 

@@ -1374,6 +1374,58 @@ test('Best price is in the navigation and points at the guarantee', () => {
     'the home page has the section the label promises');
 });
 
+test('the language standard is Indian English, and it never mixes', () => {
+  /* The Zoho standard asks for American English and calls that a business
+     decision rather than a claim that one spelling is better. This business is
+     a hotel in Mumbai and Goa writing for guests in India, so the pages are
+     lang="en-IN" and read that way — documented on style-guide.html.
+
+     Which standard is chosen matters far less than whether it holds. A product
+     that says "cancelled" on one page and "canceled" on the next reads as
+     careless, and that is what this guards. Code identifiers are excluded:
+     `justify-content: center` and `scrollIntoView({behavior})` are CSS and DOM
+     names, not copy, and rewriting them would break the page. */
+  const PAIRS = [['cancelled', 'canceled'], ['cancelling', 'canceling'],
+    ['travelling', 'traveling'], ['traveller', 'traveler'], ['apologise', 'apologize'],
+    ['honour', 'honor'], ['labelled', 'labeled'], ['neighbourhood', 'neighborhood'],
+    ['licence', 'license'], ['organise', 'organize'], ['fulfil', 'fulfill']];
+
+  const copy = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'))
+    .map((f) => visibleText(fs.readFileSync(path.join(ROOT, f), 'utf8'))).join(' ');
+
+  let british = 0;
+  PAIRS.forEach(([bre, ame]) => {
+    const b = (copy.match(new RegExp('\\b' + bre + '\\b', 'gi')) || []).length;
+    const a = (copy.match(new RegExp('\\b' + ame + '\\b', 'gi')) || []).length;
+    british += b;
+    assert.ok(!(b && a),
+      `"${bre}" and "${ame}" both appear in copy — pick one: ${b} British, ${a} American`);
+  });
+  assert.ok(british >= 20,
+    `expected the Indian spelling to be in use, saw ${british} — if this is now an ` +
+    'American-English product, update style-guide.html and this test together');
+
+  // The two conventions that were already tested stay tested, and the third —
+  // time — is now documented rather than incidental.
+  assert.equal(L.formatDate('2026-08-14'), '14 Aug 2026', 'dates stay day-month-year');
+  assert.equal(L.formatINR(100000), '₹1,00,000', 'rupees keep Indian digit grouping');
+  assert.equal(L.formatTimeOfDay(14), '2:00 pm', 'times stay 2:00 pm, no periods');
+  assert.match(fs.readFileSync(path.join(ROOT, 'style-guide.html'), 'utf8'),
+    /Language standard/, 'and the whole choice is written down');
+});
+
+test('an acronym a guest would not know is spelled out', () => {
+  // GST and UPI are as familiar in India as ATM or PDF. WCAG is not, and it is
+  // the one a hotel guest has no reason to recognise.
+  const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'));
+  pages.forEach((f) => {
+    const text = visibleText(fs.readFileSync(path.join(ROOT, f), 'utf8')).replace(/\s+/g, ' ');
+    if (!/WCAG/.test(text)) return;
+    assert.match(text, /Web Content Accessibility Guidelines \(WCAG\)/,
+      `${f} uses WCAG without spelling it out on first use`);
+  });
+});
+
 test('the customer-facing pages never say "why guests cancel"', () => {
   // Internal business language, per the brief. It must not reach a guest.
   htmlFiles.forEach((file) => {
