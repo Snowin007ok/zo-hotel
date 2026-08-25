@@ -1148,7 +1148,6 @@ test('the three travelling parties are offered something real', () => {
   assert.equal(L.ROOMS.family.sleeps, 4, 'and the rate card agrees');
   assert.match(text, /₹900 a night/, 'the cot price matches the extra-bed request');
   assert.match(text, /6:00 am to 9:00 pm/, 'the pool hours match the experience section');
-  assert.match(text, /9:00 am/, 'early check-in matches the request note');
 
   // Each borrowed photograph on the page is credited, as everywhere else.
   assert.match(page, /<p class="nearby__credit">/, 'the page credits its photographs');
@@ -1242,7 +1241,7 @@ test('every amenity the page offers on request is really requestable', () => {
     [/cot or an extra bed/i, 'extraBed'],
     [/lower floor/i, 'lowerFloor'],
     [/accessible room/i, 'accessible'],
-    [/[Ee]arly check-in/, 'earlyCheckin']
+    [/lower floor/i, 'lowerFloor']
   ];
   PROMISED.forEach(([claim, id]) => {
     assert.match(text, claim, `the page promises ${claim}`);
@@ -1261,38 +1260,30 @@ test('every amenity the page offers on request is really requestable', () => {
     'and the page names the control by the label the form uses');
 });
 
-test('early check-in is never promised without its condition', () => {
-  /* The only reason this can be free is that it costs nothing when a room is
-     already clean and vacant. Guaranteeing 9:00 am means holding the room the
-     night before, which is a lost room-night and is what hotels charge for. So
-     the conditional is not hedging — it is the entire commercial basis, and
-     dropping it anywhere turns a courtesy into a promise the hotel cannot keep.
-  */
-  const COND = /(when(?:ever)? a room is ready|subject to availability|if a room is ready)/i;
-  let checked = 0;
-  fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).forEach((file) => {
-    const text = visibleText(fs.readFileSync(path.join(ROOT, file), 'utf8')).replace(/\s+/g, ' ');
-    // Each mention that also claims it is free must carry the condition nearby.
-    [...text.matchAll(/.{0,90}[Ee]arly check-in.{0,120}/g)].forEach((m) => {
-      const near = m[0];
-      if (!/\b(free|no charge|at no cost)\b/i.test(near)) return;
-      checked++;
-      assert.match(near, COND,
-        `${file}: early check-in claimed free without its condition — "${near.trim().slice(0, 110)}"`);
-    });
-  });
-  assert.ok(checked >= 4, `expected the claim to appear and be checked, saw ${checked}`);
+test('exactly one request costs money, and it is the one with a real cost', () => {
+  /* This is what keeps the free list coherent rather than merely generous:
+     everything offered free is owned equipment or pure room allocation, and the
+     extra bed — linen, an actual bed, another body in the room — is the only
+     request with a marginal cost and the only priced one.
 
-  // The rate card carries the condition too, since that note is what the
-  // booking form and both dialogs render.
-  assert.match(L.REQUESTS.earlyCheckin.note, COND,
-    'the request note states the condition');
-
-  // And the one request with a real marginal cost is the one with a price,
-  // which is what makes the free list coherent rather than generous.
+     Early check-in used to sit on the free list. It was removed as a product
+     decision: free only holds while a room happens to be ready, and
+     guaranteeing 9:00 am means holding a room empty overnight, which is a real
+     room-night the hotel would have to sell. */
   const priced = Object.values(L.REQUESTS).filter((r) => /₹/.test(r.note));
-  assert.equal(priced.length, 1, `exactly one request costs money, saw ${priced.length}`);
+  assert.equal(priced.length, 1, `exactly one request carries a price, saw ${priced.length}`);
   assert.equal(priced[0].id, 'extraBed', 'and it is the extra bed');
+
+  // Removed for good: no page may offer it and no request may define it.
+  assert.equal(L.REQUESTS.earlyCheckin, undefined, 'early check-in is not a request');
+  fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).forEach((f) => {
+    const html = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    assert.doesNotMatch(html, /early check-?in/i, `${f} still mentions early check-in`);
+  });
+  ['assets/js/logic.js', 'assets/js/flows.js', 'assets/js/manage.js'].forEach((f) => {
+    assert.doesNotMatch(fs.readFileSync(path.join(ROOT, f), 'utf8'), /earlyCheckin|early check-?in/i,
+      `${f} still references early check-in`);
+  });
 });
 
 test('the accessibility page prices access at nothing extra', () => {
@@ -1321,7 +1312,7 @@ test('the accessibility page prices access at nothing extra', () => {
   assert.match(text, /₹900 a night/, 'and ₹900 on the page');
 
   // Everything a guest might expect to be charged for is stated as free.
-  ['A room on a lower floor', 'Accessible parking', 'grab rail', 'Early check-in',
+  ['A room on a lower floor', 'Accessible parking', 'grab rail',
     'wheelchair to borrow'].forEach((row) => {
     assert.ok(new RegExp(row, 'i').test(text), `the table lists ${row}`);
   });

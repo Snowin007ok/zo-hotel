@@ -88,7 +88,7 @@
       insight: 'Bookings with no special request attached were cancelled 48% of the time, against 22% for bookings carrying one special request. The data records the request, not whether anyone confirmed it, so confirming in writing is the ZO response to that pattern.',
       /* Verb: "confirm". */
       headline: 'Confirm your requests instead?',
-      message: 'Confirm what you need — parking, early check-in, a cot, a Jain meal — and we put it in writing within two hours.',
+      message: 'Confirm what you need — parking, a cot, a view, a Jain meal — and we put it in writing within two hours.',
       primary: { label: 'Confirm my requests', action: 'requests' }
     }
   };
@@ -97,7 +97,7 @@
   var REASONS = [
     { id: 'dates', label: 'My dates changed', offer: 'dates', offerCta: 'Move my dates', offerTitle: 'You can move these dates with no change fee', offerBody: 'Pick new dates and we will re-price the nights. You keep your room type where it is available, and see any price difference before confirming.' },
     { id: 'price', label: 'I found a lower price', offer: 'price', offerCta: 'Send the price link', offerTitle: 'We will match a lower public price', offerBody: 'Send the link within 24 hours of booking. We match the rate and take another 10% off it.' },
-    { id: 'requests', label: 'My requests are not confirmed', offer: 'requests', offerCta: 'Confirm my requests', offerTitle: 'We can confirm your requests now', offerBody: 'Add parking, early check-in, a cot, or a meal preference. You get written confirmation within two hours.' },
+    { id: 'requests', label: 'My requests are not confirmed', offer: 'requests', offerCta: 'Confirm my requests', offerTitle: 'We can confirm your requests now', offerBody: 'Add parking, a cot, a view, or a meal preference. You get written confirmation within two hours.' },
     { id: 'refund', label: 'I am not sure how the refund works', offer: 'refund', offerCta: 'See the refund detail', offerTitle: 'Here is exactly what comes back', offerBody: '' },
     { id: 'trip', label: 'The trip is off', offer: null },
     { id: 'other', label: 'Something else', offer: null }
